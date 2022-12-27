@@ -1,0 +1,33 @@
+- name: deploy Mealie Container Network 
+  docker_network:
+    name: "mealie"
+
+- name: deploy Mealie Docker Container
+  docker_container:
+    name: "mealie"
+    image: "hkotel/mealie:latest"
+    restart_policy: always
+    networks:
+      - name: "mealie"
+    published_ports: 
+      - "9090:80"
+    env:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "Africa/Johannesburg"
+
+      # Default Recipe Settings
+      RECIPE_PUBLIC: "true"
+      RECIPE_SHOW_NUTRITION: "true"
+      RECIPE_SHOW_ASSETS: "true"
+      RECIPE_LANDSCAPE_VIEW: "true"
+      RECIPE_DISABLE_COMMENTS: "false"
+      RECIPE_DISABLE_AMOUNT: "false"
+
+      # Gunicorn
+      WEB_CONCURRENCY: "1"
+      WORKERS_PER_CORE: "0.5"
+      MAX_WORKERS: "1"
+    volumes:
+      - "{{ MEALIE_VOLUME }}"
+

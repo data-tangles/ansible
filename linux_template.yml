@@ -1,0 +1,12 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - linux_template
+    - linux_realmd
+
+  vars_files:
+    - /ansible/vars/linux/linux_template_vars.yml
+    - /ansible/vars/phpipam_vars.yml
+    - /ansible/vars/linux/linux_realmd_vars.yml

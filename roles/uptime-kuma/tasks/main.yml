@@ -1,0 +1,15 @@
+- name: deploy Uptime Kuma Network
+  docker_network:
+    name: "uptime-kuma"
+
+- name: deploy Uptime Kuma Container
+  docker_container:
+    name: "uptime-kuma"
+    image: "louislam/uptime-kuma:1"
+    restart_policy: always
+    networks:
+      - name: "uptime-kuma"
+    published_ports:
+      - "3001:3001"  
+    volumes:
+      - "{{ UPTIME_KUMA_VOLUME }}"

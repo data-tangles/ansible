@@ -1,0 +1,6 @@
+- hosts: "{{ HOSTS }}"
+  roles:
+    - windows-updates
+
+  vars_files:
+    - /ansible/vars/windows/updates/windows_update_vars.yml

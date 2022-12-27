@@ -1,0 +1,36 @@
+- name: deploy phpipam Container Network 
+  docker_network:
+    name: "phpipam"
+
+- name: deploy phpipam DB Docker Container
+  docker_container:
+    name: "phpipam-db"
+    image: "mysql:5.6"
+    restart_policy: always
+    networks:
+      - name: "phpipam"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+    volumes:
+      - "{{ PHPIPAM_DB_VOLUME }}"
+
+- name: deploy phpipam Docker Container
+  docker_container:
+    depends_on: "phpipam-db"
+    name: "phpipam"
+    image: "pierrecdn/phpipam"
+    restart_policy: always
+    networks:
+      - name: "phpipam"
+    env:
+      MYSQL_ENV_MYSQL_USER: "root"
+      MYSQL_ENV_MYSQL_ROOT_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+      MYSQL_ENV_MYSQL_HOST: "phpipam-db"
+    ports:
+      - "81:80"
+    volumes:
+      - "{{ PHPIPAM_VOLUME }}"
+
+
+    
+    

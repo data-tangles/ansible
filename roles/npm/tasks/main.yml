@@ -1,0 +1,42 @@
+- name: deploy Nginx Proxy Manager Container Network 
+  docker_network:
+    name: "npm"
+
+- name: deploy Nginx Proxy Manager Docker Container
+  docker_container:
+    name: "nginxproxymanager"
+    image: "jc21/nginx-proxy-manager:latest"
+    restart_policy: always
+    networks:
+      - name: "npm"
+    published_ports: 
+      - '80:80'
+      - '81:81'
+      - "443:443"
+      - "6443:6443"
+      - "44443:44443"
+      - "19132:19132/udp"
+    env:
+      DB_MYSQL_HOST: "npm-db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm"
+      DB_MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"
+      DB_MYSQL_NAME: "npm"
+    volumes:
+      - " {{ NPM_DATA_VOLUME }}"
+      - " {{ NPM_LE_VOLUME }}"
+
+- name: deploy Nginx Proxy Manager DB Container
+  docker_container:
+    name: "npm-db"
+    image: "jc21/mariadb-aria:latest"
+    restart_policy: always
+    networks:
+      - name: "npm"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"
+    volumes:
+      - " {{ NPM_DB_VOLUME }}"

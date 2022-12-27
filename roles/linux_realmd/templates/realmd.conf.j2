@@ -1,0 +1,14 @@
+[active-directory]
+os-name = {{ ansible_distribution }}
+os-version = {{ ansible_distribution_version }}
+
+[service]
+automatic-install = yes
+
+[users]
+default-home = /home/%u
+default-shell = /bin/bash
+
+[{{ REALM_DOMAIN }}]
+user-principle = yes
+fully-qualified-names = no

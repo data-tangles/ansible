@@ -1,0 +1,19 @@
+- name: deploy Watchtower Container Network 
+  docker_network:
+    name: "watchtower"
+
+- name: deploy Mealie Docker Container
+  docker_container:
+    name: "watchtower"
+    image: "containrrr/watchtower"
+    restart_policy: always
+    networks:
+      - name: "watchtower"
+    env:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_INCLUDE_RESTARTING: "true"
+      WATCHTOWER_POLL_INTERVAL: "14400"
+    volumes:
+      - "{{ WATCHTOWER_VOLUME }}"
+      - "{{ WATCHTOWER_TZ_VOLUME }}"
+

@@ -1,0 +1,14 @@
+- name: Install SNMP Feature
+  ansible.windows.win_feature:
+    name: SNMP-Service
+    include_management_tools: yes
+    state: present
+
+- name: Update SNMP Community String
+  community.windows.win_snmp:
+    community_strings:
+      - "{{ SNMP_COMMUNITY }}"
+    permitted_managers:
+      - "{{ SNMP_MANAGER1 }}"
+      - "{{ SNMP_MANAGER2 }}"
+    action: set

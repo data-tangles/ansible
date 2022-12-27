@@ -1,0 +1,59 @@
+# Change IP Address of new server
+
+- name: Set up static IP address
+  win_shell: "Get-NetIpAddress -InterfaceAlias 'Ethernet*' | New-NetIpAddress -IpAddress {{ IP_ADDRESS }} -PrefixLength 24"
+  async: 100 # Using "fire-and-forget" asynchronous execution for this task, otherwise it will always fail and timeout
+  poll: 0
+  ignore_errors: true
+
+- name: Change ansible's ip address for each host
+  set_fact:
+    ansible_host: "{{ IP_ADDRESS }}"
+
+- name: Wait for the hosts network interface to come back up
+  local_action:
+    module: wait_for
+    host: "{{ ansible_host }}"
+    port: "{{ WINRM_PORT }}"
+    delay: 10
+    state: started
+  register: wait_result
+
+- name: Remove old IP address
+  win_shell: "Remove-NetIpAddress -IpAddress {{ OLD_IP_ADDRESS }} -Confirm:$false"
+  async: 100 # Using "fire-and-forget" asynchronous execution for this task, otherwise it will always fail and timeout
+  poll: 0
+  ignore_errors: true
+
+# Join server to domain  
+
+- name: Join server to domain
+  ansible.windows.win_domain_membership:
+    dns_domain_name: "{{ DNS_DOMAIN_NAME }}"
+    hostname: "{{ HOSTNAME }}"
+    domain_admin_user: "{{ DOMAIN_ADMIN_USER }}"
+    domain_admin_password: "{{ DOMAIN_ADMIN_PASSWORD }}"
+    domain_ou_path: "{{ DOMAIN_OU_PATH }}"
+    state: domain
+  register: domain_state
+
+- name: Reboot server after domain join  
+  ansible.windows.win_reboot:
+  when: domain_state.reboot_required
+
+## Update phpIPAM 
+
+- name: Reserve an IP address
+  codeaffen.phpipam.address:
+    app_id: "{{ IPAM_APP_ID }}"
+    username: "{{ IPAM_USER }}"
+    password: "{{ IPAM_PASSWORD }}"
+    server_url: "{{ IPAM_SERVER_URL }}"
+    address: "{{ IP_ADDRESS }}"
+    section: "{{ IPAM_SECTION }}"
+    hostname: "{{ HOSTNAME }}"
+    description: "{{ IPAM_DESCRIPTION }}"
+    subnet: "{{ IPAM_SUBNET }}"
+  delegate_to: localhost 
+  vars:
+    ansible_become: false

@@ -1,0 +1,224 @@
+trigger: 
+- none
+
+stages:
+
+- stage: 'LinuxUpdates'
+  dependsOn: []
+  displayName: 'Linux Updates'
+  
+  jobs:
+    - job: 'LinuxUpdatesAnsibleInstall'
+      displayName: 'Linux Updates Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Linux Updates Install
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/apt-update.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+- stage: 'Zabbix'
+  dependsOn: []
+  displayName: 'Zabbix'
+  
+  jobs:
+    - job: 'ZabbixAnsibleInstall'
+      displayName: 'Zabbix Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Zabbix Install
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/zabbix_mysql-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+
+- stage: 'Mealie'
+  dependsOn: []
+  displayName: 'Mealie'
+  
+  jobs:
+    - job: 'MealieAnsibleInstall'
+      displayName: 'Mealie Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/mealie-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+- stage: 'Watchtower'
+  dependsOn: []
+  displayName: 'Watchtower'
+  
+  jobs:
+    - job: 'WatchtowerAnsibleInstall'
+      displayName: 'Watchtower Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/watchtower-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+- stage: 'Teamspeak'
+  dependsOn: []
+  displayName: 'Teamspeak'
+  
+  jobs:
+    - job: 'TeamspeakAnsibleInstall'
+      displayName: 'Teamspeak Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/teamspeak-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+- stage: 'NginxProxyManager'
+  dependsOn: []
+  displayName: 'Nginx Proxy Manager'
+  
+  jobs:
+    - job: 'NPMAnsibleInstall'
+      displayName: 'Nginx Proxy Manager Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/npm-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+- stage: 'Monica'
+  dependsOn: []
+  displayName: 'Monica'
+  
+  jobs:
+    - job: 'MonicaAnsibleInstall'
+      displayName: 'Monica Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/monica-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+- stage: 'UptimeKuma'
+  dependsOn: []
+  displayName: 'Uptime Kuma'
+  
+  jobs:
+    - job: 'UptimeKumaAnsibleInstall'
+      displayName: 'Uptime Kuma Ansible Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/uptime-kuma-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+
+- stage: 'LinuxTemplate'
+  dependsOn: []
+  displayName: 'Linux Template'
+  
+  jobs:
+    - job: 'LinuxTemplate'
+      displayName: 'Linux Template Apply'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/linux_template.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux_template.ini'
+          failOnStdErr: false
+
+- stage: 'WindowsTemplate'
+  dependsOn: []
+  displayName: 'Windows Template'
+  
+  jobs:
+    - job: 'WindowsTemplate'
+      displayName: 'Windows Template Apply'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/windows_template.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/windows_template.ini'
+          failOnStdErr: false
+          
+- stage: 'WindowsSNMP'
+  dependsOn: []
+  displayName: 'Windows SNMP'
+  
+  jobs:
+    - job: 'WindowsSNMP'
+      displayName: 'Windows SNMP Install & Config'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/windows-snmp-install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/windows.ini'
+          failOnStdErr: false
+
+- stage: 'LinuxSNMP'
+  dependsOn: []
+  displayName: 'Linux SNMP'
+  
+  jobs:
+    - job: 'LinuxSNMP'
+      displayName: 'Linux SNMP Install & Config'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/linux_snmp_install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+

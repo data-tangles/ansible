@@ -1,0 +1,39 @@
+- name: deploy Monica Container Network 
+  docker_network:
+    name: "monica"
+
+- name: deploy Monica DB Docker Container
+  docker_container:
+    name: "monica-db"
+    image: "mysql:5.7"
+    restart_policy: always
+    networks:
+      - name: "monica"
+    env:
+      MYSQL_DATABASE: "monica"
+      MYSQL_USER: "monica"
+      MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    volumes:
+      - "{{ MYSQL_VOLUME }}"
+
+- name: deploy Monica Docker Container
+  docker_container:
+    name: "monica"
+    image: "monica:apache"
+    restart_policy: always
+    networks:
+      - name: "monica"
+    ports:
+      - "8081:80"
+    env:
+      DB_HOST: "monica-db"
+      DB_USERNAME: "monica"
+      DB_PASSWORD: "{{ MYSQL_PASSWORD }}"
+      APP_DISABLE_SIGNUP: "false"
+    volumes:
+      - "{{ MONICA_VOLUME }}"
+
+
+    
+    

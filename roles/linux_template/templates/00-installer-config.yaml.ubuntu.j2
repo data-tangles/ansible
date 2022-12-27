@@ -1,0 +1,16 @@
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens160:
+      addresses:
+      - {{ IP_ADDRESS }}/24
+      nameservers:
+        addresses:
+        - {{ DNS_1 }}
+        - {{ DNS_2 }}
+        search:
+        - {{ SEARCH_DOMAIN }}
+      routes:
+      - to: default
+        via: {{ GATEWAY }}
+  version: 2

@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - teamspeak
+
+  vars_files:
+    - /ansible/vars/docker/teamspeak/teamspeak_vars.yml

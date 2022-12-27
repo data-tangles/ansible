@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - watchtower
+
+  vars_files:
+    - /ansible/vars/docker/watchtower/watchtower_vars.yml

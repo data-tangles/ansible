@@ -1,0 +1,43 @@
+- name: deploy Teamspeak Container Network 
+  docker_network:
+    name: "teamspeak"
+
+- name: deploy Teamspeak Docker Container
+  docker_container:
+    name: "teamspeak"
+    image: "teamspeak"
+    restart_policy: always
+    networks:
+      - name: "teamspeak"
+    published_ports: 
+      - "9987:9987/udp"
+      - "10011:10011"
+      - "30033:30033"
+    env:
+      TS3SERVER_DB_PLUGIN: "ts3db_mariadb"
+      TS3SERVER_DB_SQLCREATEPATH: "create_mariadb"
+      TS3SERVER_DB_HOST: "teamspeak-db"
+      TS3SERVER_DB_USER: "root"
+      TS3SERVER_DB_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+      TS3SERVER_DB_NAME: "teamspeak"
+      TS3SERVER_DB_WAITUNTILREADY: "30"
+      TS3SERVER_LICENSE: "accept"
+    volumes:
+      - "{{ TEAMSPEAK_VOLUME }}"
+
+- name: deploy Teamspeak DB Container
+  docker_container:
+    name: "teamspeak-db"
+    image: "mariadb"
+    restart_policy: always
+    networks:
+      - name: "teamspeak"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+      MYSQL_DATABASE: "teamspeak"
+    volumes:
+      - "{{ TEAMSPEAK_DB_VOLUME }}"
+
+
+    
+    

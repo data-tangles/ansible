@@ -1,0 +1,52 @@
+- name: deploy Zabbix Container Network 
+  docker_network:
+    name: "zabbix"
+
+- name: deploy Zabbix Mysql Docker Container
+  docker_container:
+    name: "zabbix-db"
+    image: "mysql"
+    restart_policy: always
+    networks:
+      - name: "zabbix"
+    env:
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"
+      MYSQL_ROOT_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+    volumes:
+     - "{{ MYSQL_VOLUME }}" 
+
+
+- name: deploy Zabbix Server Docker Container
+  docker_container:
+    name: "zabbix-server"
+    image: "zabbix/zabbix-server-mysql:alpine-6.2-latest"
+    restart_policy: always
+    networks:
+      - name: "zabbix"
+    published_ports: 
+      - "10051:10051"
+    env:
+      DB_SERVER_HOST: "zabbix-db"
+      MYSQL_DATABASE: "zabbix-db"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"
+      MYSQL_ROOT_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+
+- name: deploy Zabbix Web Server Docker Container
+  docker_container:
+    name: "zabbix-web-server"
+    image: "zabbix/zabbix-web-apache-mysql:alpine-6.2-latest"
+    restart_policy: always
+    networks:
+      - name: "zabbix"
+    published_ports: 
+      - "8090:8080"
+    env:
+      ZBX_SERVER_HOST: "zabbix-server"
+      DB_SERVER_HOST: "zabbix-db"
+      MYSQL_DATABASE: "zabbix-db"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"  
+      PHP_TZ: "Africa/Johannesburg"   
+

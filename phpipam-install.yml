@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - phpipam
+
+  vars_files:
+    - /ansible/vars/docker/phpipam/phpipam_vars.yml

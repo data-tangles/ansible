@@ -1,0 +1,19 @@
+- name: Install SNMP
+  apt: 
+    name: snmpd
+    state: present 
+
+- name: Copy snmpd.conf
+  template: 
+    src: snmpd.conf.j2
+    dest: /etc/snmp/snmpd.conf
+    owner: root
+    group: root
+    mode: 0644
+  register: snmpd
+
+- name: Restart snmpd service
+  service:
+    name: snmpd
+    state: restarted
+  when: snmpd.changed

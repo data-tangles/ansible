@@ -1,0 +1,54 @@
+# Install the RDS Roles
+
+- name: Install RDS Gateway
+  when: inventory_hostname in groups['app_server']
+  ansible.windows.win_feature:
+    name: RDS-Gateway
+    include_management_tools: yes
+    state: present
+
+- name: Install RDS Web Access
+  when: inventory_hostname in groups['app_server']
+  ansible.windows.win_feature:
+    name: RDS-Web-Access
+    include_management_tools: yes
+    state: present
+
+- name: Install RDS Session Host
+  when: inventory_hostname in groups['client_server']
+  ansible.windows.win_feature:
+    name: RDS-RD-Server
+    state: present
+
+# Configure RDS properties
+
+- name: Create a new RDS CAP with a 30 minutes timeout and clipboard redirection enabled
+  when: inventory_hostname in groups['app_server']
+  community.windows.win_rds_cap:
+    name: "{{ CAP_NAME }}"
+    user_groups:
+      - "{{ RDS_USERS }}"
+    session_timeout: 30
+    session_timeout_action: disconnect
+    allow_only_sdrts_servers: yes
+    redirect_clipboard: yes
+    redirect_drives: no
+    redirect_printers: no
+    redirect_serial: no
+    redirect_pnp: no
+    state: enabled
+
+- name: Create a new RDS RAP
+  when: inventory_hostname in groups['app_server']
+  community.windows.win_rds_rap:
+    name: "{{ RAP_NAME }}"
+    description: Allow Users to connect to RDS Hosts
+    user_groups:
+      - "{{ RDS_USERS }}"
+    computer_group_type: ad_network_resource_group
+    computer_group:
+      - "{{ RDS_HOSTS }}"
+    allowed_ports:
+      - 3389
+    state: enabled
+

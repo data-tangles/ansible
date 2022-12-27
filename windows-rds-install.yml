@@ -1,0 +1,6 @@
+- hosts: "{{ HOSTS }}"
+  roles:
+    - windows-rds
+
+  vars_files:
+    - /ansible/vars/windows/rds/rds_vars.yml
