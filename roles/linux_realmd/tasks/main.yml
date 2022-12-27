@@ -99,7 +99,7 @@
     dest: /etc/sssd/sssd.conf
     owner: root
     group: root
-    mode: 0644
+    mode: 0600
   tags: ad
 
 - name: Copy pam common-session
