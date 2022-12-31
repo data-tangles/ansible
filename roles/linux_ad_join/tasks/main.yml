@@ -89,8 +89,14 @@
   command: "wbinfo --own-domain"
   register: "domain"
 
-- name: "Join domain"
-  command: "net join -U {{ AD_JOIN_USER }}%{{ AD_JOIN_PASSWORD }}"
+- name: Join system to AD
+  expect:
+    command: /bin/bash -c "/usr/sbin/net join -U {{ AD_JOIN_USER }}"
+    responses:
+      (?i)Password: "{{ AD_JOIN_PASSWORD }}"  
+  ignore_errors: yes
+  become: true
+  tags: ad
 
 - name: Copy suders file for safety
   command: cp -f /etc/sudoers /etc/sudoers.tmp
