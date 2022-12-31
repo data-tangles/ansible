@@ -222,3 +222,21 @@ stages:
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
           failOnStdErr: false
 
+- stage: 'LinuxADJoin'
+  dependsOn: []
+  displayName: 'Linux AD Join'
+  
+  jobs:
+    - job: 'LinuxADJoin'
+      displayName: 'Linux AD Join'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/linux_ad_join.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
+

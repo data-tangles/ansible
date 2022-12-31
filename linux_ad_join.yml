@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - linux_realmd
+    - linux_ad_join
 
   vars_files:
-    - /ansible/vars/linux/linux_realmd_vars.yml
+    - /ansible/vars/linux/linux_ad_join_vars.yml
