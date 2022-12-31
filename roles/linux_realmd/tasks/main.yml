@@ -15,15 +15,15 @@
     state: present 
     update_cache: yes
   with_items:
-    - realmd
-    - sssd
-    - adcli
+    - krb5-config
     - krb5-user
-    - sssd-tools
+    - samba
     - samba-common
-    - packagekit
-    - samba-common-bin
-    - samba-libs
+    - samba-dsdb-modules
+    - samba-vfs-modules
+    - winbind
+    - libnss-winbind
+    - libpam-winbind
   tags: ad
 
 - name: Copy realmd.conf
@@ -45,41 +45,54 @@
     mode: 0644
   tags: ad
 
-- name: Discover realm
-  command: /bin/bash -c "/usr/sbin/realm discover {{ REALM_DOMAIN }}"
-  register: realm_discover_results
+- name: Copy smb.conf
+  template: 
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    backup: yes
+    owner: root
+    group: root
+    mode: 0644
   tags: ad
+  notify:
+    - "samba_restart"
+    - "winbind_restart"
 
-- name: Discover realm debug
-  debug: 
-    msg: "{{ realm_discover_results.stdout }}"
+- name: "Update nsswitch.conf"
+  lineinfile:
+    regexp: "{{ item.regexp }}"
+    line:   "{{ item.line   }}"
+    dest: "/etc/nsswitch.conf"
+  with_items:
+    - { regexp: '^passwd:', line: 'passwd:		compat winbind' }
+    - { regexp: '^group:' , line: 'group:		compat winbind' }
+    - { regexp: '^shadow:', line: 'shadow:		compat'         }
+  notify: "samba_restart"
 
-- name: Create kerberos ticket
-  expect:
-    command: /bin/bash -c "/usr/bin/kinit -V {{ AD_JOIN_USER }}"
-    responses:
-      (?i)Password: "{{ AD_JOIN_PASSWORD }}"
+- name: Copy pam common-session
+  template: 
+    src: common-session.j2
+    dest: /etc/pam.d/common-session
+    owner: root
+    group: root
+    mode: 0644
   tags: ad
+  
+- name: "Configure home directory creation"
+  lineinfile:
+    dest: "/etc/pam.d/common-session"
+    regexp: "pam_mkhomedir"
+    line: "session optional        pam_mkhomedir.so skel=/etc/skel/ umask=0022"
+  notify: "samba_restart"
 
-# Check for existing AD
-- name: Checking to see if system is already joined to AD
-  command: /bin/bash -c "/usr/sbin/realm list"
-  register: realm_list_results
-  tags: ad
+- name: "Check domain status"
+  command: "wbinfo --own-domain"
+  register: "domain"
 
-- name: Debug realm_list_results
-  debug:
-    msg: "{{ realm_list_results.stdout }}"
-
-- name: Join system to AD
-  expect:
-    command: /bin/bash -c "/usr/sbin/realm join {{ REALM_DOMAIN }} --computer-ou='{{ REALM_AD_OU }}' --user={{ AD_JOIN_USER }}"
-    responses:
-      (?i)Password: "{{ AD_JOIN_PASSWORD }}"  
-  ignore_errors: yes
-  when: realm_list_results.stdout == ""
-  become: true
-  tags: ad
+- name: "Join domain"
+  command: "net join -U {{ AD_JOIN_USER }}%{{ AD_JOIN_PASSWORD }}"
+  no_log: True
+  when: domain.stdout != winbind_workgroup
 
 - name: Copy suders file for safety
   command: cp -f /etc/sudoers /etc/sudoers.tmp
@@ -93,20 +106,6 @@
 - name: Final sudoers file check
   shell: visudo -q -c -f /etc/sudoers.tmp && cp -f /etc/sudoers.tmp /etc/sudoers
 
-- name: Copy sssd.conf
-  template:
-    src: sssd.conf.j2
-    dest: /etc/sssd/sssd.conf
-    owner: root
-    group: root
-    mode: 0600
-  tags: ad
 
-- name: Copy pam common-session
-  template: 
-    src: common-session.j2
-    dest: /etc/pam.d/common-session
-    owner: root
-    group: root
-    mode: 0644
-  tags: ad
+
+

@@ -1,0 +1,37 @@
+[global]
+
+   log level = 0
+   socket options = TCP_NODELAY
+   winbind enum users = yes
+   winbind enum groups = yes
+   winbind refresh tickets = yes
+   winbind use default domain = yes
+   winbind offline logon = yes
+   vfs objects = acl_xattr
+   map acl inherit = yes
+   store dos attributes = yes
+   os level = 20
+   preferred master = no
+   winbind separator = +
+   max log size = 50
+   log file = /var/log/samba/log.%m
+   dns proxy = no
+   security = ads
+   wins server = {{ PRIMARY_SERVER }}
+   wins proxy = no
+   idmap config *:backend = tdb
+   idmap config * : range = 3000-7999
+   idmap config {{ DOMAIN }} : backend = rid
+   idmap config {{ DOMAIN }} : schema_mode = rfc2307
+   idmap config {{ DOMAIN }} : range = 10000-9999999
+   idmap config {{ DOMAIN }} : unix_nss_info = yes
+   idmap config {{ DOMAIN }} : unix_primary_group = yes
+   kerberos method = secrets and keytab
+   dedicated keytab file = /etc/krb5.keytab
+   realm = {{ KRB5_DEFAULT_REALM }}
+   workgroup = {{ DOMAIN }}
+   password server = {{ PRIMARY_SERVER }}
+   load printers = no
+   printing = bsd
+   printcap name = /dev/null
+   disable spoolss = yes
