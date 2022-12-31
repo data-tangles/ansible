@@ -91,7 +91,7 @@
 
 - name: Join system to AD
   expect:
-    command: /bin/bash -c "/usr/sbin/net join -U {{ AD_JOIN_USER }}"
+    command:  "net join -U {{ AD_JOIN_USER }}"
     responses:
       (?i)Password: "{{ AD_JOIN_PASSWORD }}"  
   ignore_errors: yes
