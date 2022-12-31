@@ -37,6 +37,15 @@
         fcc-mit-ticketflags = true
 
 [realms]
+        {{ KRB5_DEFAULT_REALM }} = {
+            kdc = {{ PRIMARY_SERVER }}
+            kdc = {{ SECONDARY_SERVER }}
+            default_domain = {{ REALM_DOMAIN }}
+}
+
+[domain_realm]
+        .{{ REALM_DOMAIN }} = {{ KRB5_DEFAULT_REALM }}
+        {{ REALM_DOMAIN }} = {{ KRB5_DEFAULT_REALM }}
 
 [login]
         krb4_convert = true
