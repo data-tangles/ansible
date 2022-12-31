@@ -91,7 +91,6 @@
 
 - name: "Join domain"
   command: "net join -U {{ AD_JOIN_USER }}%{{ AD_JOIN_PASSWORD }}"
-  no_log: True
   when: domain.stdout != winbind_workgroup
 
 - name: Copy suders file for safety
