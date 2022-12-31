@@ -91,7 +91,6 @@
 
 - name: "Join domain"
   command: "net join -U {{ AD_JOIN_USER }}%{{ AD_JOIN_PASSWORD }}"
-  when: domain.stdout != "WORKGROUP"
 
 - name: Copy suders file for safety
   command: cp -f /etc/sudoers /etc/sudoers.tmp
