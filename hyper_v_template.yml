@@ -3,4 +3,4 @@
     - hyper_v_vm
 
   vars_files:
-    - /ansible/vars/windows/hyper_v/hyper_v_host_01_vars.yml
+    - /ansible/vars/windows/hyper_v/hyper_v_host_vars.yml
