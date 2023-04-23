@@ -19,7 +19,7 @@ stages:
           ansibleInterface: 'agentMachine'
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/hyper_v_template.yml'
           inventoriesAgentMachine: 'file'
-          inventoryFileOnAgentMachine: '/ansible/inventory/prod/windows.ini'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/hyper_v.ini'
           failOnStdErr: false
           
 - stage: 'windowstemplateconfiguration'
