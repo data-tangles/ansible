@@ -11,9 +11,12 @@
 - name: Start new Hyper V VM
   ansible.windows.win_shell: |
     Start-VM -Name "{{ VM_NAME }}"
-
+  
 - name: Wait for VM to be running
-  win_wait_for:
+  local_action:
+    module: wait_for
     host: "{{ TEMPLATE_IP }}"
-    port: "{{ ansible_port }}" 
-    timeout: 300   
+    port: "{{ ANSIBLE_PORT }}"
+    delay: 360
+    state: started
+  register: wait_result
