@@ -1,6 +1,7 @@
 - name: Create directory for VHDX
   ansible.windows.win_file:
     path: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}"
+    state: directory
 
 - name: Clone Template VHDX
   win_copy:
