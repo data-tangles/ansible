@@ -1,0 +1,45 @@
+trigger:
+- none
+
+stages:
+
+- stage: 'windowsvmcreation'
+  dependsOn: []
+  displayName: 'Windows VM Creation'
+
+  jobs:
+    - job: 'hypervtemplatecreation'
+      displayName: 'Hyper V Template Creation'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Hyper V Windows VM Creation
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/hyper_v_template.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/hyper_v.ini'
+          failOnStdErr: false
+          
+- stage: 'windowstemplateconfiguration'
+  dependsOn: 'windowsvmcreation'
+  displayName: 'Windows Template Configuration'
+
+  jobs:
+    - job: 'windowstemplateconfiguration'
+      displayName: 'Windows VM Template Configuration'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Windows Template Configuration
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/windows_template.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/windows_template.ini'
+          failOnStdErr: false
+
+
+    
