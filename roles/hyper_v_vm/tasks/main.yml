@@ -11,8 +11,7 @@
 
 - name: Create new Hyper V VM
   ansible.windows.win_shell: |
-    $i = "{{ VM_MEMORY }}"
-    $memory = $i * 1gb
+    $memory = "{{ VM_MEMORY }}" * 1gb
     New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes $memory -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName " {{ VM_SWITCH }}" -BootDevice VHD
 
 - name: Start new Hyper V VM
