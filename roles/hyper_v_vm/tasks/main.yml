@@ -7,6 +7,7 @@
   win_copy:
     src: "{{ TEMPLATE_VHDX_SOURCE }}"
     dest: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
+    force: false
     remote_src: true
 
 - name: Create new Hyper V VM
