@@ -1,13 +1,13 @@
 - name: Check if VHDX is already present
   win_stat:
-    path: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
+    path: "{{ TEMPLATE_VHDX_DESTINATION }}"
     get_checksum: false
   register: vhdx_exists
 
 - name: Clone Template VHDX
   win_copy:
     src: "{{ TEMPLATE_VHDX_SOURCE }}"
-    dest: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
+    dest: "{{ TEMPLATE_VHDX_DESTINATION }}"
     force: false
     remote_src: true
   when: vhdx_exists.stat.exists == false
@@ -19,7 +19,7 @@
     cpu: "{{ VM_CPU }}"
     memory: "{{ VM_MEMORY }}"
     network_switch: "{{ VM_SWITCH }}"
-    diskpath: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}"
+    diskpath: "{{ TEMPLATE_VHDX_DESTINATION }}"
     state: present
 
 - name: Power On VM
