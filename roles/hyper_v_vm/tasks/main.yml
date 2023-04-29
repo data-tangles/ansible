@@ -19,7 +19,7 @@
     cpu: "{{ VM_CPU }}"
     memory: "{{ VM_MEMORY }}"
     network_switch: "{{ VM_SWITCH }}"
-    diskpath: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
+    diskpath: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}"
     state: present
 
 - name: Power On VM
