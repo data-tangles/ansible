@@ -2,7 +2,6 @@
   win_stat:
     path: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
     get_checksum: false
-    get_md5: false
   register: file_info
 
 - name: Clone Template VHDX
