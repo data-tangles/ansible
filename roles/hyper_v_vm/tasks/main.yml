@@ -2,7 +2,7 @@
   win_stat:
     path: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
     get_checksum: false
-  register: file_info
+  register: vhdx_exists
 
 - name: Clone Template VHDX
   win_copy:
@@ -10,7 +10,7 @@
     dest: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
     force: false
     remote_src: true
-  when: item.stat.exists == false
+  when: vhdx_exists.stat.exists == false
 
 - name: Create VMs
   win_hyperv_guest:

@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - npm
+    - /docker/npm
 
   vars_files:
     - /ansible/vars/docker/npm/npm_vars.yml

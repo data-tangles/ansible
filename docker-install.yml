@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - docker
+    - docker-install
 
   vars_files:
     - /ansible/vars/linux/docker_vars.yml

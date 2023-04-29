@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - uptime-kuma
+    - /docker/uptime-kuma
 
   vars_files:
     - /ansible/vars/docker/uptime-kuma/uptime-kuma_vars.yml

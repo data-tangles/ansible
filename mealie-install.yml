@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - mealie
+    - /docker/mealie
 
   vars_files:
     - /ansible/vars/docker/mealie/mealie_vars.yml
