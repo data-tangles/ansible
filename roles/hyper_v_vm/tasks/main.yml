@@ -1,7 +1,9 @@
-- name: Create directory for VHDX
-  ansible.windows.win_file:
-    path: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}"
-    state: directory
+- name: Check if VHDX is already present
+  win_stat:
+    path: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
+    get_checksum: false
+    get_md5: false
+  register: file_info
 
 - name: Clone Template VHDX
   win_copy:
@@ -9,15 +11,22 @@
     dest: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
     force: false
     remote_src: true
+  when: item.stat.exists == false
 
-- name: Create new Hyper V VM
-  ansible.windows.win_shell: |
-    $memory = "{{ VM_MEMORY }}" * 1gb
-    New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes $memory -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName " {{ VM_SWITCH }}" -BootDevice VHD
+- name: Create VMs
+  win_hyperv_guest:
+    name: "{{ VM_NAME }}"
+    generation: "{{ VM_GENERATION}}"
+    cpu: "{{ VM_CPU }}"
+    memory: "{{ VM_MEMORY }}"
+    network_switch: "{{ VM_SWITCH }}"
+    diskpath: "{{ TEMPLATE_VHDX_DESTINATION_DIR }}{{ VM_NAME }}.vhdx"
+    state: present
 
-- name: Start new Hyper V VM
-  ansible.windows.win_shell: |
-    Start-VM -Name "{{ VM_NAME }}"
+- name: Power On VM
+  win_hyperv_guest:
+    name: "{{ VM_NAME }}"
+    state: started 
   
 - name: Wait for VM to be running
   local_action:
