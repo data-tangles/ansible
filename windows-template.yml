@@ -37,9 +37,8 @@ stages:
         inputs:
           ansibleInterface: 'agentMachine'
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/windows_template.yml'
-          inventoriesAgentMachine: 'file'
-          inventoryFileOnAgentMachine: '/ansible/inventory/prod/windows_template.ini'
+          inventoriesAgentMachine: 'inlineContent'
+          inventoryInlineDynamicAgentMachine: true
+          inventoryInlineContentAgentMachine: '{{ vm_ip_address }}'
           failOnStdErr: false
 
-
-    
