@@ -23,6 +23,7 @@ stages:
           failOnStdErr: false
 
     - job: 'windowstemplateconfiguration'
+      dependsOn: 'hypervtemplatecreation'
       displayName: 'Windows VM Template Configuration'
       pool: Self-Hosted
 
