@@ -14,7 +14,7 @@
 
 - name: Create new Hyper V VM
   ansible.windows.win_shell: |
-    New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes {{ VM_MEMORY }}GB -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName " {{ VM_SWITCH }}" -BootDevice VHD
+    New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes {{ VM_MEMORY }}GB -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName "{{ VM_SWITCH }}" -BootDevice VHD
 
 - name: Start new Hyper V VM
   ansible.windows.win_shell: |
