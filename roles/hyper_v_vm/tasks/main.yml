@@ -14,8 +14,14 @@
 
 - name: Check if VM already exists
   ansible.windows.win_shell: |
-    Get-VM -Name "{{ VM_NAME }}"
-  register: vm_exists
+    try {
+      Get-VM -Name "{{ VM_NAME }}" -ErrorAction Stop
+    }
+    catch {
+      Write-Output "{{ VM_NAME }} does not exist"
+    }
+  register: vm_check
+  failed_when: "'{{ VM_NAME }} does not exist' in result.stderr"
 
 - name: Create new Hyper V VM
   ansible.windows.win_shell: |
