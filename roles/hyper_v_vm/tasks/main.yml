@@ -50,8 +50,9 @@
   lineinfile:
     path: /ansible/inventory/prod/windows_template.ini
     regexp: "^\\[windows_template\\]$"
-    line: "{{ vm_ip_address }}"
     insertafter: "^\\[windows_template\\]$"
+    line: "{{ vm_ip_address }}"
+  delegate_to: localhost
 
 - name: Wait for WinRM service to be accessible
   local_action:
