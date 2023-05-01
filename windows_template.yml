@@ -4,5 +4,4 @@
     - windows_template
 
   vars_files:
-    - /ansible/vars/windows/template/windows_template_vars.yml
     - /ansible/vars/phpipam_vars.yml

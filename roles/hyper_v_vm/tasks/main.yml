@@ -1,4 +1,4 @@
-- name: Check if VHDX is already present
+- name: Check if VHDX is already exists
   win_stat:
     path: "{{ TEMPLATE_VHDX_DESTINATION }}"
     get_checksum: false
@@ -12,9 +12,15 @@
     remote_src: true
   when: vhdx_exists.stat.exists == false
 
+- name: Check if VM already exists
+  ansible.windows.win_shell: |
+    Get-VM -Name "{{ VM_NAME }}"
+  register: vm_exists
+
 - name: Create new Hyper V VM
   ansible.windows.win_shell: |
     New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes {{ VM_MEMORY }}GB -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName "{{ VM_SWITCH }}" -BootDevice VHD
+  when: vm_exists.stdout_lines | length == 0
 
 - name: Start new Hyper V VM
   ansible.windows.win_shell: |
@@ -32,12 +38,13 @@
 
 - name: Set IP address as fact
   set_fact:
-    vm_ip_address: "{{ ip_address_result.stdout_lines[0] | replace('{','').replace('}','') }}"
+    vm_ip_address: "{{ ip_address_result.stdout_lines[3] | trim }}"
+  delegate_to: localhost
 
 - name: Wait for WinRM service to be accessible
   local_action:
     module: wait_for
-    host: "{{ TEMPLATE_IP }}"
+    host: "{{ vm_ip_address }}"
     port: "{{ ANSIBLE_PORT }}"
     delay: 600
     state: started
