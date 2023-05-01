@@ -12,20 +12,13 @@
     remote_src: true
   when: vhdx_exists.stat.exists == false
 
-- name: Create VMs
-  win_hyperv_guest:
-    name: "{{ VM_NAME }}"
-    generation: "{{ VM_GENERATION}}"
-    cpu: "{{ VM_CPU }}"
-    memory: "{{ VM_MEMORY }}"
-    network_switch: "{{ VM_SWITCH }}"
-    # diskpath: "{{ TEMPLATE_VHDX_DESTINATION }}"
-    state: present
+- name: Create new Hyper V VM
+  ansible.windows.win_shell: |
+    New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes "{{ VM_MEMORY }}" -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName " {{ VM_SWITCH }}" -BootDevice VHD
 
-- name: Power On VM
-  win_hyperv_guest:
-    name: "{{ VM_NAME }}"
-    state: started 
+- name: Start new Hyper V VM
+  ansible.windows.win_shell: |
+    Start-VM -Name "{{ VM_NAME }}"
   
 - name: Wait for VM to be running
   local_action:
