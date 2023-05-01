@@ -25,6 +25,6 @@
     module: wait_for
     host: "{{ TEMPLATE_IP }}"
     port: "{{ ANSIBLE_PORT }}"
-    delay: 360
+    delay: 600
     state: started
   register: wait_result
