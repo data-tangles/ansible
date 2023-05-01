@@ -3,7 +3,7 @@
 - name: Set up static IP address
   ansible.windows.win_shell: | 
     "Get-NetIpAddress -InterfaceAlias 'Ethernet*' | New-NetIpAddress -IpAddress {{ IP_ADDRESS }} -PrefixLength 24 -DefaultGateway {{ GATEWAY }}" 
-    "Get-DnsClientServerAddress -InterfaceAlias 'Ethernet*' | Set-DnsServerClentAddress -ServerAddresses {{ DNS_SERVERS }}"
+    "Get-DnsClientServerAddress -InterfaceAlias 'Ethernet*' | Set-DnsClientServerAddress -ServerAddresses {{ DNS_SERVERS }}"
   async: 100 # Using "fire-and-forget" asynchronous execution for this task, otherwise it will always fail and timeout
   poll: 0
   ignore_errors: true
