@@ -46,6 +46,13 @@
     vm_ip_address: "{{ ip_address_result.stdout_lines[3] | trim }}"
   delegate_to: localhost
 
+- name: Update current host inventory
+  lineinfile:
+    path: /ansible/inventory/prod/windows_template.ini
+    regexp: "^\\[windows_template\\]$"
+    line: "{{ vm_ip_address }}"
+    insertafter: "^\\[windows_template\\]$"
+
 - name: Wait for WinRM service to be accessible
   local_action:
     module: wait_for
