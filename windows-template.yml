@@ -39,4 +39,4 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/windows_template.yml'
           inventoriesAgentMachine: 'noInventory'
           failOnStdErr: false
-          args: '-e "hosts={{ vm_ip_address }}"'
+          args: '-e "HOSTS={{ vm_ip_address }}"'
