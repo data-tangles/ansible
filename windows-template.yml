@@ -21,12 +21,7 @@ stages:
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/hyper_v.ini'
           failOnStdErr: false
-          
-- stage: 'windowstemplateconfiguration'
-  dependsOn: 'windowsvmcreation'
-  displayName: 'Windows Template Configuration'
 
-  jobs:
     - job: 'windowstemplateconfiguration'
       displayName: 'Windows VM Template Configuration'
       pool: Self-Hosted
@@ -40,3 +35,4 @@ stages:
           inventoriesAgentMachine: 'noInventory'
           failOnStdErr: false
           args: '-e "HOSTS={{ vm_ip_address }}"'
+
