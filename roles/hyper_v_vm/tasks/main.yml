@@ -20,13 +20,12 @@
     catch {
       Write-Output "{{ VM_NAME }} does not exist"
     }
-  register: vm_check
-  failed_when: "'{{ VM_NAME }} does not exist' in result.stderr"
+  register: vm_exists
 
 - name: Create new Hyper V VM
   ansible.windows.win_shell: |
     New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes {{ VM_MEMORY }}GB -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName "{{ VM_SWITCH }}" -BootDevice VHD
-  when: vm_exists.stdout_lines | length == 0
+  when: "'does not exist' in vm.exists.stdout"
 
 - name: Start new Hyper V VM
   ansible.windows.win_shell: |
@@ -52,6 +51,6 @@
     module: wait_for
     host: "{{ vm_ip_address }}"
     port: "{{ ANSIBLE_PORT }}"
-    delay: 600
+    delay: 60
     state: started
   register: wait_result
