@@ -1,8 +1,42 @@
 # Change IP Address of new server
+- name: Gathering ipam auth token
+  uri:
+    validate_certs: false
+    url: "{{ IPAM_TOKEN_REQUEST }}"
+    method: POST
+    headers: 
+      Content-Type: application/json
+    user: "{{ IPAM_USER }}"
+    password: "{{ IPAM_PASSWORD | trim }}"
+    force_basic_auth: yes
+  register: output
+
+- name: checking subnet for next available ip address
+  uri:
+    validate_certs: false
+    url: "{{ IPAM_AVAILABLE_IP }}{{ IPAM_SUBNET_ID | int }}"
+    headers:
+      token: "{{ output.json.data.token }}"
+      Content-Type: application/json
+  register: ip_address
+
+- name: reserve ip address
+  uri:
+    validate_certs: false
+    url: "{{ IPAM_AVAILABLE_IP }}{{ IPAM_SUBNET_ID | int }}"
+    method: POST
+    headers: 
+      token: "{{ output.json.data.token }}"
+      Content-Type: application/json
+    body_format: json
+    status_code: 201
+    body:
+      hostname: "{{ HOSTNAME }}"
+      description: " {{ IPAM_DESCRIPTION }}"
 
 - name: Set up static IP address
   ansible.windows.win_shell: | 
-    "Get-NetIpAddress -InterfaceAlias 'Ethernet*' | New-NetIpAddress -IpAddress {{ IP_ADDRESS }} -PrefixLength 24 -DefaultGateway {{ GATEWAY }}" 
+    "Get-NetIpAddress -InterfaceAlias 'Ethernet*' | New-NetIpAddress -IpAddress {{ ip_address }} -PrefixLength 24 -DefaultGateway {{ GATEWAY }}" 
     "Get-DnsClientServerAddress -InterfaceAlias 'Ethernet*' | Set-DnsClientServerAddress -ServerAddresses {{ DNS_SERVERS }}"
   async: 100 # Using "fire-and-forget" asynchronous execution for this task, otherwise it will always fail and timeout
   poll: 0
@@ -10,7 +44,7 @@
 
 - name: Change ansible's ip address for each host
   set_fact:
-    ansible_host: "{{ IP_ADDRESS }}"
+    ansible_host: "{{ ip_address }}"
 
 - name: Wait for the hosts network interface to come back up
   local_action:
@@ -36,20 +70,3 @@
 - name: Reboot server after domain join  
   ansible.windows.win_reboot:
   when: domain_state.reboot_required
-
-## Update phpIPAM 
-
-- name: Reserve an IP address
-  codeaffen.phpipam.address:
-    app_id: "{{ IPAM_APP_ID }}"
-    username: "{{ IPAM_USER }}"
-    password: "{{ IPAM_PASSWORD }}"
-    server_url: "{{ IPAM_SERVER_URL }}"
-    address: "{{ IP_ADDRESS }}"
-    section: "{{ IPAM_SECTION }}"
-    hostname: "{{ HOSTNAME }}"
-    description: "{{ IPAM_DESCRIPTION }}"
-    subnet: "{{ IPAM_SUBNET }}"
-  delegate_to: localhost 
-  vars:
-    ansible_become: false
