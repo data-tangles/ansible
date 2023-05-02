@@ -10,6 +10,7 @@
     password: "{{ IPAM_PASSWORD | trim }}"
     force_basic_auth: yes
   register: output
+  delegate_to: localhost
 
 - name: checking subnet for next available ip address
   uri:
@@ -19,6 +20,7 @@
       token: "{{ output.json.data.token }}"
       Content-Type: application/json
   register: ip_address
+  delegate_to: localhost
 
 - name: reserve ip address
   uri:
@@ -33,6 +35,7 @@
     body:
       hostname: "{{ HOSTNAME }}"
       description: " {{ IPAM_DESCRIPTION }}"
+  delegate_to: localhost
 
 - name: Set up static IP address
   ansible.windows.win_shell: | 
