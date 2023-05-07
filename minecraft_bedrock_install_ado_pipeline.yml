@@ -1,0 +1,23 @@
+trigger:
+- none
+
+stages:
+
+- stage: 'minecraftbedrockdocker'
+  dependsOn: []
+  displayName: 'Minecraft Bedrock Docker'
+
+  jobs:
+    - job: 'minecraftbedrockdocker'
+      displayName: 'Minecraft Bedrock Docker Deployment'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Minecraft Bedrock Docker Deployment
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/minecraft_bedrock_install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
