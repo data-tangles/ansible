@@ -1,0 +1,24 @@
+- name: Configure IPSec VPN
+  community.network.edgeos_config:
+    lines:
+    -  set vpn ipsec ike-group "{{ IKE_GROUP }}" key-exchange ikev2 
+    -  set vpn ipsec ike-group "{{ IKE_GROUP }}" lifetime 28800 
+    -  set vpn ipsec ike-group "{{ IKE_GROUP }}" proposal 1 dh-group 20 
+    -  set vpn ipsec ike-group "{{ IKE_GROUP }}" proposal 1 encryption aes256 
+    -  set vpn ipsec ike-group "{{ IKE_GROUP }}" proposal 1 hash sha256
+    -  set vpn ipsec esp-group "{{ ESP_GROUP }}" lifetime 3600 
+    -  set vpn ipsec esp-group "{{ ESP_GROUP }}" pfs enable 
+    -  set vpn ipsec esp-group "{{ ESP_GROUP }}" proposal 1 encryption aes256 
+    -  set vpn ipsec esp-group "{{ ESP_GROUP }}" proposal 1 hash sha256
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER }}" authentication mode pre-shared-secret 
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER }}" authentication pre-shared-secret "{{ IPSEC_PSK }}"
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER }}" description "{{ IPSEC_DESCRIPTION }}" 
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER }}" local-address "{{ LOCAL_WAN_IP }}" 
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER }}" ike-group "{{ IKE_GROUP }}" 
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER }}" bind "{{ VTI_INTERFACE }}" 
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER }}" esp-group "{{ ESP_GROUP }}"
+    -  set interfaces vti "{{ VTI_INTERFACE }}"
+    -  set firewall options mss-clamp interface-type vti 
+    -  set firewall options mss-clamp mss 1350   
+    -  set protocols static interface-route "{{ REMOTE_PEER_LAN }}" next-hop-interface "{{ VTI_INTERFACE }}"
+
