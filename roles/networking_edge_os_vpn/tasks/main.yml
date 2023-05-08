@@ -1,4 +1,4 @@
-- name: Configure IPSec VPN to Oracle Cloud - Tunnel 1
+- name: Configure IPSec VPN to Oracle Cloud
   community.network.edgeos_config:
     lines:
     -  set vpn ipsec ike-group "{{ IKE_GROUP_1 }}" key-exchange ikev2 
@@ -21,10 +21,6 @@
     -  set firewall options mss-clamp interface-type vti 
     -  set firewall options mss-clamp mss 1350   
     -  set protocols static interface-route "{{ REMOTE_PEER_LAN }}" next-hop-interface "{{ VTI_INTERFACE_1 }}"
-
-- name: Configure IPSec VPN to Oracle Cloud - Tunnel 2
-  community.network.edgeos_config:
-    lines:
     -  set vpn ipsec ike-group "{{ IKE_GROUP_2 }}" key-exchange ikev2 
     -  set vpn ipsec ike-group "{{ IKE_GROUP_2 }}" lifetime 28800 
     -  set vpn ipsec ike-group "{{ IKE_GROUP_2 }}" proposal 1 dh-group 20 
