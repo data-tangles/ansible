@@ -1,7 +1,7 @@
 - hosts: "{{ HOSTS }}"
   gather_facts: yes
   roles:
-    - /networking/edge_os_vpn
+    - networking_edge_os_vpn
 
   vars_files:
     - /ansible/vars/networking/edge_os_vpn_vars.yml
