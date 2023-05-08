@@ -15,8 +15,8 @@
     -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_1 }}" description "{{ IPSEC_DESCRIPTION_1 }}" 
     -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_1 }}" local-address "{{ LOCAL_WAN_IP }}" 
     -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_1 }}" ike-group "{{ IKE_GROUP_1 }}" 
-    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_1 }}" bind "{{ VTI_INTERFACE_1 }}" 
-    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_1 }}" esp-group "{{ ESP_GROUP_1 }}"
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_1 }}" vti bind "{{ VTI_INTERFACE_1 }}" 
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_1 }}" vti esp-group "{{ ESP_GROUP_1 }}"
     -  set interfaces vti "{{ VTI_INTERFACE_1 }}"
     -  set firewall options mss-clamp interface-type vti 
     -  set firewall options mss-clamp mss 1350   
@@ -39,8 +39,8 @@
     -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_2 }}" description "{{ IPSEC_DESCRIPTION_2 }}" 
     -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_2 }}" local-address "{{ LOCAL_WAN_IP }}" 
     -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_2 }}" ike-group "{{ IKE_GROUP_2 }}" 
-    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_2 }}" bind "{{ VTI_INTERFACE_2 }}" 
-    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_2 }}" esp-group "{{ ESP_GROUP_2 }}"
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_2 }}" vti bind "{{ VTI_INTERFACE_2 }}" 
+    -  set vpn ipsec site-to-site peer "{{ REMOTE_PEER_2 }}" vti esp-group "{{ ESP_GROUP_2 }}"
     -  set interfaces vti "{{ VTI_INTERFACE_2 }}"
     -  set firewall options mss-clamp interface-type vti 
     -  set firewall options mss-clamp mss 1350   
