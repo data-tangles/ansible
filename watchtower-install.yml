@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - /docker/watchtower
+    - docker_watchtower
 
   vars_files:
     - /ansible/vars/docker/watchtower/watchtower_vars.yml

@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - /docker/teamspeak
+    - docker_teamspeak
 
   vars_files:
     - /ansible/vars/docker/teamspeak/teamspeak_staging_vars.yml

@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - /docker/monica
+    - docker_monica
   
   vars_files:
     - /ansible/vars/docker/monica/monica_vars.yml
