@@ -12,6 +12,7 @@
     ports:
       - "19132:19132/udp"
     env:
+      EULA: "true"
       SERVER_NAME: "{{ SERVER_NAME }}"
       GAMEMODE: "{{ GAME_MODE }}"
       DIFFICULTY: "{{ DIFFICULTY }}"
