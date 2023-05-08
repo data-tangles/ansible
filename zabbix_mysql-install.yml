@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - /docker/zabbix_mysql
+    - docker_zabbix_mysql
 
   vars_files:
     - /ansible/vars/docker/zabbix_mysql/zabbix_mysql_vars.yml

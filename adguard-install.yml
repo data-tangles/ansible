@@ -3,7 +3,7 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - /docker/adguard-home
+    - docker_adguard_home
 
   vars_files:
     - /ansible/vars/docker/adguard-home/adguard-home_vars.yml
