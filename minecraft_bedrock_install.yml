@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - /docker/minecraft_bedrock
+
+  vars_files:
+    - /ansible/vars/docker/minecraft_bedrock/minecraft_bedrock_vars.yml
