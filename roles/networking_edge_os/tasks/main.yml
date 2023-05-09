@@ -1,0 +1,5 @@
+- name: Configure Static Host Names
+  community.network.edgeos_config:
+    lines:
+    - set system static-host-mapping host-name "{{ HOST_NAME_1 }}" inet "{{ IP_ADDRESS_1 }}"
+    - set system static-host-mapping host-name "{{ HOST_NAME_2 }}" inet "{{ IP_ADDRESS_2 }}"
