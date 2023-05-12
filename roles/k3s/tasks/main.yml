@@ -1,0 +1,23 @@
+- name: apt update
+  apt:
+    update_cache: yes
+    upgrade: 'yes'
+
+- name: Install Cluster Init Node 
+  ansible.builtin.shell: |
+    curl -sfL https://get.k3s.io | K3S_TOKEN="{{ K3S_TOKEN }}" sh -s - server --cluster-init
+  run_once: true
+  delegate_to: "{{ K3S_CLUSTER_INIT_NODE }}"
+
+- name: Join secondary node to cluster
+  ansible.builtin.shell: |
+    curl -sfL https://get.k3s.io | K3S_TOKEN="{{ K3S_TOKEN }}" sh -s - server --server https://"{{ K3S_CLUSTER_INIT_NODE }}":6443
+  run_once: true
+  delegate_to: "{{ K3S_CLUSTER_SECONDARY_NODE }}"
+
+- name: Export kubeconfig file 
+  ansible.builtin.shell: |
+    cat /etc/rancher/k3s/k3s.yaml
+  run_once: true
+  delegate_to: "{{ K3S_CLUSTER_INIT_NODE }}"
+
