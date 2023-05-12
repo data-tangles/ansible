@@ -28,5 +28,5 @@ stages:
           ansibleInterface: 'agentMachine'
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/k3s_install.yml'
           inventoriesAgentMachine: 'file'
-          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linix.ini'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
           failOnStdErr: false
