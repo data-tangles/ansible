@@ -101,7 +101,7 @@
   set_fact:
     build_agent_cmd_args: "{{ build_agent_cmd_args }} + ['--replace']"
   when:
-    - az_devops_agent_replace_existing
+    - ADO_AGENT_REPLACE_EXISTING
 
 - name: Configure agent as a build server
   command: "{{ (agent_cmd_args + build_agent_cmd_args) | join(' ') }}"
