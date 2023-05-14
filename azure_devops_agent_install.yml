@@ -1,0 +1,8 @@
+- hosts: "{{ HOSTS }}"
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - azure_devops_agent
+
+  vars_files:
+    - /ansible/vars/linux/azure_devops_agent_vars.yml

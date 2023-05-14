@@ -1,0 +1,31 @@
+- name: apt update
+  apt:
+    update_cache: yes
+    upgrade: 'yes'
+
+- name: Install Postfix
+  package:
+    name: postfix
+    state: present
+
+- name: Copy sasl_passwd
+  template: 
+    src: sasl_passwd.j2
+    dest: /etc/postfix/sasl/sasl_passwd
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create hash database file
+  ansible.builtin.shell: |
+    postmap /etc/postfix/sasl/sasl_passwd
+
+- name: Lockdown SMTP Credentials and DB
+  ansible.builtin.shell: |
+    chown root:root /etc/postfix/sasl/sasl_passwd /etc/postfix/sasl/sasl_passwd.db
+    chmod 0600 /etc/postfix/sasl/sasl_passwd /etc/postfix/sasl/sasl_passwd.db
+
+- name: Restart postfix service
+  service:
+    name: postfix
+    state: restarted

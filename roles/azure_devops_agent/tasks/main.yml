@@ -1,0 +1,136 @@
+- name: Create ADO Agent Directory
+  file:
+    state: directory
+    path: "/azure_devops_agent"
+    owner: "{{ ADO_AGENT_USER }}"
+    group: "{{ ADO_AGENT_GROUP }}"
+    mode: 0755
+  loop:
+    - "{{ ADO_AGENT_FOLDER }}"
+    - "{{ ADO_AGENT_WORK_FOLDER }}"
+  become: true
+
+- name: Install dependencies
+  package:
+    name: "{{ ADO_AGENT_DEPENDANCIES }}"
+    state: present
+  become: true
+
+- name: Check if svc.sh exists
+  stat:
+    path: "{{ '/'.join((ADO_AGENT_FOLDER, 'svc.sh')) }}"
+  register: svc_sh
+  become: true
+  changed_when: false
+  check_mode: no
+
+- name: Check service status
+  command: ./svc.sh status
+  become: true
+  args:
+    chdir: "{{ ADO_AGENT_FOLDER }}"
+  register: svc_status
+  changed_when: false
+  check_mode: no
+  when: svc_sh.stat.exists
+
+- name: Check if bin/Agent.Listener exists
+  stat:
+    path: "{{ '/'.join((ADO_AGENT_FOLDER, 'bin/Agent.Listener')) }}"
+  register: bin_agent_listener
+  changed_when: false
+  check_mode: no
+
+- name: Check agent version
+  command: ./bin/Agent.Listener --version
+  become: true
+  args:
+    chdir: "{{ ADO_AGENT_FOLDER }}"
+  register: agent_listener_version
+  changed_when: false
+  check_mode: no
+  when: bin_agent_listener.stat.exists
+
+- name: Set agent config facts
+  set_fact:
+    agent_cmd_args:
+      - "./config.sh"
+      - "--unattended"
+      - "--acceptteeeula"
+      - "--url '{{ ADO_SERVER_URL }}'"
+      - "--work '{{ ADO_AGENT_WORK_FOLDER }}'"
+      - "--auth PAT"
+      - "--token '{{ ADO_ACCESS_TOKEN }}'"
+      - "--runasservice"
+    build_agent_cmd_args:
+      - "--pool '{{ ADO_AGENT_POOL_NAME }}'"
+      - "--agent '{{ ADO_AGENT_NAME }}'"
+    service_is_installed: "{{ svc_status.stdout is defined and svc_status.stdout is not regex('not installed') }}"
+    service_is_running: "{{ svc_status.stdout is defined and svc_status.stdout is regex('active \\(running\\)') }}"
+    is_requested_version: "{{ bin_agent_listener.stat.exists and agent_listener_version.stdout is defined and agent_listener_version.stdout == ADO_AGENT_VERSION }}"
+
+- name: Determine if the agent should be reconfigured or replaced
+  set_fact:
+    reconfigure_or_replace: "{{ az_devops_reconfigure_agent or az_devops_agent_replace_existing or not is_requested_version }}"
+
+- name: Download and unarchive
+  unarchive:
+    src: "{{ ADO_AGENT_URL }}"
+    dest: "{{ ADO_AGENT_FOLDER }}"
+    remote_src: yes
+    owner: "{{ ADO_AGENT_USER }}"
+    group: "{{ ADO_AGENT_GROUP }}"
+  when:
+    - (not service_is_installed) or reconfigure_or_replace
+
+- name: Uninstall agent service
+  command: ./svc.sh uninstall
+  become: true
+  args:
+    chdir: "{{ ADO_AGENT_FOLDER }}"
+    removes: "{{ ADO_AGENT_FOLDER }}/runsvc.sh"
+  when:
+    - service_is_installed
+    - reconfigure_or_replace
+
+- name: Unconfigure agent
+  command: "./config.sh remove --auth PAT --token {{ ADO_ACCESS_TOKEN }}"
+  args:
+    chdir: "{{ ADO_AGENT_FOLDER }}"
+    removes: "{{ ADO_AGENT_FOLDER }}/.agent"
+  become_user: "{{ ADO_AGENT_USER }}"
+  when:
+    - service_is_installed
+    - reconfigure_or_replace
+
+- name: Add '--replace' configuration argument
+  set_fact:
+    build_agent_cmd_args: "{{ build_agent_cmd_args }} + ['--replace']"
+  when:
+    - az_devops_agent_replace_existing
+
+- name: Configure agent as a build server
+  command: "{{ (agent_cmd_args + build_agent_cmd_args) | join(' ') }}"
+  args:
+    chdir: "{{ ADO_AGENT_FOLDER }}"
+    creates: "{{ ADO_AGENT_FOLDER }}/.agent"
+  become_user: "{{ ADO_AGENT_USER }}"
+  when:
+    - az_devops_agent_role == 'build'
+    - (not service_is_installed) or reconfigure_or_replace
+
+- name: Install agent service
+  command: ./svc.sh install {{ az_devops_agent_user }}
+  become: true
+  args:
+    chdir: "{{ ADO_AGENT_FOLDER }}"
+  when:
+    - (not service_is_installed) or reconfigure_or_replace
+
+- name: Start agent service
+  command: ./svc.sh start
+  become: true
+  args:
+    chdir: "{{ ADO_AGENT_FOLDER }}"
+  when:
+    - (not service_is_running) or reconfigure_or_replace
