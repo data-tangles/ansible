@@ -1,7 +1,7 @@
 - name: Create ADO Agent Directory
   file:
     state: directory
-    path: "/azure_devops_agent"
+    path: "{{ item }}"
     owner: "{{ ADO_AGENT_USER }}"
     group: "{{ ADO_AGENT_GROUP }}"
     mode: 0755
