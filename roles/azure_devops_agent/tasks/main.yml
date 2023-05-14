@@ -108,6 +108,7 @@
   args:
     chdir: "{{ ADO_AGENT_FOLDER }}"
     creates: "{{ ADO_AGENT_FOLDER }}/.agent"
+  become: true
   become_user: "{{ ADO_AGENT_USER }}"
   when:
     - ADO_AGENT_ROLE == 'build'
