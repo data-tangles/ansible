@@ -3,12 +3,12 @@ trigger:
 
 stages:
 
-- stage: 'minecraftbedrockdocker'
+- stage: 'oraclemanagementserver'
   dependsOn: []
-  displayName: 'Minecraft Bedrock Docker'
+  displayName: 'Oracle Management Server Setup'
 
   jobs:
-    - job: 'minecraftbedrockdocker'
+    - job: 'oraclemanagementserver'
       displayName: 'Oracle Management Server Setup'
       pool: Self-Hosted
 
