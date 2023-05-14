@@ -10,12 +10,6 @@
     - "{{ ADO_AGENT_WORK_FOLDER }}"
   become: true
 
-- name: Install dependencies
-  package:
-    name: "{{ ADO_AGENT_DEPENDANCIES }}"
-    state: present
-  become: true
-
 - name: Check if svc.sh exists
   stat:
     path: "{{ '/'.join((ADO_AGENT_FOLDER, 'svc.sh')) }}"
