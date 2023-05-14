@@ -33,6 +33,14 @@
     group: root
     mode: 0644
 
+- name: Copy sender_canonical
+  template: 
+    src: sender_canonical.j2
+    dest: /etc/postfix/sender_canonical
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Restart postfix service
   service:
     name: postfix
