@@ -121,7 +121,7 @@
     - (not service_is_installed) or reconfigure_or_replace
 
 - name: Install agent service
-  command: ./svc.sh install {{ az_devops_agent_user }}
+  command: ./svc.sh install {{ ADO_AGENT_USER }}
   become: true
   args:
     chdir: "{{ ADO_AGENT_FOLDER }}"
