@@ -65,7 +65,7 @@
 
 - name: Determine if the agent should be reconfigured or replaced
   set_fact:
-    reconfigure_or_replace: "{{ az_devops_reconfigure_agent or az_devops_agent_replace_existing or not is_requested_version }}"
+    reconfigure_or_replace: "{{ ADO_RECONFIGURE_AGENT or ADO_AGENT_REPLACE_EXISTING or not is_requested_version }}"
 
 - name: Download and unarchive
   unarchive:
@@ -110,7 +110,7 @@
     creates: "{{ ADO_AGENT_FOLDER }}/.agent"
   become_user: "{{ ADO_AGENT_USER }}"
   when:
-    - az_devops_agent_role == 'build'
+    - ADO_AGENT_ROLE == 'build'
     - (not service_is_installed) or reconfigure_or_replace
 
 - name: Install agent service
