@@ -8,10 +8,26 @@
     name: postfix
     state: present
 
+- name: Copy main.cf
+  template: 
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Copy sasl_passwd
   template: 
     src: sasl_passwd.j2
     dest: /etc/postfix/sasl/sasl_passwd
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy sender_canonical
+  template: 
+    src: sender_canonical.j2
+    dest: /etc/postfix/sender_canonical
     owner: root
     group: root
     mode: 0644
@@ -25,21 +41,9 @@
     chown root:root /etc/postfix/sasl/sasl_passwd /etc/postfix/sasl/sasl_passwd.db
     chmod 0600 /etc/postfix/sasl/sasl_passwd /etc/postfix/sasl/sasl_passwd.db
 
-- name: Copy main.cf
-  template: 
-    src: main.cf.j2
-    dest: /etc/postfix/main.cf
-    owner: root
-    group: root
-    mode: 0644
 
-- name: Copy sender_canonical
-  template: 
-    src: sender_canonical.j2
-    dest: /etc/postfix/sender_canonical
-    owner: root
-    group: root
-    mode: 0644
+
+
 
 - name: Restart postfix service
   service:
