@@ -13,6 +13,11 @@
     name: jq
     state: present
 
+- name: Create oci_config directory
+  file:
+    path: "/home/{{ USER }}/oci/"
+    state: directory
+
 - name: Copy oci_config
   template: 
     src: oci_config.j2
@@ -20,6 +25,11 @@
     owner: "{{ USER }}"
     group: "{{ USER }}"
     mode: 0644
+
+- name: Create backup script directory
+  file:
+    path: "/home/{{ USER }}/oracle_vm_backup/"
+    state: directory
 
 - name: Copy over backup script
   template: 
