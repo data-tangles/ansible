@@ -29,6 +29,12 @@
     mode: 0644
   become: false
 
+- name: Copy over OCI Private Key
+  ansible.builtin.copy:
+    content: "{{ OCI_API_KEY }}"
+    dest: "/home/{{ USER }}/oci/oci_api_key.pem"
+  become: false
+
 - name: Create backup script directory
   file:
     path: "/home/{{ USER }}/oracle_vm_backup/"
