@@ -39,6 +39,7 @@
   template: 
     src: backup_script.sh.j2
     dest: "/home/{{ USER }}/oracle_vm_backup/{{ item }}-backup.sh"
+  mode: u+x
   loop: "{{ BACKUP_NAME }}"
   become: false
 
