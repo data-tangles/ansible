@@ -1,6 +1,12 @@
+- name: Check for existing OCI CLI Install
+  stat:
+    path: "/root/lib/oracle-cli"
+  register: oci_check
+
 - name: Install OCI CLI 
   ansible.builtin.shell: |
     bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" "" --accept-all-defaults
+  when: not oci_check.stat.exists
 
 - name: Install jq
   package:
