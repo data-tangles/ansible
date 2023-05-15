@@ -5,8 +5,10 @@
   roles:
     - azure_devops_agent
     - postfix
+    - oracle_vm_backup
 
   vars_files:
     - /ansible/vars/linux/azure_devops_agent_vars.yml
     - /ansible/vars/linux/postfix_vars.yml
     - /ansible/vars/linux/oracle_management_server_vars.yml
+    - /ansible/vars/linux/oracle_vm_backup_vars.yml
