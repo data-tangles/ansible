@@ -15,7 +15,7 @@
 
 - name: Copy oci_config
   template: 
-    src: oci_config
+    src: oci_config.j2
     dest: "/home/{{ USER }}/oci/oci_config"
     owner: "{{ USER }}"
     group: "{{ USER }}"
