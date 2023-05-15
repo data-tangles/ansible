@@ -2,7 +2,7 @@
 
 PROFILE_NAME="{{ OCI_PROFILE }}"
 CONFIG_FILE="{{ CONFIG_FILE }}"
-BACKUP_NAME="{{ BACKUP_NAME }}-backup"
+BACKUP_NAME="{{ item.backup_name }}-backup"
 COMPARTMENT_ID="{{ OCI_TENANCY_ID }}"
 TMP_BACKUP_NAME=$(date +%Y-%m-%d_%H-%M-%S)
 
