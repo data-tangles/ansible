@@ -1,9 +1,9 @@
-- name: Install pip
-  package:
-    name: python3-pip
+- name: Add Ansible Repository
+  apt_repository:
+    repo: "ppa:ansible/ansible"
     state: present
 
 - name: Install Ansible
-  ansible.builtin.shell: |
-    python3 -m pip install --user ansible
-
+  package:
+    name: ansible
+    state: present
