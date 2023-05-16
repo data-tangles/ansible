@@ -26,7 +26,7 @@
     dest: "/home/{{ USER }}/oci/oci_config"
     owner: "{{ USER }}"
     group: "{{ USER }}"
-    mode: 0644
+    mode: 0600
   become: false
 
 - name: Copy over OCI Private Key
