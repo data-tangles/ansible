@@ -33,6 +33,7 @@
   ansible.builtin.copy:
     content: "{{ OCI_API_KEY }}"
     dest: "/home/{{ USER }}/oci/oci_api_key.pem"
+    mode: 0600
   become: false
 
 - name: Create backup script directory
