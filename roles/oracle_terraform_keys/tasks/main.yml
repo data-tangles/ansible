@@ -1,0 +1,20 @@
+- name: Create Terraform Keys Directory
+  file:
+    path: "/keys"
+    state: directory
+    owner: "{{ USER }}"
+    group: "{{ USER }}"
+
+- name: Copy over Terraform OCI Auth Key
+  ansible.builtin.copy:
+    content: "{{ TERRAFORM_OCI_API_KEY }}"
+    dest: "/keys/terraform-oci.key"
+    mode: 0600
+  become: false
+
+- name: Copy over Terraform Core Instance Key
+  ansible.builtin.copy:
+    content: "{{ TERRAFORM_CORE_INSTANCE_KEY }}"
+    dest: "/keys/core_instance/oracle-key"
+    mode: 0600
+  become: false
