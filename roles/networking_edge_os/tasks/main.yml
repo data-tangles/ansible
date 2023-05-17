@@ -1,5 +1,6 @@
 - name: Configure Static Host Names
   community.network.edgeos_config:
     lines:
-    - set system static-host-mapping host-name "{{ HOST_NAME_1 }}" inet "{{ IP_ADDRESS_1 }}"
-    - set system static-host-mapping host-name "{{ HOST_NAME_2 }}" inet "{{ IP_ADDRESS_2 }}"
+    - set system static-host-mapping host-name "{{ HOST_NAME_1 }}" inet "{{ ORACLE_DOCKER_IP }}"
+    - set system static-host-mapping host-name "{{ HOST_NAME_2 }}" inet "{{ ORACLE_DOCKER_IP }}"
+    - set system static-host-mapping host-name "{{ HOST_NAME_3 }}" inet "{{ ORACLE_K3S_IP_1 }}" inet "{{ ORACLE_K3S_IP_2 }}"
