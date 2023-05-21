@@ -5,4 +5,6 @@
     - set system static-host-mapping host-name "{{ HOST_NAME_2 }}" inet "{{ ORACLE_DOCKER_IP }}"
     - set system static-host-mapping host-name "{{ HOST_NAME_3 }}" inet "{{ ORACLE_K3S_IP_1 }}" 
     - set system static-host-mapping host-name "{{ HOST_NAME_3 }}" inet "{{ ORACLE_K3S_IP_2 }}"
+    - set system static-host-mapping host-name "{{ HOST_NAME_4 }}" inet "{{ ORACLE_K3S_IP_1 }}"
+    - set system static-host-mapping host-name "{{ HOST_NAME_4 }}" inet "{{ ORACLE_K3S_IP_2 }}"
         
