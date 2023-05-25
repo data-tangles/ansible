@@ -1,0 +1,42 @@
+trigger:
+- none
+
+stages:
+
+- stage: 'linuxvmcreation'
+  dependsOn: []
+  displayName: 'Linux VM Creation'
+
+  jobs:
+    - job: 'hypervtemplatecreation'
+      displayName: 'Hyper V Template Creation'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Hyper V Linux VM Creation
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/hyper_v_template_linux.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/hyper_v.ini'
+          failOnStdErr: false
+          
+- stage: 'linuxtemplateconfiguration'
+  dependsOn: 'linuxvmcreation'
+  displayName: 'Linux Template Configuration'
+
+  jobs:
+    - job: 'linuxstemplateconfiguration'
+      displayName: 'Linux VM Template Configuration'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Linux Template Configuration
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/linux_template.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux_template.ini'
+          failOnStdErr: false

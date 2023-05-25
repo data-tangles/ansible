@@ -1,3 +1,42 @@
+# Change IP Address of new server
+- name: Gathering ipam auth token
+  uri:
+    validate_certs: false
+    url: "{{ IPAM_TOKEN_REQUEST }}"
+    method: POST
+    headers: 
+      Content-Type: application/json
+    user: "{{ IPAM_USER }}"
+    password: "{{ IPAM_PASSWORD | trim }}"
+    force_basic_auth: yes
+  register: output
+  delegate_to: localhost
+
+- name: checking subnet for next available ip address
+  uri:
+    validate_certs: false
+    url: "{{ IPAM_AVAILABLE_IP }}{{ IPAM_SUBNET_ID | int }}"
+    headers:
+      token: "{{ output.json.data.token }}"
+      Content-Type: application/json
+  register: ip_address
+  delegate_to: localhost
+
+- name: reserve ip address
+  uri:
+    validate_certs: false
+    url: "{{ IPAM_AVAILABLE_IP }}{{ IPAM_SUBNET_ID | int }}"
+    method: POST
+    headers: 
+      token: "{{ output.json.data.token }}"
+      Content-Type: application/json
+    body_format: json
+    status_code: 201
+    body:
+      hostname: "{{ HOSTNAME }}"
+      description: " {{ IPAM_DESCRIPTION }}"
+  delegate_to: localhost
+
 - name: Set a hostname specifying strategy
   ansible.builtin.hostname:
     name: "{{ HOSTNAME }}"
@@ -26,30 +65,13 @@
 
 - name: Update Ansible with new ip address information
   set_fact:
-    ansible_host: "{{ IP_ADDRESS }}"
+    ansible_host: "{{ ip_address }}"
 
 - name: Waiting for the hosts network to come back up
   local_action:
     module: wait_for
-    host: "{{ IP_ADDRESS }}"
+    host: "{{ ip_address }}"
     port: 22
     delay: 10
     state: started
   register: wait_result
-
-## Update phpIPAM 
-
-- name: "Reserve an IP address"
-  codeaffen.phpipam.address:
-    app_id: "{{ IPAM_APP_ID }}"
-    username: "{{ IPAM_USER }}"
-    password: "{{ IPAM_PASSWORD }}"
-    server_url: "{{ IPAM_SERVER_URL }}"
-    address: "{{ IP_ADDRESS }}"
-    section: "{{ IPAM_SECTION }}"
-    hostname: "{{ HOSTNAME }}"
-    description: "{{ IPAM_DESCRIPTION }}"
-    subnet: "{{ IPAM_SUBNET }}"
-  delegate_to: localhost 
-  vars:
-    ansible_become: false

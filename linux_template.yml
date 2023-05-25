@@ -6,5 +6,5 @@
     - linux_template
 
   vars_files:
-    - /ansible/vars/linux/linux_template_vars.yml
+    - /ansible/vars/linux/template/linux_template_vars.yml
     - /ansible/vars/phpipam_vars.yml

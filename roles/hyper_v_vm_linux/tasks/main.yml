@@ -1,0 +1,54 @@
+- name: Check if VHDX is already exists
+  win_stat:
+    path: "{{ TEMPLATE_VHDX_DESTINATION }}"
+    get_checksum: false
+  register: vhdx_exists
+
+- name: Clone Template VHDX
+  win_copy:
+    src: "{{ TEMPLATE_VHDX_SOURCE }}"
+    dest: "{{ TEMPLATE_VHDX_DESTINATION }}"
+    force: false
+    remote_src: true
+  when: vhdx_exists.stat.exists == false
+
+- name: Check if VM already exists
+  ansible.windows.win_shell: |
+    try {
+      Get-VM -Name "{{ VM_NAME }}" -ErrorAction Stop
+    }
+    catch {
+      Write-Output "{{ VM_NAME }} does not exist"
+    }
+  register: vm_exists
+
+- name: Create new Hyper V VM
+  ansible.windows.win_shell: |
+    New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes {{ VM_MEMORY }}GB -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName "{{ VM_SWITCH }}" -BootDevice VHD
+  when: "'does not exist' in vm_exists.stdout"
+
+- name: Start new Hyper V VM
+  ansible.windows.win_shell: |
+    Start-VM -Name "{{ VM_NAME }}"
+
+- name: Wait for VM to fully boot
+  ansible.builtin.wait_for:
+    timeout: 120
+  delegate_to: localhost
+
+- name: Gather IP address details
+  ansible.windows.win_shell:
+    Get-VM -Name "{{ VM_NAME }}" | Select-Object -ExpandProperty Networkadapters | Select-Object -Property @{n='IPAddresses';e={$_.IPAddresses | Where-Object { [IPAddress]::TryParse($_, [ref]$null) -and $_ -match '^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$' -and $_ -notlike '*:*' } | Select-Object -First 1}}
+  register: ip_address_result
+
+- name: Set IP address as fact
+  set_fact:
+    vm_ip_address: "{{ ip_address_result.stdout_lines[3] | trim }}"
+  delegate_to: localhost
+
+- name: Update current host inventory
+  lineinfile:
+    path: /ansible/inventory/prod/linux_template.ini
+    insertafter: "^\\[linux_template\\]$"
+    line: "{{ vm_ip_address }}"
+  delegate_to: localhost
