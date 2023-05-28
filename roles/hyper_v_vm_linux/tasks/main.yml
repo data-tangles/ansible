@@ -27,6 +27,10 @@
     New-VM -Name "{{ VM_NAME }}" -MemoryStartupBytes {{ VM_MEMORY }}GB -VHDPath "{{ TEMPLATE_VHDX_DESTINATION }}" -Generation 2 -SwitchName "{{ VM_SWITCH }}" -BootDevice VHD
   when: "'does not exist' in vm_exists.stdout"
 
+- name: Set Secure Boot Template
+  ansible.windows.win_shell: |
+    Set-VMFirmware - VMName "{{ VM_NAME }}" -EnableSecureBoot On -SecureBootTemplate "MicrosoftUEFICertificateAuthority"
+
 - name: Start new Hyper V VM
   ansible.windows.win_shell: |
     Start-VM -Name "{{ VM_NAME }}"
