@@ -1,6 +1,6 @@
 [![ansible](https://img.shields.io/badge/Ansible-red?style=for-the-badge&logo=ansible)](https://www.ansible.com/)
 
-![visitors](https://visitor-badge.glitch.me/badge?page_id=qman-being.ansible&left_color=grey&right_color=red)
+[![HitCount](https://hits.dwyl.com/qman-being/ansible.svg?style=for-the-badge&show=unique)](http://hits.dwyl.com/qman-being/ansible)
 
 [![Build Status](https://dev.azure.com/qman-being/dreddrealm/_apis/build/status/qman-being.ansible?branchName=master)](https://dev.azure.com/qman-being/dreddrealm/_build/latest?definitionId=11&branchName=master)
 
