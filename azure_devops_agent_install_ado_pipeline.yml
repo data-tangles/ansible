@@ -1,0 +1,23 @@
+trigger:
+- none
+
+stages:
+
+- stage: 'adoagentinstall'
+  dependsOn: []
+  displayName: 'Azure DevOps Agent Install'
+
+  jobs:
+    - job: 'adoagentinstall'
+      displayName: 'Azure DevOps Agent Install'
+      pool: Self-Hosted
+
+      steps:
+      - task: Ansible@0
+        displayName: Azure DevOps Agent Install
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/azure_devops_agent_install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
