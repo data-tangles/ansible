@@ -1,3 +1,12 @@
+parameters:
+- name: agentPool
+  displayName: 'Agent Pool Selection'
+  type: string
+  default: Self-Hosted
+  values:
+  - Self-Hosted
+  - Oracle-Cloud
+
 trigger:
 - none
 
@@ -10,7 +19,7 @@ stages:
   jobs:
     - job: 'adoagentinstall'
       displayName: 'Azure DevOps Agent Install'
-      pool: Self-Hosted
+      pool: ${{ parameters.agentPool }}
 
       steps:
       - task: Ansible@0
