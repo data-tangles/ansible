@@ -1,5 +1,46 @@
-- name: Install Zabbix Agent for Windows
+- name: Check for currently installed Zabbix and retrieve MSI GUID
   ansible.windows.win_shell: |
-    Invoke-WebRequest {{ ZABBIX_MSI }} -OutFile '{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}'
-    cd {{ STAGING_LOCATION }}
-    msiexec /i '{{ ZABBIX_MSI }}' /qn SERVER={{ ZABBIX_SERVER }}
+    $installedZabbix = Get-WmiObject -Class Win32_Product | Where-Object {$_.Name -eq "Zabbix Agent 2 (64-bit)"}
+    if ($installedZabbix) {
+      if ($installedZabbix.Version -ne "{{ ZABBIX_VERSION }}") {
+        Write-Host "Installed Zabbix version does not match the desired version"
+        Write-Host "Installed version: $($installedZabbix.Version)"
+        Write-Host "Desired version: {{ ZABBIX_VERSION }}"
+        $result = "upgrade"
+
+        $oldVersion = $installedZabbix | Select-Object -First 1
+        $msiGuid = $oldVersion.IdentifyingNumber
+        Write-Host "Older version MSI GUID: $msiGuid"
+      }
+      else {
+        Write-Host "Zabbix is already installed at the desired version"
+        $result = "installed"
+        $msiGuid = ""
+      }
+    }
+    else {
+      Write-Host "Zabbix is not installed"
+      $result = "not_installed"
+      $msiGuid = ""
+    }
+
+    $result, $msiGuid
+  register: zabbix_check
+  changed_when: false
+
+- name: Install or upgrade Zabbix Agent for Windows
+  ansible.windows.win_shell: |
+    if ($zabbix_check.stdout[0] -eq "not_installed" -or $zabbix_check.stdout[0] -eq "upgrade") {
+      $msiGuid = $zabbix_check.stdout[1]
+
+      if ($msiGuid) {
+        # Remove the older version if it exists
+        msiexec /x $msiGuid /qn
+      }
+
+      # Install the new version
+      Invoke-WebRequest {{ ZABBIX_MSI_URL }} -OutFile '{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}'
+      cd {{ STAGING_LOCATION }}
+      msiexec /i '{{ ZABBIX_MSI }}' /qn SERVER={{ ZABBIX_SERVER }}
+    }
+  when: zabbix_check.stdout[0] == "not_installed" or zabbix_check.stdout[0] == "upgrade"
