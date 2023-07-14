@@ -30,8 +30,14 @@
 
 - name: Install or upgrade Zabbix Agent for Windows
   ansible.windows.win_shell: |
-    if ($zabbix_check.stdout[0] -eq "not_installed" -or $zabbix_check.stdout[0] -eq "upgrade") {
       $msiGuid = $zabbix_check.stdout[1]
+      $downloadPath = '{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}'
+      $downloadDirectory = Split-Path -Path $downloadPath -Parent
+
+      # Create the directory structure if it doesn't exist
+      if (!(Test-Path -Path $downloadDirectory)) {
+        New-Item -ItemType Directory -Path $downloadDirectory -Force
+      }
 
       if ($msiGuid) {
         # Remove the older version if it exists
@@ -42,5 +48,4 @@
       Invoke-WebRequest {{ ZABBIX_MSI_URL }} -OutFile '{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}'
       cd {{ STAGING_LOCATION }}
       msiexec /i '{{ ZABBIX_MSI }}' /qn SERVER={{ ZABBIX_SERVER }}
-    }
   when: zabbix_check.stdout[0] == "not_installed" or zabbix_check.stdout[0] == "upgrade"
