@@ -7,14 +7,14 @@
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: directory
-  when: zabbix_check is none or zabbix_check.stdout is empty
+  when: zabbix_check.stdout | length > 0
 
 - name: Download Zabbix Agent MSI
   ansible.windows.win_get_url:
     url: https://cdn.zabbix.com/zabbix/binaries/stable/6.4/6.4.4/zabbix_agent2-6.4.4-windows-amd64-openssl.msi
     dest: C:\zabbix_temp
   register: download_result
-  when: zabbix_check is none or zabbix_check.stdout is empty
+  when: zabbix_check.stdout | length > 0
 
 - name: Set Zabbix Agent MSI variable
   ansible.builtin.set_fact:
@@ -24,10 +24,10 @@
   ansible.windows.win_shell: |
     cd C:\zabbix_temp
     msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
-  when: zabbix_check is none or zabbix_check.stdout is empty
+  when: zabbix_check.stdout | length > 0
 
 - name: Remove staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: absent
-  when: zabbix_check is none or zabbix_check.stdout is empty
+  when: zabbix_check.stdout | length > 0
