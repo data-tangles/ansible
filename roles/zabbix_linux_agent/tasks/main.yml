@@ -1,0 +1,15 @@
+- name: Install Zabbix Agent
+  apt:
+    pkg:
+      - zabbix-agent
+    state: latest
+    update_cache: true
+
+- name: Copy zabbix_agentd.conf
+  template: 
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: zabbix_restart
