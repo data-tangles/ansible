@@ -11,10 +11,18 @@ parameters:
   - Oracle-Cloud
 - name: hostSelection
   displayName: 'Ansible Host Selection'
+  type: string
   default: on_prem
   values:
   - on_prem
   - oracle_cloud
+- name: zabbixUrl
+  displayName: 'Zabbix Server URL'
+  type: string
+  default: $(on_prem_server_url)
+  values:
+    - $(on_prem_server_url)
+    - $(oracle_cloud_server_url)
 
 trigger:
 - none
@@ -38,5 +46,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/zabbix_linux_agent_install.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
-          args: '--extra-vars "host=${{ parameters.hostSelection }}"'
+          args: '--extra-vars "HOSTS=${{ parameters.hostSelection }} ZABBIX_SERVER=${{ parameters.zabbixUrl }}"'
           failOnStdErr: false
