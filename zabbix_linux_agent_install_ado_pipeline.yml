@@ -1,3 +1,6 @@
+variables:
+- group: ansible_zabbix_linux_agent
+
 parameters:
 - name: agentPool
   displayName: 'Agent Pool Selection'
