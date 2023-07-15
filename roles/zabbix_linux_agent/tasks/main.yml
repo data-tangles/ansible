@@ -1,15 +1,11 @@
-- name: Check for Existing Zabbix Installations
-  ansible.builtin.command:
-    zabbix_agentd -V
-  register: existing_zabbix
-  changed_when: false
-  failed_when: false
+- name: Populate service facts
+  ansible.builtin.service_facts:
 
 - name: Remove Existing Zabbix Installations
   ansible.builtin.apt:
-    name: zabbix-agent
+    name: zabbix-agent2
     state: absent
-  when: "{{ existing_zabbix.stdout is defined and existing_zabbix.stdout is not regex('6.4') }}"
+  when: ansible_facts.services['zabbix-agent.service'] is defined
 
 - name: Add Zabbix Repository
   ansible.builtin.apt:
@@ -19,13 +15,12 @@
   ansible.builtin.apt:
     name: zabbix-agent2
     update_cache: true
-  when: "not {{ existing_zabbix.stdout is defined and existing_zabbix.stdout is not regex('6.4') }}"
 
 - name: Copy zabbix_agentd.conf
   ansible.builtin.template: 
     src: zabbix_agentd.conf.j2
     dest: /etc/zabbix/zabbix_agentd.conf
-    owner: root
-    group: root
+    owner: zabbix
+    group: zabbix
     mode: "0644"
   notify: zabbix_restart
