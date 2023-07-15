@@ -1,9 +1,26 @@
+- name: Check for Existing Zabbix Installations
+  command: zabbix_agentd -V
+  register: existing_zabbix
+  changed_when: false
+  failed_when: false
+
+- name: Remove Existing Zabbix Installations
+  apt:
+    name: zabbix-agent
+    state: absent
+  when: existing_zabbix.stdout | version_compare('6.4', '<')
+
+- name: Add Zabbix Repository
+  apt_repository:
+    repo: "deb https://repo.zabbix.com/zabbix/6.4/ubuntu pool/main/z/zabbix-release/zabbix-release_latest+ubuntu22.04_all.deb"
+    state: present
+
 - name: Install Zabbix Agent
   apt:
-    pkg:
-      - zabbix-agent
+    name: zabbix-agent
     state: latest
     update_cache: true
+  when: existing_zabbix.stdout is not defined or existing_zabbix.stdout.find('Zabbix') == -1 or existing_zabbix.stdout.find('6.4') == -1
 
 - name: Copy zabbix_agentd.conf
   template: 
