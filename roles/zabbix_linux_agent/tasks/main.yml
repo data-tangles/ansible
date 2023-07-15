@@ -9,7 +9,7 @@
   ansible.builtin.apt:
     name: zabbix-agent
     state: absent
-  when: (existing_zabbix.stdout is defined) and (existing_zabbix.stdout | search('Zabbix agent')) and (existing_zabbix.stdout.split()[-1] < '6.4')
+  when: (existing_zabbix.stdout is defined) and (existing_zabbix.stdout is regex_search('zabbix_agentd')) and (existing_zabbix.stdout.split()[-1] < '6.4')
 
 - name: Add Zabbix Repository
   ansible.builtin.apt_repository:
@@ -21,7 +21,7 @@
     name: zabbix-agent
     state: latest
     update_cache: true
-  when: (existing_zabbix.stdout is not defined) or (existing_zabbix.stdout is not search('Zabbix agent')) or (existing_zabbix.stdout.split()[-1] != '6.4')
+  when: (existing_zabbix.stdout is not defined) or (existing_zabbix.stdout is not regex_search('zabbix_agentd')) or (existing_zabbix.stdout.split()[-1] != '6.4')
 
 - name: Copy zabbix_agentd.conf
   ansible.builtin.template: 
