@@ -77,7 +77,7 @@ LogFileSize=0
 # Default:
 # Server=
 
-Server=127.0.0.1
+Server={{ ZABBIX_SERVER }}
 
 ### Option: ListenPort
 #       Agent will listen on this port for connections from the server.
@@ -131,7 +131,7 @@ Server=127.0.0.1
 # Default:
 # ServerActive=
 
-ServerActive=127.0.0.1
+ServerActive={{ ZABBIX_SERVER }}
 
 ### Option: Hostname
 #       List of comma delimited unique, case sensitive hostnames.
