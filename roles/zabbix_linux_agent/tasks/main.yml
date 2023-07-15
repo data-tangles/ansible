@@ -7,7 +7,7 @@
 
 - name: Get Installed Zabbix Agent Version
   ansible.builtin.set_fact:
-    installed_version: "{{ ansible_pkg_mgr_facts.ansible_facts.ansible_pkg_mgr['zabbix-agent'].pkg_version }}"
+    installed_version: "{{ ansible_facts.packages['zabbix-agent'].version }}"
   when: existing_zabbix.stdout is defined
 
 - name: Remove Existing Zabbix Installations
