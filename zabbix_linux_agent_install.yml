@@ -1,0 +1,6 @@
+- hosts: "{{ HOSTS }}"
+  roles:
+    - zabbix_linux_agent
+
+  vars_files:
+    - /ansible/vars/windows/zabbix_agent/zabbix_linux_agent_vars.yml

@@ -1,0 +1,32 @@
+parameters:
+- name: agentPool
+  displayName: 'Agent Pool Selection'
+  type: string
+  default: Self-Hosted
+  values:
+  - Self-Hosted
+  - Oracle-Cloud
+
+trigger:
+- none
+
+stages:
+
+- stage: 'linuxzabbixagent'
+  dependsOn: []
+  displayName: 'Linux Zabbix Agent Install'
+
+  jobs:
+    - job: 'linuxzabbixagent'
+      displayName: 'Linux Zabbix Agent Install'
+      pool: ${{ parameters.agentPool }}
+
+      steps:
+      - task: Ansible@0
+        displayName: Linux Zabbix Agent Install
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/zabbix_linux_agent_install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          failOnStdErr: false
