@@ -1,4 +1,4 @@
-- hosts: "{{ HOSTS }}"
+- hosts: "{{ hosts }}"
   roles:
     - zabbix_windows_agent
 
