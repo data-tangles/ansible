@@ -1,4 +1,4 @@
 ---
 - name: "zabbix_restart"
-  service: name=zabbix-agent state=restarted
+  service: name=zabbix-agent2 state=restarted
 ...
