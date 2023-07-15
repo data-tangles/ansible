@@ -4,11 +4,16 @@
   changed_when: false
   failed_when: false
 
+- name: Get Installed Zabbix Agent Version
+  set_fact:
+    installed_version: "{{ ansible_pkg_mgr_facts.ansible_facts.ansible_pkg_mgr['zabbix-agent'].pkg_version }}"
+  when: existing_zabbix.stdout is defined
+
 - name: Remove Existing Zabbix Installations
   apt:
     name: zabbix-agent
     state: absent
-  when: existing_zabbix.stdout | version_compare('6.4', '<')
+  when: installed_version is version('6.4', '<')
 
 - name: Add Zabbix Repository
   apt_repository:
@@ -20,7 +25,7 @@
     name: zabbix-agent
     state: latest
     update_cache: true
-  when: existing_zabbix.stdout is not defined or existing_zabbix.stdout.find('Zabbix') == -1 or existing_zabbix.stdout.find('6.4') == -1
+  when: existing_zabbix.stdout is not defined or installed_version is version('6.4', '!=')
 
 - name: Copy zabbix_agentd.conf
   template: 
