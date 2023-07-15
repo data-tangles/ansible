@@ -1,24 +1,37 @@
-- name: Create staging location for Zabbix download
-  ansible.builtin.win_file:
-    path: C:\zabbix_temp
-    state: directory
+- name: Populate service facts
+  ansible.builtin.service_facts:
 
-- name: Download Zabbix Agent MSI
-  ansible.windows.win_get_url:
-    url: https://cdn.zabbix.com/zabbix/binaries/stable/6.4/6.4.4/zabbix_agent2-6.4.4-windows-amd64-openssl.msi
-    dest: C:\zabbix_temp
-  register: download_result
+- name: Remove Existing Zabbix Installations
+  ansible.builtin.apt:
+    name: zabbix-agent2
+    state: absent
+  when: ansible_facts.services['zabbix-agent.service'] is defined
 
-- name: Set Zabbix Agent MSI variable
-  ansible.builtin.set_fact:
-    zabbix_msi: "{{ download_result.dest.split('/')[-1] }}"
+- name: Add Zabbix Repository
+  ansible.builtin.apt:
+    deb: http://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest%2Bubuntu22.04_all.deb
 
 - name: Install Zabbix Agent
-  ansible.windows.win_shell: |
-    cd C:\zabbix_temp
-    msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
+  ansible.builtin.apt:
+    name: zabbix-agent2
+    update_cache: true
 
-- name: Remove staging location for Zabbix download
-  ansible.builtin.win_file:
-    path: C:\zabbix_temp
-    state: absent
+- name: Copy zabbix_agent2.conf
+  ansible.builtin.template: 
+    src: zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+    owner: zabbix
+    group: zabbix
+    mode: "0644"
+  notify: zabbix_restart
+  when: "'kube' not in inventory_hostname"
+
+- name: Copy zabbix_agent2.conf for K3S Nodes
+  ansible.builtin.template: 
+    src: zabbix_agent2_k3s.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+    owner: zabbix
+    group: zabbix
+    mode: "0644"
+  notify: zabbix_restart
+  when: "'kube' in inventory_hostname"

@@ -1,51 +1,24 @@
-- name: Check for currently installed Zabbix and retrieve MSI GUID
+- name: Create staging location for Zabbix download
+  ansible.builtin.win_file:
+    path: C:\zabbix_temp
+    state: directory
+
+- name: Download Zabbix Agent MSI
+  ansible.windows.win_get_url:
+    url: https://cdn.zabbix.com/zabbix/binaries/stable/6.4/6.4.4/zabbix_agent2-6.4.4-windows-amd64-openssl.msi
+    dest: C:\zabbix_temp
+  register: download_result
+
+- name: Set Zabbix Agent MSI variable
+  ansible.builtin.set_fact:
+    zabbix_msi: "{{ download_result.dest.split('/')[-1] }}"
+
+- name: Install Zabbix Agent
   ansible.windows.win_shell: |
-    $installedZabbix = Get-WmiObject -Class Win32_Product | Where-Object {$_.Name -eq "Zabbix Agent 2 (64-bit)"}
-    if ($installedZabbix) {
-      if ($installedZabbix.Version -ne "{{ ZABBIX_VERSION }}") {
-        Write-Host "Installed Zabbix version does not match the desired version"
-        Write-Host "Installed version: $($installedZabbix.Version)"
-        Write-Host "Desired version: {{ ZABBIX_VERSION }}"
-        $result = "upgrade"
+    cd C:\zabbix_temp
+    msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
 
-        $oldVersion = $installedZabbix | Select-Object -First 1
-        $msiGuid = $oldVersion.IdentifyingNumber
-        Write-Host "Older version MSI GUID: $msiGuid"
-      }
-      else {
-        Write-Host "Zabbix is already installed at the desired version"
-        $result = "installed"
-        $msiGuid = ""
-      }
-    }
-    else {
-      Write-Host "Zabbix is not installed"
-      $result = "not_installed"
-      $msiGuid = ""
-    }
-
-    $result, $msiGuid
-  register: zabbix_check
-  changed_when: false
-
-- name: Install or upgrade Zabbix Agent for Windows
-  ansible.windows.win_shell: |
-    $msiGuid = "{{ zabbix_check.stdout[0] }}"
-    $downloadPath = "{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}"
-    $downloadDirectory = Split-Path -Path $downloadPath -Parent
-
-    # Create the directory structure if it doesn't exist
-    if (!(Test-Path -Path $downloadDirectory)) {
-      New-Item -ItemType Directory -Path $downloadDirectory -Force
-    }
-
-    if ($msiGuid) {
-      # Remove the older version if it exists
-      msiexec /x $msiGuid /qn
-    }
-
-    # Install the new version
-    Invoke-WebRequest "{{ ZABBIX_MSI_URL }}" -OutFile "{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}"
-    cd "{{ STAGING_LOCATION }}"
-    msiexec /i "{{ ZABBIX_MSI }}" /qn SERVER="{{ ZABBIX_SERVER }}"
-  when: zabbix_check.stdout[0] == "not_installed" or zabbix_check.stdout[0] == "upgrade"
+- name: Remove staging location for Zabbix download
+  ansible.builtin.win_file:
+    path: C:\zabbix_temp
+    state: absent
