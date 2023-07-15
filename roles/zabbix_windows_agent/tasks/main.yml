@@ -31,7 +31,7 @@
 - name: Install or upgrade Zabbix Agent for Windows
   ansible.windows.win_shell: |
     $msiGuid = "{{ zabbix_check.stdout | first }}"
-    $downloadPath = '{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}'
+    $downloadPath = "{{ STAGING_LOCATION }}{{ ZABBIX_MSI }}"
     $downloadDirectory = Split-Path -Path $downloadPath -Parent
 
     # Create the directory structure if it doesn't exist
