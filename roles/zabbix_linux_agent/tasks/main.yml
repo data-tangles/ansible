@@ -16,10 +16,10 @@
     name: zabbix-agent2
     update_cache: true
 
-- name: Copy zabbix_agentd.conf
+- name: Copy zabbix_agent2.conf
   ansible.builtin.template: 
-    src: zabbix_agentd.conf.j2
-    dest: /etc/zabbix/zabbix_agentd.conf
+    src: zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
     owner: zabbix
     group: zabbix
     mode: "0644"
