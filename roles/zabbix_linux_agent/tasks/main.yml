@@ -5,7 +5,7 @@
   ansible.builtin.apt:
     name: zabbix-agent2
     state: absent
-  when: ansible_facts.services['zabbix-agent.service'] is defined
+  when: ansible_facts.services['zabbix-agent2.service'] is defined
 
 - name: Add Zabbix Repository
   ansible.builtin.apt:
