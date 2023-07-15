@@ -1,4 +1,7 @@
 - hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
   roles:
     - zabbix_linux_agent
 
