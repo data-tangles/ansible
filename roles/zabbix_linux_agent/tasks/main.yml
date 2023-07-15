@@ -10,6 +10,12 @@
 - name: Add Zabbix Repository
   ansible.builtin.apt:
     deb: http://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest%2Bubuntu22.04_all.deb
+  when: ansible_architecture == "x86_64"
+
+- name: Add ARM Zabbix Repository
+  ansible.builtin.apt:
+    deb: https://repo.zabbix.com/zabbix/6.4/ubuntu-arm64/pool/main/z/zabbix-release/zabbix-release_latest%2Bubuntu22.04_all.deb
+  when: ansible_architecture == "arm64"  
 
 - name: Install Zabbix Agent
   ansible.builtin.apt:
