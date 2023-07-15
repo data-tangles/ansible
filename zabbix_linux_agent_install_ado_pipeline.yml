@@ -6,6 +6,12 @@ parameters:
   values:
   - Self-Hosted
   - Oracle-Cloud
+- name: hostSelection
+  displayName: 'Ansible Host Selection'
+  default: on_prem
+  values:
+  - on_prem
+  - oracle_cloud
 
 trigger:
 - none
@@ -29,4 +35,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/zabbix_linux_agent_install.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          args: '--extra-vars "host=${{ parameters.hostSelection }}"'
           failOnStdErr: false
