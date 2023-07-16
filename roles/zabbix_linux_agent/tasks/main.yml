@@ -30,7 +30,7 @@
     group: zabbix
     mode: "0644"
   notify: zabbix_restart
-  when: "'kube' not in inventory_hostname"
+  when: "'kube' not in ansible_hostname"
 
 - name: Copy zabbix_agent2.conf for K3S Nodes
   ansible.builtin.template: 
@@ -40,4 +40,4 @@
     group: zabbix
     mode: "0644"
   notify: zabbix_restart
-  when: "'kube' in inventory_hostname"
+  when: "'kube' in ansible_hostname"
