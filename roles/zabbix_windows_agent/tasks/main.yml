@@ -7,28 +7,28 @@
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: directory
-  when: not zabbix_service.stat.exists
+  when: not zabbix_service.exists
 
 - name: Download Zabbix Agent MSI
   ansible.windows.win_get_url:
     url: https://cdn.zabbix.com/zabbix/binaries/stable/6.4/6.4.4/zabbix_agent2-6.4.4-windows-amd64-openssl.msi
     dest: C:\zabbix_temp
   register: download_result
-  when: not zabbix_service.stat.exists
+  when: not zabbix_service.exists
 
 - name: Set Zabbix Agent MSI variable
   ansible.builtin.set_fact:
     zabbix_msi: "{{ download_result.dest.split('/')[-1] }}"
-  when: not zabbix_service.stat.exists
+  when: not zabbix_service.exists
 
 - name: Install Zabbix Agent
   ansible.windows.win_shell: |
     cd C:\zabbix_temp
     msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
-  when: not zabbix_service.stat.exists
+  when: not zabbix_service.exists
 
 - name: Remove staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: absent
-  when: not zabbix_service.stat.exists
+  when: not zabbix_service.exists
