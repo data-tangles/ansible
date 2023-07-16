@@ -16,18 +16,6 @@ parameters:
   values:
   - on_prem
   - oracle_cloud
-- name: host1
-  displayName: 'Host 1'
-  type: string
-  default: $(host_1)
-- name: host2
-  displayName: 'Host 2'
-  type: string
-  default: $(host_2)
-- name: hostNames
-  displayName: 'Hostnames'
-  type: string
-  default: $(hostnames)
 
 trigger:
 - none
@@ -51,5 +39,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/linux_hosts_file_edit.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
-          args: '--extra-vars "nodes=${{ parameters.nodeSelection }} host_1=${{ parameters.host1 }} host_2=${{ parameters.host2 }} hostnames=${{ parameters.hostNames }}"'
+          args: '--extra-vars "nodes=${{ parameters.nodeSelection }} host_1=$(host_1) host_2=$(host_2) hostnames=$(hostnames)"'
           failOnStdErr: false
