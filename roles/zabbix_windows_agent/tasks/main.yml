@@ -1,33 +1,34 @@
-- name: Check for current Zabbix Agent install
-  ansible.windows.win_shell: |
-    Get-WmiObject -Class Win32_Product | Select-Object Name, Version | Where-Object {$_.Name -eq "Zabbix Agent 2 (64-bit)" -And $_.Version -gt "6.4"} 
-  register: zabbix_check
+- name: Check if Zabbix service is installed
+  win_service:
+    name: Zabbix Agent 2
+  register: zabbix_service
 
 - name: Create staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: directory
-  when: zabbix_check.stdout | length < 0
+  when: not zabbix_service.stat.exists
 
 - name: Download Zabbix Agent MSI
   ansible.windows.win_get_url:
     url: https://cdn.zabbix.com/zabbix/binaries/stable/6.4/6.4.4/zabbix_agent2-6.4.4-windows-amd64-openssl.msi
     dest: C:\zabbix_temp
   register: download_result
-  when: zabbix_check.stdout | length < 0
+  when: not zabbix_service.stat.exists
 
 - name: Set Zabbix Agent MSI variable
   ansible.builtin.set_fact:
     zabbix_msi: "{{ download_result.dest.split('/')[-1] }}"
+  when: not zabbix_service.stat.exists
 
 - name: Install Zabbix Agent
   ansible.windows.win_shell: |
     cd C:\zabbix_temp
     msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
-  when: zabbix_check.stdout | length < 0
+  when: not zabbix_service.stat.exists
 
 - name: Remove staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: absent
-  when: zabbix_check.stdout | length < 0
+  when: not zabbix_service.stat.exists
