@@ -19,15 +19,15 @@ parameters:
 - name: host1
   displayName: 'Host 1'
   type: string
-  values: $(host_1)
+  default: $(host_1)
 - name: host2
   displayName: 'Host 2'
   type: string
-  values: $(host_2)
+  default: $(host_2)
 - name: hostNames
   displayName: 'Hostnames'
   type: string
-  values: $(hostnames)
+  default: $(hostnames)
 
 trigger:
 - none
