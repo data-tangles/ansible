@@ -36,3 +36,15 @@
     mode: "0644"
   notify: zabbix_restart
   when: "'kube' in ansible_hostname"
+
+- name: Enable Zabbix Agent service at startup
+  ansible.builtin.systemd:
+    name: zabbix-agent2
+    enabled: true
+    masked: no
+
+- name: Restart Zabbix agent
+  ansible.builtin.systemd:
+    name: zabbix-agent2
+    state: restarted
+    daemon_reload: true
