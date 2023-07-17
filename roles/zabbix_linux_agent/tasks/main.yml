@@ -21,7 +21,6 @@
   ansible.builtin.apt:
     pkg:
     - zabbix-agent2
-    - zabbix-agent2-plugin-*
     update_cache: yes
 
 - name: Copy zabbix_agent2.conf
