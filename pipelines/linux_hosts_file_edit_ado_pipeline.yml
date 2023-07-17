@@ -39,5 +39,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/linux_hosts_file_edit.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
-          args: '--extra-vars "nodes=${{ parameters.nodeSelection }} host_1=$(host_1) host_2=$(host_2) hostname_1=$(hostname_1) hostname_2=$(hostname_2) hostname_3=$(hostname_3)"'
+          args: '--extra-vars "nodes=${{ parameters.nodeSelection }} host_1=$(host_1) host_2=$(host_2) hostnames=$(hostnames)"'
           failOnStdErr: false
