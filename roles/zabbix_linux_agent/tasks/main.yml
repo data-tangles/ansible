@@ -1,7 +1,3 @@
-- name: Check host OS
-  ansible.builtin.debug:
-    msg: "{{ ansible_os_family }}-{{ ansible_distribution }}{{ ansible_distribution_version }}-{{ ansible_distribution_release }}"
-
 - name: Populate service facts
   ansible.builtin.service_facts:
 
