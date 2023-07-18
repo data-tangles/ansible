@@ -9,15 +9,15 @@
 
 - name: Download and Install Zabbix Agent Repo - x86
   ansible.builtin.apt_repository:
-    url: deb https://repo.zabbix.com/zabbix/6.4/ubuntu jammy main
+    repo: deb https://repo.zabbix.com/zabbix/6.4/ubuntu jammy main
     state: present
   when: ansible_architecture == "x86_64"
 
 - name: Download and Install Zabbix Agent Repo - arm64
   ansible.builtin.apt_repository:
-    url: deb https://repo.zabbix.com/zabbix/6.4/ubuntu-arm64 jammy main
+    repo: deb https://repo.zabbix.com/zabbix/6.4/ubuntu-arm64 jammy main
     state: present
-  when: ansible_architecture == "aarch64" 
+  when: ansible_architecture == "aarch64"
 
 - name: Install Zabbix Agent
   ansible.builtin.apt:
@@ -25,7 +25,7 @@
     update_cache: yes
 
 - name: Copy zabbix_agent2.conf
-  ansible.builtin.template: 
+  ansible.builtin.template:
     src: zabbix_agent2.conf.j2
     dest: /etc/zabbix/zabbix_agent2.conf
     owner: zabbix
@@ -35,7 +35,7 @@
   when: "'kube' not in ansible_hostname"
 
 - name: Copy zabbix_agent2.conf for K3S Nodes
-  ansible.builtin.template: 
+  ansible.builtin.template:
     src: zabbix_agent2_k3s.conf.j2
     dest: /etc/zabbix/zabbix_agent2.conf
     owner: zabbix
