@@ -8,22 +8,16 @@
   when: ansible_facts.services['zabbix-agent2.service'] is defined
 
 - name: Download and Install Zabbix Agent Repo - x86
-  ansible.builtin.get_url:
-    url: https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb
-    dest: /var/tmp
+  ansible.builtin.apt_repository:
+    url: deb https://repo.zabbix.com/zabbix/6.4/ubuntu jammy main
+    state: present
   when: ansible_architecture == "x86_64"
 
 - name: Download and Install Zabbix Agent Repo - arm64
-  ansible.builtin.get_url:
-    url: https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu22.04_all.deb
-    dest: /var/tmp
+  ansible.builtin.apt_repository:
+    url: deb https://repo.zabbix.com/zabbix/6.4/ubuntu-arm64 jammy main
+    state: present
   when: ansible_architecture == "aarch64" 
-
-- name: Configure Zabbix Agent Repo
-  ansible.builtin.shell: |
-      dpkg -i zabbix-release_6.4-1+ubuntu22.04_all.deb
-  args:
-    chdir: /var/tmp
 
 - name: Install Zabbix Agent
   ansible.builtin.apt:
