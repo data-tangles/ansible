@@ -1,3 +1,6 @@
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
 - name: apt update
   apt:
     update_cache: yes
@@ -8,12 +11,14 @@
     curl -sfL https://get.k3s.io | K3S_TOKEN="{{ K3S_TOKEN }}" sh -s - server --cluster-init
   run_once: true
   delegate_to: "{{ K3S_CLUSTER_INIT_NODE }}"
+  when: not ansible_facts.services['k3s.service'] is defined
 
 - name: Join secondary node to cluster
   ansible.builtin.shell: |
     curl -sfL https://get.k3s.io | K3S_TOKEN="{{ K3S_TOKEN }}" sh -s - server --server https://"{{ K3S_CLUSTER_INIT_NODE }}":6443
   run_once: true
   delegate_to: "{{ K3S_CLUSTER_SECONDARY_NODE }}"
+  when: not ansible_facts.services['k3s.service'] is defined
 
 - name: Export kubeconfig file 
   ansible.builtin.shell: |
@@ -21,3 +26,63 @@
   run_once: true
   delegate_to: "{{ K3S_CLUSTER_INIT_NODE }}"
 
+- name: Install dnsmasq
+  ansible.builtin.apt:
+    name: dnsmasq
+    update_cache: yes
+  when: inventory_hostname in groups ["oracle_kubernetes"]
+
+- name: Copy resolve.conf file template
+  ansible.builtin.template: 
+    src: k3s_resolv.conf.j2
+    dest: /etc/rancher/k3s/resolv.conf
+    owner: root
+    group: root
+    mode: "0644"
+  when: inventory_hostname in groups ["oracle_kubernetes"]
+
+- name: Add options to the service file on Cluster Init Node
+  blockinfile:
+    path: /etc/systemd/system/k3s.service  
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ ansible_hostname }}"
+    block: |
+      ExecStart=/usr/local/bin/k3s \
+          server \
+          '--cluster-init' \
+          '--resolv-conf' \
+          '/etc/rancher/k3s/resolv.conf'
+  when: "inventory_hostname == '{{ K3S_CLUSTER_INIT_NODE }}' and inventory_hostname in groups 'oracle_kubernetes'"
+
+- name: Add options to the service file on Cluster Secondary Node
+  blockinfile:
+    path: /etc/systemd/system/k3s.service  
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ ansible_hostname }}"
+    block: |
+      ExecStart=/usr/local/bin/k3s \
+          server \
+          '--server' \
+          'https://{{ K3S_CLUSTER_INIT_NODE }}:6443' \
+          '--resolv-conf' \
+          '/etc/rancher/k3s/resolv.conf'
+  when: "inventory_hostname == '{{ K3S_CLUSTER_SECONDARY_NODE }}' and inventory_hostname in groups 'oracle_kubernetes'"
+
+- name: Restart k3s service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    name: k3s
+  when: inventory_hostname in groups ["oracle_kubernetes"] 
+
+- name: Delete Core-DNS Pod 
+  ansible.builtin.shell: |
+    kubectl -n kube-system delete pod -l k8s-app=kube-dns
+  run_once: true
+  delegate_to: "{{ K3S_CLUSTER_INIT_NODE }}"
+  when: inventory_hostname in groups ["oracle_kubernetes"]
+
+- name: Delete Core-DNS Pod 
+  ansible.builtin.shell: |
+    kubectl -n kube-system delete pod -l k8s-app=kube-dns
+  run_once: true
+  delegate_to: "{{ K3S_CLUSTER_SECONDARY_NODE }}"
+  when: inventory_hostname in groups ["oracle_kubernetes"]  

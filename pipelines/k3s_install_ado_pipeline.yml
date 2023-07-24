@@ -6,6 +6,13 @@ parameters:
   values:
   - Self-Hosted
   - Oracle-Cloud
+- name: hostSelection
+  displayName: 'Ansible Host Selection'
+  type: string
+  default: kubernetes_hosts
+  values:
+  - kubernetes_hosts
+  - oracle_kubernetes
 
 trigger:
 - none
@@ -29,4 +36,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/k3s_install.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          args: '--extra-vars "HOSTS=${{ parameters.hostSelection }}"'
           failOnStdErr: false
