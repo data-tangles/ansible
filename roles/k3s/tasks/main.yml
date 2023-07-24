@@ -51,7 +51,7 @@
           '--cluster-init' \
           '--resolv-conf' \
           '/etc/rancher/k3s/resolv.conf'
-  when: "inventory_hostname == '{{ K3S_CLUSTER_INIT_NODE }}' and inventory_hostname in groups 'oracle_kubernetes'"
+  when: inventory_hostname == "{{ K3S_CLUSTER_INIT_NODE }}" and inventory_hostname in groups ["oracle_kubernetes"]
 
 - name: Add options to the service file on Cluster Secondary Node
   blockinfile:
@@ -64,7 +64,7 @@
           'https://{{ K3S_CLUSTER_INIT_NODE }}:6443' \
           '--resolv-conf' \
           '/etc/rancher/k3s/resolv.conf'
-  when: "inventory_hostname == '{{ K3S_CLUSTER_SECONDARY_NODE }}' and inventory_hostname in groups 'oracle_kubernetes'"
+  when: inventory_hostname == "{{ K3S_CLUSTER_SECONDARY_NODE }}" and inventory_hostname in groups ["oracle_kubernetes"]
 
 - name: Restart k3s service
   ansible.builtin.systemd:
