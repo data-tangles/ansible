@@ -6,8 +6,8 @@ parameters:
   values:
   - Self-Hosted
   - Oracle-Cloud
-- name: hostSelection
-  displayName: 'Ansible Host Selection'
+- name: nodeSelection
+  displayName: 'Ansible Node Selection'
   type: string
   default: host_01
   values:
@@ -36,5 +36,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/packer_install.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/hyper_v.ini'
-          args: '--extra-vars "hosts=${{ parameters.hostSelection }}"'
+          args: '--extra-vars "nodes=${{ parameters.nodeSelection }}"'
           failOnStdErr: false
