@@ -1,0 +1,10 @@
+---
+- name: "unzip_packer_binary"
+  community.windows.win_unzip:
+    src: C:\tools\packer_{{ packer_version }}_windows_amd64.zip
+    dest: C:\tools
+
+- name: "delete_packer_zip"
+  ansible.windows.win_shell: |
+    Remove-Item -Path "C:\tools\packer_{{ packer_version }}_windows_amd64.zip" -Force
+...

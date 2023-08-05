@@ -1,0 +1,39 @@
+- name: Check if Tools directory exists
+  ansible.windows.win_stat:
+    path: C:\tools
+  register: tools_directory
+
+- name: Create Tools directory
+  ansible.windows.win_file:
+    path: C:\tools
+    state: directory
+  when: not tools_directory.stat.exists
+
+- name: Add directory to system path
+  ansible.windows.win_path:
+    elements: C:\tools
+    scope: machine
+    state: present
+  when: "'C:\\tools' not in ansible_env.Path"
+
+- name: Get Packer version
+  ansible.windows.win_shell: |
+    packer version
+  register: installed_packer_version_output
+  changed_when: false
+  ignore_errors: true
+
+- name: Extract Packer version from output
+  ansible.builtin.set_fact:
+    installed_packer_version: "installed_packer_version_output.stdout | regex_search('Packer v{{ packer_version }}', '\\1') | default('unknown')"
+  when: installed_packer_version_output.stdout is defined
+
+- name: Download Packer binary
+  ansible.windows.win_get_url:
+    url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_windows_amd64.zip"
+    dest: C:\tools
+  register: download_result
+  notify:
+    - "unzip_packer_binary"
+    - "delete_packer_zip"
+  when: "'Packer v' ~ packer_version not in installed_packer_version_output.stdout or installed_packer_version == 'unknown'"
