@@ -25,7 +25,7 @@
 
 - name: Extract Packer version from output
   set_fact:
-    installed_packer_version: "{{ installed_packer_version_output.stdout | find('Packer v' + packer_version, skip=0) | default('unknown') }}"
+    installed_packer_version: "{{ installed_packer_version_output.stdout | regex_search('Packer v{{ packer_version }}', '\\1') | default('unknown') }}"
   when: installed_packer_version_output.stdout is defined
 
 - name: Download Packer binary
@@ -33,7 +33,7 @@
     url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_windows_amd64.zip"
     dest: C:\tools
   register: download_result
-  when: installed_packer_version != 'Packer v' + packer_version
+  when: installed_packer_version != 'Packer v{{ packer_version }}'
 
 - name: Unzip Packer binary
   win_unzip:
