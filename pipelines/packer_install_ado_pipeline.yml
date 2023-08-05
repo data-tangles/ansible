@@ -1,0 +1,40 @@
+parameters:
+- name: agentPool
+  displayName: 'Agent Pool Selection'
+  type: string
+  default: Self-Hosted
+  values:
+  - Self-Hosted
+  - Oracle-Cloud
+- name: hostSelection
+  displayName: 'Ansible Host Selection'
+  type: string
+  default: host_01
+  values:
+  - host_01
+  - host_02
+
+trigger:
+- none
+
+stages:
+
+- stage: 'packerinstall'
+  dependsOn: []
+  displayName: 'Packer Binary Install'
+
+  jobs:
+    - job: 'packerinstall'
+      displayName: 'Packer Binary Install'
+      pool: ${{ parameters.agentPool }}
+
+      steps:
+      - task: Ansible@0
+        displayName: Packer Binary Install
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/packer_install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/hyper_v.ini'
+          args: '--extra-vars "hosts=${{ parameters.hostSelection }}"'
+          failOnStdErr: false

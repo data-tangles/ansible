@@ -1,0 +1,43 @@
+- name: Check if Packer directory exists
+  ansible.windows.win_stat:
+    path: C:\Packer
+  register: packer_directory
+
+- name: Create Packer directory
+  ansible.windows.win_file:
+    path: C:\Packer
+    state: directory
+  when: not packer_directory.stat.exists
+
+- name: Add directory to system path
+  ansible.windows.win_path:
+    elements: C:\Packer
+    scope: machine
+    state: present
+  when: "'C:\\Packer' not in lookup {{('env', 'Path')}}"
+
+- name: Get Packer version
+  ansible.windows.win_shell: |
+    packer version
+  register: installed_packer_version_output
+  changed_when: false
+
+- name: Extract Packer version from output
+  set_fact:
+    installed_packer_version: "{{ installed_packer_version_output.stdout | regex_replace('Packer v(\\d+\\.\\d+\\.\\d+).*', '\\1') }}"
+  when: installed_packer_version_output.stdout is defined
+
+- name: Download Packer binary
+  win_get_url:
+    url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_windows_amd64.zip"
+    dest: C:\Packer
+  when: installed_packer_version_output.stdout is not defined or installed_packer_version != packer_version
+
+- name: Unzip Packer binary
+  win_unzip:
+    src: C:\Packer\packer_{{ packer_version }}_windows_amd64.zip
+    dest: C:\Packer
+
+- name: Delete Packer zip file
+  ansible.windows.win_shell: |
+    Remove-Item -Path "C:\Packer\packer_{{ packer_version }}_windows_amd64.zip" -Force
