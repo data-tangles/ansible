@@ -1,6 +1,6 @@
 ---
 - name: "unzip_packer_binary"
-  ansible.windows.win_unzip:
+  community.windows.win_unzip:
     src: C:\tools\packer_{{ packer_version }}_windows_amd64.zip
     dest: C:\tools
 
