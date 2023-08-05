@@ -25,20 +25,15 @@
 
 - name: Extract Packer version from output
   set_fact:
-    installed_packer_version: "{{ installed_packer_version_output.stdout | regex_replace('Packer v(\\d+\\.\\d+\\.\\d+).*', '\\1') }}"
+    installed_packer_version: "{{ installed_packer_version_output.stdout | find('Packer v' + packer_version, skip=0) | default('unknown') }}"
   when: installed_packer_version_output.stdout is defined
-
-- name: Set default Packer version if there was an error
-  set_fact:
-    installed_packer_version: "unknown"
-  when: installed_packer_version_output.failed
 
 - name: Download Packer binary
   win_get_url:
     url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_windows_amd64.zip"
     dest: C:\tools
   register: download_result
-  when: installed_packer_version != packer_version or installed_packer_version == "unknown"
+  when: installed_packer_version != 'Packer v' + packer_version
 
 - name: Unzip Packer binary
   win_unzip:
