@@ -14,7 +14,7 @@
     elements: C:\Packer
     scope: machine
     state: present
-  when: "'C:\\Packer' not in lookup {{('env', 'Path')}}"
+  when: "'C:\\Packer' not in ansible_env.Path"
 
 - name: Get Packer version
   ansible.windows.win_shell: |
