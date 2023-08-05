@@ -36,4 +36,4 @@
   notify:
     - "unzip_packer_binary"
     - "delete_packer_zip"
-  when: "'Packer v' in installed_packer_version_output.stdout and 'Packer v' ~ packer_version not in installed_packer_version_output.stdout or installed_packer_version == 'unknown'"
+  when: "'Packer v' ~ packer_version not in installed_packer_version_output.stdout or installed_packer_version == 'unknown'"
