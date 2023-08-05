@@ -30,7 +30,7 @@
 
 - name: Debug installed_packer_version
   debug:
-    var: installed_packer_version
+    var: installed_packer_version_output
 
 - name: Debug packer_version
   debug:
