@@ -28,6 +28,14 @@
     installed_packer_version: "installed_packer_version_output.stdout | regex_search('Packer v{{ packer_version }}', '\\1') | default('unknown')"
   when: installed_packer_version_output.stdout is defined
 
+- name: Debug installed_packer_version
+  debug:
+    var: installed_packer_version
+
+- name: Debug packer_version
+  debug:
+    var: packer_version
+
 - name: Download Packer binary
   win_get_url:
     url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_windows_amd64.zip"
