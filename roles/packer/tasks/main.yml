@@ -24,32 +24,16 @@
   ignore_errors: true
 
 - name: Extract Packer version from output
-  set_fact:
+  ansible.builtin.set_fact:
     installed_packer_version: "installed_packer_version_output.stdout | regex_search('Packer v{{ packer_version }}', '\\1') | default('unknown')"
   when: installed_packer_version_output.stdout is defined
 
-- name: Debug installed_packer_version
-  debug:
-    var: installed_packer_version_output
-
-- name: Debug packer_version
-  debug:
-    var: packer_version
-
 - name: Download Packer binary
-  win_get_url:
+  ansible.windows.win_get_url:
     url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_windows_amd64.zip"
     dest: C:\tools
   register: download_result
-  when: installed_packer_version != 'Packer v{{ packer_version }}'
-
-- name: Unzip Packer binary
-  win_unzip:
-    src: C:\tools\packer_{{ packer_version }}_windows_amd64.zip
-    dest: C:\tools
-  when: download_result is changed
-
-- name: Delete Packer zip file
-  ansible.windows.win_shell: |
-    Remove-Item -Path "C:\tools\packer_{{ packer_version }}_windows_amd64.zip" -Force
-  when: download_result is changed
+  notify:
+    - "unzip_packer_binary"
+    - "delete_packer_zip"
+  when: "'Packer v' in installed_packer_version_output.stdout and 'Packer v' ~ packer_version not in installed_packer_version_output.stdout"
