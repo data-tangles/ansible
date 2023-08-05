@@ -25,7 +25,7 @@
 
 - name: Extract Packer version from output
   set_fact:
-    installed_packer_version: "{{ installed_packer_version_output.stdout | regex_search('Packer v{{ packer_version }}', '\\1') | default('unknown') }}"
+    installed_packer_version: "installed_packer_version_output.stdout | regex_search('Packer v{{ packer_version }}', '\\1') | default('unknown')"
   when: installed_packer_version_output.stdout is defined
 
 - name: Download Packer binary
