@@ -1,0 +1,15 @@
+- name: deploy TFTP Network
+  docker_network:
+    name: "tftpd-hpa"
+
+- name: deploy TFTP Container
+  docker_container:
+    name: "tftpd-hpa"
+    image: "3x3cut0r/tftpd-hpa:latest"
+    restart_policy: always
+    networks:
+      - name: "tftpd-hpa"
+    published_ports:
+      - "69:69"
+    volumes:
+      - "/var/lib/docker/tftpd-hpa:/tftpboot"
