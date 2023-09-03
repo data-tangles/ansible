@@ -1,0 +1,17 @@
+- name: deploy Portainer Network
+  docker_network:
+    name: "portainer"
+
+- name: deploy Portainer Container
+  docker_container:
+    name: "portainer"
+    image: "portainer/portainer-ce:latest"
+    restart_policy: always
+    networks:
+      - name: "portainer"
+    published_ports:
+      - "8000:8000"
+      - "9443:9443"
+    volumes:
+      - "/var/lib/docker/portainer:/data"
+      - "/var/run/docker.sock:/var/run/docker.sock"

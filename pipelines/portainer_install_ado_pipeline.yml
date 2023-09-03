@@ -1,0 +1,39 @@
+parameters:
+- name: agentPool
+  displayName: 'Agent Pool Selection'
+  type: string
+  default: Self-Hosted
+  values:
+  - Self-Hosted
+  - Oracle-Cloud
+- name: nodeSelection
+  displayName: 'Ansible Node Selection'
+  type: string
+  default: oracle_docker
+  values:
+  - oracle_docker
+
+trigger:
+- none
+
+stages:
+
+- stage: 'portainerinstall'
+  dependsOn: []
+  displayName: 'Portainer Docker Install'
+
+  jobs:
+    - job: 'portainerinstall'
+      displayName: 'Portainer Docker Install'
+      pool: ${{ parameters.agentPool }}
+
+      steps:
+      - task: Ansible@0
+        displayName: Portainer Docker Install
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/portainer_install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          args: '--extra-vars "nodes=${{ parameters.nodeSelection }}"'
+          failOnStdErr: false
