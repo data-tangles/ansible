@@ -13,6 +13,16 @@ parameters:
   values:
   - on_prem_ansible
   - oracle_management
+- name: adoUserAndGroup
+  displayName: 'Azure DevOps Agent User & Group'
+  type: string
+  default: ansible-admin
+  values:
+  - ansible-admin
+  - ubuntu
+- name: adoPersonalAccessToken
+  displayName: 'Azure DevOps Personal Access Token'
+  type: string
 
 trigger:
 - none
@@ -36,5 +46,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/azure_devops_agent_install.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
-          args: '--extra-vars "nodes=${{ parameters.hostSelection }}"'
+          args: '--extra-vars "nodes=${{ parameters.hostSelection }} ADO_AGENT_USER=${{ parameters.adoUserAndGroup }} ADO_AGENT_GROUP=${{ parameters.adoUserAndGroup }} ADO_ACCESS_TOKEN=${{ parameters.adoPersonalAccessToken }}"'
           failOnStdErr: false
