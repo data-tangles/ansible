@@ -64,7 +64,7 @@
       - "--runasservice"
     build_agent_cmd_args:
       - "--pool '{{ ADO_AGENT_POOL_NAME }}'"
-      - "--agent '{{ ADO_AGENT_NAME }}'"
+      - "--agent '{{ ansible_hostname }}'"
     service_is_installed: "{{ svc_status.stdout is defined and svc_status.stdout is not regex('not installed') }}"
     service_is_running: "{{ svc_status.stdout is defined and svc_status.stdout is regex('active \\(running\\)') }}"
     is_requested_version: "{{ bin_agent_listener.stat.exists and agent_listener_version.stdout is defined and agent_listener_version.stdout == ADO_AGENT_VERSION }}"
