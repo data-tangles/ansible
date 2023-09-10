@@ -9,7 +9,7 @@ parameters:
 - name: hostSelection
   displayName: 'Ansible Host Selection'
   type: string
-  default: on_prem
+  default: on_prem_ansible
   values:
   - on_prem_ansible
   - oracle_management
