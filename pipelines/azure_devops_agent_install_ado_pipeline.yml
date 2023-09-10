@@ -6,6 +6,13 @@ parameters:
   values:
   - Self-Hosted
   - Oracle-Cloud
+- name: hostSelection
+  displayName: 'Ansible Host Selection'
+  type: string
+  default: on_prem
+  values:
+  - on_prem_ansible
+  - oracle_management
 
 trigger:
 - none
@@ -29,4 +36,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/azure_devops_agent_install.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
+          args: '--extra-vars "nodes=${{ parameters.hostSelection }}"'
           failOnStdErr: false
