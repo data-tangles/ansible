@@ -23,6 +23,13 @@ parameters:
 - name: adoPersonalAccessToken
   displayName: 'Azure DevOps Personal Access Token'
   type: string
+- name: adoAgentPoolName
+  displayName: 'Azure DevOps Agent Pool Name'
+  type: string
+  default: Self-Hosted
+  values:
+  - Self-Hosted
+  - Oracle-Cloud
 
 trigger:
 - none
@@ -46,5 +53,5 @@ stages:
           playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/azure_devops_agent_install.yml'
           inventoriesAgentMachine: 'file'
           inventoryFileOnAgentMachine: '/ansible/inventory/prod/linux.ini'
-          args: '--extra-vars "nodes=${{ parameters.hostSelection }} ADO_AGENT_USER=${{ parameters.adoUserAndGroup }} ADO_AGENT_GROUP=${{ parameters.adoUserAndGroup }} ADO_ACCESS_TOKEN=${{ parameters.adoPersonalAccessToken }}"'
+          args: '--extra-vars "nodes=${{ parameters.hostSelection }} ADO_AGENT_USER=${{ parameters.adoUserAndGroup }} ADO_AGENT_GROUP=${{ parameters.adoUserAndGroup }} ADO_ACCESS_TOKEN=${{ parameters.adoPersonalAccessToken }} ADO_AGENT_POOL_NAME=${{ parameters.adoAgentPoolName }}"'
           failOnStdErr: false
