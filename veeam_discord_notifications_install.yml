@@ -1,6 +1,3 @@
 - hosts: "{{ nodes }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
   roles:
     - veeam_discord_notifications
