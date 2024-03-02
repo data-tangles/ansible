@@ -12,7 +12,6 @@
   community.windows.win_unzip:
     src: C:\VeeamScripts\VeeamNotify-v1.0.zip
     dest: C:\VeeamScripts
-    recurse: yes
     delete_archive: yes
 
 - name: Copy conf.json file
