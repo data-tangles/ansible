@@ -5,23 +5,23 @@
 
 - name: Download VeeamNotify
   ansible.windows.win_get_url:
-    url: https://github.com/tigattack/VeeamNotify/releases/download/v1.0/VeeamNotify-v1.0.zip
-    dest: C:\VeeamScripts\VeeamNotify-v1.0.zip
+    url: https://github.com/tigattack/VeeamNotify/releases/download/v1.0.1/VeeamNotify-v1.0.1.zip
+    dest: C:\VeeamScripts\VeeamNotify-v1.0.1.zip
 
 - name: Extract VeeamNotify
   community.windows.win_unzip:
-    src: C:\VeeamScripts\VeeamNotify-v1.0.zip
+    src: C:\VeeamScripts\VeeamNotify-v1.0.1.zip
     dest: C:\VeeamScripts
     delete_archive: yes
 
 - name: Copy conf.json file
   ansible.windows.win_template:
     src: conf.json.j2
-    dest: C:\VeeamScripts\VeeamNotify\config\conf.json
+    dest: C:\VeeamScripts\VeeamNotify-v1.0.1\config\conf.json
 
 - name: Configure Veeam Jobs with notification script
   ansible.windows.win_shell: |
-    $veeamNotifierScript = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\VeeamScripts\VeeamNotify\Bootstrap.ps1'"
+    $veeamNotifierScript = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\VeeamScripts\VeeamNotify-v1.0.1\Bootstrap.ps1'"
 
     Write-Host "Gathering list of jobs"
     $jobList = Get-VBRJob
@@ -32,7 +32,7 @@
 
         if ($job.JobType -eq "SimpleBackupCopyPolicy") {
             $job = Get-VBRBackupCopyJob -Name $copyJobName
-            $scriptOptions = New-VBRJobScriptOptions -PostScriptEnabled -PostCommand "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\VeeamScripts\VeeamNotify\Bootstrap.ps1'" -Periodicity Cycles -Frequency 1
+            $scriptOptions = New-VBRJobScriptOptions -PostScriptEnabled -PostCommand "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\VeeamScripts\VeeamNotify-v1.0.1\Bootstrap.ps1'" -Periodicity Cycles -Frequency 1
             Set-VBRBackupCopyJob -Job $job -ScriptOptions $scriptOptions | Out-Null 
             Enable-VBRBackupCopyJob -Job $job
         }
