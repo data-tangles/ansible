@@ -20,7 +20,7 @@
     dest: C:\VeeamScripts\VeeamNotify-v1.0.1\config\conf.json
 
 - name: Configure Veeam Jobs with notification script
-  ansible.windows.win_powershell: |
+  ansible.windows.win_shell: |
     $veeamNotifierScript = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\VeeamScripts\VeeamNotify-v1.0.1\Bootstrap.ps1'"
 
     Write-Host "Gathering list of jobs"
