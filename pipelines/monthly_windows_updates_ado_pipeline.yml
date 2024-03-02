@@ -1,0 +1,47 @@
+schedules:
+  - cron: '0 4 25 * *'
+    displayName: Monthly Server Updates
+    branches:
+      include:
+        - master
+    always: true
+
+parameters:
+- name: agentPool
+  displayName: 'Agent Pool Selection'
+  type: string
+  default: Self-Hosted
+  values:
+  - Self-Hosted
+  - Oracle-Cloud
+- name: nodeSelection
+  displayName: 'Ansible Node Selection'
+  type: string
+  default: veeam_server
+  values:
+  - veeam_server
+
+trigger:
+- none
+
+stages:
+
+- stage: 'windowsupdatesinstall'
+  dependsOn: []
+  displayName: 'Windows Updates Install'
+
+  jobs:
+    - job: 'windowsupdatesinstall'
+      displayName: 'Windows Updates Install'
+      pool: ${{ parameters.agentPool }}
+
+      steps:
+      - task: Ansible@0
+        displayName: Windows Updates Install
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(System.DefaultWorkingDirectory)/windows_updates_install.yml'
+          inventoriesAgentMachine: 'file'
+          inventoryFileOnAgentMachine: '/ansible/inventory/prod/windows.ini'
+          args: '--extra-vars "nodes=${{ parameters.nodeSelection }}"'
+          failOnStdErr: false
