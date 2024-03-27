@@ -4,6 +4,3 @@
   gather_facts: yes
   roles:
     - docker-install
-
-  vars_files:
-    - /ansible/vars/linux/docker_vars.yml
