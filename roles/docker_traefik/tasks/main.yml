@@ -1,36 +1,39 @@
 - name: Copy acme.json
-  template:
+  ansible.builtin.template:
     src: acme.json.j2
     dest: /docker/traefik/acme.json
     owner: root
     group: root
     mode: 0600
+    force: false
     backup: yes
 
 - name: Copy config.yml
-  template:
+  ansible.builtin.template:
     src: config.yml.j2
     dest: /docker/traefik/config.yml
     owner: root
     group: root
     mode: 0644
+    force: false
     backup: yes
 
 - name: Copy traefik.yml
-  template:
+  ansible.builtin.template:
     src: traefik.yml.j2
     dest: /docker/traefik/traefik.yml
     owner: root
     group: root
     mode: 0644
+    force: false
     backup: yes
 
 - name: deploy Traefik Network
-  docker_network:
+  community.docker.docker_network:
     name: "traefik"
 
 - name: deploy Traefik Container
-  docker_container:
+  community.docker.docker_container:
     name: "traefik"
     image: "traefik:latest"
     restart_policy: always
