@@ -1,0 +1,18 @@
+- name: deploy Traefik Network
+  docker_network:
+    name: "traefik"
+
+- name: deploy Traefik Container
+  docker_container:
+    name: "traefik"
+    image: "traefik:latest"
+    command: ["--api.insecure=true", "--providers.docker"]
+    restart_policy: always
+    networks:
+      - name: "traefik"
+    published_ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    
