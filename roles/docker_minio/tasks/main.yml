@@ -1,0 +1,38 @@
+- name: deploy Minio Container
+  docker_container:
+    name: "minio"
+    image: "minio/minio:latest"
+    restart_policy: always
+    networks:
+      - name: "proxy"
+    command: ["server", "/data", "--console-address", ":9001"]
+    env:
+      MINIO_SERVER_URL: "{{ minio_server_url }}"
+      MINIO_BROWSER_REDIRECT_URL: "{{ minio_browser_redirect_url }}"
+      MINIO_ROOT_USER: "{{ minio_root_user }}"
+      MINIO_ROOT_PASSWORD: "{{ minio_root_password }}"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/docker/minio:/data"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.minio-api.entrypoints: "http"
+      traefik.http.routers.minio-api.rule: "Host(`{{ minio_server_url }}`)"
+      traefik.http.middlewares.minio-api-https-redirect.redirectscheme.scheme: "https"
+      traefik.http.routers.minio-api.middlewares: "minio-api-https-redirect"
+      traefik.http.routers.minio-api-secure.entrypoints: "https"
+      traefik.http.routers.minio-api-secure.rule: "Host(`{{ minio_server_url }}`)"
+      traefik.http.routers.minio-api-secure.tls: "true"
+      traefik.http.routers.minio-api-secure.service: "minio-api"
+      traefik.http.services.minio-api.loadbalancer.server.port: "9000"
+      traefik.http.routers.minio.entrypoints: "http"
+      traefik.http.routers.minio.rule: "Host(`{{ minio_browser_redirect_url }}`)"
+      traefik.http.middlewares.minio-https-redirect.redirectscheme.scheme: "https"
+      traefik.http.routers.minio.middlewares: "minio-https-redirect"
+      traefik.http.routers.minio-secure.entrypoints: "https"
+      traefik.http.routers.minio-secure.rule: "Host(`{{ minio_browser_redirect_url }}`)"
+      traefik.http.routers.minio-secure.tls: "true"
+      traefik.http.routers.minio-secure.service: "minio"
+      traefik.http.services.minio.loadbalancer.server.port: "9001"
+      traefik.docker.network: "proxy"
+  
