@@ -38,7 +38,7 @@
     image: "traefik:latest"
     restart_policy: always
     networks:
-      - name: "traefik"
+      - name: "proxy"
     env:
       CF_API_EMAIL: "{{ cloudflare_email_address }}"
       CF_DNS_API_TOKEN: "{{ cloudflare_api_token }}"
