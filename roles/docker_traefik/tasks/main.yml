@@ -1,3 +1,30 @@
+- name: Copy acme.json
+  template:
+    src: acme.json.j2
+    dest: /docker/traefik/acme.json
+    owner: root
+    group: root
+    mode: 0600
+    backup: yes
+
+- name: Copy config.yml
+  template:
+    src: config.yml.j2
+    dest: /docker/traefik/config.yml
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+
+- name: Copy traefik.yml
+  template:
+    src: traefik.yml.j2
+    dest: /docker/traefik/traefik.yml
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+
 - name: deploy Traefik Network
   docker_network:
     name: "traefik"
@@ -6,13 +33,35 @@
   docker_container:
     name: "traefik"
     image: "traefik:latest"
-    command: ["--api.insecure=true", "--providers.docker"]
     restart_policy: always
     networks:
       - name: "traefik"
+    env:
+      CF_API_EMAIL: "{{ cloudflare_email_address }}"
+      CF_DNS_API_TOKEN: "{{ cloudflare_api_token }}"
     published_ports:
       - "80:80"
-      - "8080:8080"
+      - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/docker/traefik/traefik.yml:/traefik.yml:ro"
+      - "/docker/traefik/acme.json:/acme.json"
+      - "/docker/traefik/config.yml:/config.yml:ro"
+      - "/docker/traefik/logs:/var/log/traefik"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.traefik.entrypoints: "http"
+      traefik.http.routers.traefik.rule: "Host(`{{ traefik_dashboard_url }}`)"
+      traefik.http.middlewares.traefik-auth.basicauth.users: "{{ traefik_dashboard_credentials }}"
+      traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme: "https"
+      traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto: "https"
+      traefik.http.routers.traefik.middlewares: "traefik-https-redirect"
+      traefik.http.routers.traefik-secure.entrypoints: "https"
+      traefik.http.routers.traefik-secure.rule: "Host(`{{ traefik_dashboard_url }}`)"
+      traefik.http.routers.traefik-secure.middlewares: "traefik-auth"
+      traefik.http.routers.traefik-secure.tls: "true"
+      traefik.http.routers.traefik-secure.tls.certresolver: "cloudflare"
+      traefik.http.routers.traefik-secure.tls.domains[0].sans: "*.{{ domain_name }}"
+      traefik.http.routers.traefik-secure.service: "api@internal"
     
