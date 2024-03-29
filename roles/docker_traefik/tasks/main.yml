@@ -28,9 +28,10 @@
     force: false
     backup: yes
 
-- name: deploy Traefik Network
-  community.docker.docker_network:
-    name: "traefik"
+- name: deploy Traefik Proxy Network
+  docker_network:
+    name: "proxy"
+    internal: "no"
 
 - name: deploy Traefik Container
   community.docker.docker_container:
