@@ -1,10 +1,10 @@
 - name: Ensure Image directory exists
-  file: 
-    path: "/docker/images"
+  ansible.builtin.file: 
+    path: "/docker/images/azp_agent"
     state: directory
 
 - name: Copy Dockerfile
-  template: 
+  ansible.builtin.template: 
     src: azp_agent_linux.dockerfile.j2
     dest: /docker/images/azp_agent/azp_agent_linux.dockerfile
     owner: root
@@ -12,7 +12,7 @@
     mode: 0644
 
 - name: Copy start.sh
-  template: 
+  ansible.builtin.template: 
     src: start.sh.j2
     dest: /docker/images/azp_agent/start.sh
     owner: root
@@ -27,7 +27,7 @@
     source: build
 
 - name: Deploy Azure Pipelines Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: "ado-agent"
     image: "ado-agent:linux"
     restart_policy: always
