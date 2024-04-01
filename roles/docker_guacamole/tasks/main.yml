@@ -48,7 +48,6 @@
       LDAP_HOSTNAME: "{{ guacamole_ldap_hostname }}"
       LDAP_USER_BASE_DN: "{{ guacamole_ldap_user_base_dn }}"
       TOTP_ENABLED: "true"
-      TOTP_MODE: "sha256"
     published_ports:
       - "8080:8080"
     labels:
