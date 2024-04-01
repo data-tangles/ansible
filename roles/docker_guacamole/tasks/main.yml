@@ -47,6 +47,7 @@
       POSTGRESQL_USER: "{{ guacamole_postgresql_user }}" 
       LDAP_HOSTNAME: "{{ guacamole_ldap_hostname }}"
       LDAP_USER_BASE_DN: "{{ guacamole_ldap_user_base_dn }}"
+      LDAP_USERNAME_ATTRIBUTE: "sAMAccountName"
       TOTP_ENABLED: "true"
       TOTP_MODE: "sha1"
     published_ports:
