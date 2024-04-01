@@ -1,0 +1,41 @@
+- name: Ensure Image directory exists
+  ansible.builtin.file: 
+    path: "/docker/images/azp_agent"
+    state: directory
+
+- name: Copy Dockerfile
+  ansible.builtin.template: 
+    src: azp_agent_linux.dockerfile.j2
+    dest: /docker/images/azp_agent/azp_agent_linux.dockerfile
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy start.sh
+  ansible.builtin.template: 
+    src: start.sh.j2
+    dest: /docker/images/azp_agent/start.sh
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Build Azure DevOps Agent Container
+  community.docker.docker_image:
+    name: ado-agent:linux
+    build:
+      path: /docker/images/azp_agent
+      dockerfile: azp_agent_linux.dockerfile
+    source: build
+
+- name: Deploy Azure Pipelines Docker Container
+  community.docker.docker_container:
+    name: "ado-agent"
+    image: "ado-agent:linux"
+    restart_policy: always
+    networks:
+      - name: "proxy"
+    env:
+      AZP_URL: "{{ AZP_URL }}"
+      AZP_TOKEN: "{{ AZP_TOKEN }}"
+      AZP_POOL: "{{ AZP_POOL }}"
+      AZP_AGENT_NAME: "{{ AZP_AGENT_NAME }}"
