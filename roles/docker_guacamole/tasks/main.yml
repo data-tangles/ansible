@@ -22,7 +22,7 @@
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/docker/guacamole/db/init:/docker-entrypoint-initdb.d"
-      - "/docker/guacamole/db:/var/lib/postgresql/data/guacamole"
+      - "/docker/guacamole/db/data:/var/lib/postgresql/data/guacamole"
 
 - name: deploy Guacd Container
   community.docker.docker_container:
@@ -41,10 +41,10 @@
       - name: "proxy"
     env:
       GUACD_HOSTNAME: guacd
-      POSTGRES_DATABASE: guacamole_db
-      POSTGRES_HOSTNAME: guacamole-postgresql
-      POSTGRES_PASSWORD: "{{ guacamole_postgresql_password }}"
-      POSTGRES_USER: "{{ guacamole_postgresql_user }}" 
+      POSTGRESQL_DATABASE: guacamole_db
+      POSTGRESQL_HOSTNAME: guacamole-postgresql
+      POSTGRESQL_PASSWORD: "{{ guacamole_postgresql_password }}"
+      POSTGRESQL_USER: "{{ guacamole_postgresql_user }}" 
     published_ports:
       - "8080:8080"
     labels:
