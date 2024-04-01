@@ -24,6 +24,7 @@
     name: ado-agent:linux
     build:
       path: /docker/images/azp_agent
+      dockerfile: azp_agent_linux.dockerfile
     source: build
 
 - name: Deploy Azure Pipelines Docker Container
