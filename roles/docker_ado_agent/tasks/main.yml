@@ -1,3 +1,8 @@
+- name: Ensure Image directory exists
+  file: 
+    path: "/docker/images"
+    state: directory
+
 - name: Copy Dockerfile
   template: 
     src: azp_agent_linux.dockerfile.j2
