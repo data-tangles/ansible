@@ -4,7 +4,8 @@
     state: directory
 
 - name: Create init script
-  ansible.builtin.command: docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgresql > /docker/guacamole/db/init/initdb.sql
+  ansible.builtin.shell: | 
+    docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgresql > /docker/guacamole/db/init/initdb.sql
 
 - name: deploy Postgresql Container
   community.docker.docker_container:
