@@ -6,7 +6,7 @@
 - name: Copy Dockerfile
   template: 
     src: azp_agent_linux.dockerfile.j2
-    dest: /docker/images/azp_agent
+    dest: /docker/images/azp_agent/azp_agent_linux.dockerfile
     owner: root
     group: root
     mode: 0644
@@ -14,7 +14,7 @@
 - name: Copy start.sh
   template: 
     src: start.sh.j2
-    dest: /docker/images/azp_agent
+    dest: /docker/images/azp_agent/start.sh
     owner: root
     group: root
     mode: 0644
