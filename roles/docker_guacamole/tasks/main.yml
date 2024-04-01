@@ -29,7 +29,7 @@
 - name: deploy Guacd Container
   community.docker.docker_container:
     name: "guacd"
-    image: "guacamole/guacd"
+    image: "guacamole/guacd:1.5.3"
     restart_policy: always
     networks:
       - name: "proxy"
