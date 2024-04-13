@@ -5,8 +5,8 @@
 
 - name: Copy Dockerfile
   ansible.builtin.template: 
-    src: gh_runner.dockerfile.j2
-    dest: /docker/images/gh_actions_runner/gh_runner.dockerfile
+    src: gha_runner.dockerfile.j2
+    dest: /docker/images/gh_actions_runner/gha_runner.dockerfile
     owner: root
     group: root
     mode: 0644
