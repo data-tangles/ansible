@@ -8,4 +8,4 @@
     env:
       ORGANIZATION: "{{ GH_ORG_URL }}"
       ACCESS_TOKEN: "{{ GH_ORG_TOKEN }}"
-      USE_HOSTNAME: true
+      USE_HOSTNAME: "true"
