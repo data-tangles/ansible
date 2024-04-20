@@ -2,16 +2,70 @@
 
 [![HitCount](https://hits.dwyl.com/qman-being/ansible.svg?style=for-the-badge&show=unique)](http://hits.dwyl.com/qman-being/ansible)
 
-[![Build Status](https://dev.azure.com/qman-being/dreddrealm/_apis/build/status/qman-being.ansible?branchName=master)](https://dev.azure.com/qman-being/dreddrealm/_build/latest?definitionId=11&branchName=master)
-
 # Ansible
 
 This repo contains all my Ansible playbooks which I use regularly within my homelab environment. If you would like to clone this repo you would just need to create your own inventory and vars files. You would also need to edit the main playbook host to match your own environment.
 
+```sh
+📁 root
+├─📁 .github
+├─📁 roles
+├─🗒️ CHANGELOG.md
+├─🗒️ .gitattributes
+├─🗒️ .gitignore
+├─🗒️ LICENSE
+├─🗒️ README.md
+├─🗒️ package.yaml
+└─🗒️ {playbook}.yml
+```
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+  - [Install Ansible](#install-ansible)
+  - [Clone Repository](#clone-repository)
+  - [Examples](#examples)
+  - [Additional Information](#additional-information)
+- [Support](#support)
+  - [Issues](#issues)
+  - [Feature Requests](#feature-requests)
+  - [Updates](#updates)
+
 ## Getting started 
+
+### Install Ansible
 
 You would need to start by [installing](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) Ansible onto a machine where you would like to run playbooks from. 
 
-In my case, I have Ansible installed on a dedicated node which also acts as an Azure DevOps agent so that I can run all my playbooks via CI/CD pipelines.
+### Clone Repository
 
-The [documentation](https://docs.ansible.com/) site has everything you need to setup all components for Ansible so I encourage you to read through it and familiarize yourself with the key concepts.
+```
+git clone https://github.com/data-tangles/ansible.git
+```
+
+### Examples
+
+Below showcases an example playbook being run
+
+```
+ansible-playbook -i /path/to/inventory.ini -u ansible-user -k example_playbook.yml
+```
+
+### Additional Information
+
+The [documentation](https://docs.ansible.com/) site for Ansible has everything you need to setup all components for Ansible so I encourage you to read through it and familiarize yourself with the key concepts.
+
+## Support
+This repository is provided as is and should be considered as a hobby project. With that being said, please see below on details for support.
+
+### Issues
+
+- Please submit a new [Issue](https://github.com/data-tangles/ansible/issues/new) if you encounter any bugs or issues.
+
+### Feature Requests
+
+- You are welcome to submit a feature request but no timeline or guarantee will be provided regarding implentation thereof.
+
+### Updates
+
+- The repository will be updated from time to time with fixes and new playbooks.
