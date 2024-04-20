@@ -23,6 +23,9 @@ jobs:
 
     steps:
 
+      - name: Checkout 🔔
+        uses: actions/checkout@v4
+
       - name: Conventional Changelog Action 📋
         id: changelog
         uses: TriPSs/conventional-changelog-action@v5
