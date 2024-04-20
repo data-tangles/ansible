@@ -1,3 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  roles:
-    - windows-updates
