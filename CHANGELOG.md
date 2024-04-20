@@ -1,9 +1,9 @@
-# 0.1.0 (2024-04-20)
+## 0.1.1 (2024-04-20)
 
 
 ### Bug Fixes
 
-* Correct GitHub Actions workflow branch reference to `main` ([0d016b0](https://github.com/data-tangles/ansible/commit/0d016b00e89f51a6f73373fe1f733355d1e9fe0c))
+* Add `USE_HOSTNAME` variable to GitHub Actions Runner playbook ([faa52d2](https://github.com/data-tangles/ansible/commit/faa52d248b09a7450e0dc4fa3b4e664cc8188db2))
 
 
 
