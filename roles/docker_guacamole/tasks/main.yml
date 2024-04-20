@@ -1,0 +1,71 @@
+- name: Ensure init directory exists
+  ansible.builtin.file: 
+    path: "/docker/guacamole/db/init"
+    state: directory
+
+- name: Create init script
+  ansible.builtin.shell: | 
+    docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgresql > /docker/guacamole/db/init/initdb.sql
+  args:
+    creates: /docker/guacamole/db/init/initdb.sql
+
+- name: deploy Postgresql Container
+  community.docker.docker_container:
+    name: "guacamole-postgresql"
+    image: "postgres:alpine"
+    restart_policy: always
+    networks:
+      - name: "proxy"
+    env:
+      PGDATA: "/var/lib/postgresql/data/guacamole"
+      POSTGRES_DB: "guacamole_db"
+      POSTGRES_PASSWORD: "{{ guacamole_postgresql_password }}"
+      POSTGRES_USER: "{{ guacamole_postgresql_user }}" 
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/docker/guacamole/db/init:/docker-entrypoint-initdb.d"
+      - "/docker/guacamole/db/data:/var/lib/postgresql/data/guacamole"
+
+- name: deploy Guacd Container
+  community.docker.docker_container:
+    name: "guacd"
+    image: "guacamole/guacd:1.5.3"
+    restart_policy: always
+    networks:
+      - name: "proxy"
+
+- name: deploy Guacamole Container
+  community.docker.docker_container:
+    name: "guacamole"
+    image: "guacamole/guacamole"
+    restart_policy: always
+    networks:
+      - name: "proxy"
+    env:
+      GUACD_HOSTNAME: guacd
+      POSTGRESQL_DATABASE: guacamole_db
+      POSTGRESQL_HOSTNAME: guacamole-postgresql
+      POSTGRESQL_PASSWORD: "{{ guacamole_postgresql_password }}"
+      POSTGRESQL_USER: "{{ guacamole_postgresql_user }}" 
+      LDAP_HOSTNAME: "{{ guacamole_ldap_hostname }}"
+      LDAP_USER_BASE_DN: "{{ guacamole_ldap_user_base_dn }}"
+      LDAP_USERNAME_ATTRIBUTE: "sAMAccountName"
+      LDAP_SEARCH_BIND_DN: "{{ guacamole_ldap_search_bind_dn }}"
+      LDAP_SEARCH_BIND_PASSWORD: "{{ guacamole_ldap_search_bind_password }}"
+      TOTP_ENABLED: "true"
+      TOTP_MODE: "sha1"
+    published_ports:
+      - "8080:8080"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.guacamole.entrypoints: "http"
+      traefik.http.routers.guacamole.rule: "Host(`{{ guacamole_url }}`)"
+      traefik.http.middlewares.guacamole-https-redirect.redirectscheme.scheme: "https"
+      traefik.http.routers.guacamole.middlewares: "guacamole-https-redirect"
+      traefik.http.routers.guacamole-secure.entrypoints: "https"
+      traefik.http.routers.guacamole-secure.rule: "Host(`{{ guacamole_url }}`)"
+      traefik.http.routers.guacamole-secure.tls: "true"
+      traefik.http.routers.guacamole-secure.service: "guacamole"
+      traefik.http.services.guacamole.loadbalancer.server.port: "8080"
+      traefik.docker.network: "proxy"
+    
