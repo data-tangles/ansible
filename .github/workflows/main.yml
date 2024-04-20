@@ -9,8 +9,6 @@ on:
 permissions:
   contents: write
   packages: write
-  pull-requests: write
-  security-events: write
 
 jobs:
   release:
@@ -24,6 +22,9 @@ jobs:
       version: ${{ steps.changelog.outputs.version }}    
 
     steps:
+
+      - name: Checkout 🔔
+        uses: actions/checkout@v4
 
       - name: Conventional Changelog Action 📋
         id: changelog
