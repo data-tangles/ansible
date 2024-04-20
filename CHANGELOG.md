@@ -1,9 +1,9 @@
-## 0.1.1 (2024-04-20)
+## 0.1.2 (2024-04-20)
 
 
 ### Bug Fixes
 
-* Add `USE_HOSTNAME` variable to GitHub Actions Runner playbook ([faa52d2](https://github.com/data-tangles/ansible/commit/faa52d248b09a7450e0dc4fa3b4e664cc8188db2))
+* change GitHub Actions Runner Docker environment variable ([3eecdd2](https://github.com/data-tangles/ansible/commit/3eecdd2ba115ff8594f03988d9d088383eb93919))
 
 
 
