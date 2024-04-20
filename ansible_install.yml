@@ -1,9 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
-  roles:
-    - ansible
-
-  vars_files:
-    - /ansible/vars/linux/ansible_vars.yml

@@ -9,6 +9,7 @@ This repo contains all my Ansible playbooks which I use regularly within my home
 ```sh
 📁 root
 ├─📁 .github
+├─📁 playbooks
 ├─📁 roles
 ├─🗒️ CHANGELOG.md
 ├─🗒️ .gitattributes

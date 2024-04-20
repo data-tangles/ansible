@@ -1,9 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
-  roles:
-    - docker_npm
-
-  vars_files:
-    - /ansible/vars/docker/npm/npm_vars.yml

@@ -1,3 +1,0 @@
-- hosts: "{{ nodes }}"
-  roles:
-    - windows_updates

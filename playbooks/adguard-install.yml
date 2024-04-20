@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - ../roles/docker_adguard_home
+
+  vars_files:
+    - /ansible/vars/docker/adguard-home/adguard-home_vars.yml

@@ -1,9 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
-  roles:
-    - linux_snmp
-
-  vars_files:
-    - /ansible/vars/linux/linux_snmpd_vars.yml

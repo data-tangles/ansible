@@ -1,6 +1,0 @@
-- hosts: "{{ nodes }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
-  roles:
-    - docker_guacamole

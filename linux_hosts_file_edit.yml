@@ -1,9 +1,0 @@
-- hosts: "{{ nodes }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
-  roles:
-    - linux_hosts_file_edit
-
-  vars_files:
-    - /ansible/vars/linux/linux_hosts_file_edit.yml

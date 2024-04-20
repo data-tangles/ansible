@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - ../roles/linux_ad_join
+
+  vars_files:
+    - /ansible/vars/linux/linux_ad_join_vars.yml

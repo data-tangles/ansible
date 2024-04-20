@@ -1,6 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  roles:
-    - windows_snmp
-
-  vars_files:
-    - /ansible/vars/windows/snmp/snmp_vars.yml

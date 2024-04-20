@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - ../roles/k3s
+
+  vars_files:
+    - /ansible/vars/linux/k3s_install_vars.yml

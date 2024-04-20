@@ -1,7 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  gather_facts: yes
-  roles:
-    - networking_edge_os
-
-  vars_files:
-    - /ansible/vars/networking/edge_os_vars.yml

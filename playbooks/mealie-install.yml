@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - ../roles/docker_mealie
+
+  vars_files:
+    - /ansible/vars/docker/mealie/mealie_vars.yml

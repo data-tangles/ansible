@@ -1,0 +1,9 @@
+- hosts: "{{ HOSTS }}"
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  roles:
+    - ../roles/apt
+
+  vars_files:
+    - /ansible/vars/linux/apt_vars.yml
