@@ -9,8 +9,6 @@ on:
 permissions:
   contents: write
   packages: write
-  pull-requests: write
-  security-events: write
 
 jobs:
   release:
