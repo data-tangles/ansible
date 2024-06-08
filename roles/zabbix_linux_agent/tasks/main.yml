@@ -9,13 +9,13 @@
 
 - name: Download and Install Zabbix Agent Repo - x86
   ansible.builtin.apt_repository:
-    repo: deb https://repo.zabbix.com/zabbix/6.4/ubuntu jammy main
+    repo: deb https://repo.zabbix.com/zabbix/7.0/ubuntu jammy main
     state: present
   when: ansible_architecture == "x86_64"
 
 - name: Download and Install Zabbix Agent Repo - arm64
   ansible.builtin.apt_repository:
-    repo: deb https://repo.zabbix.com/zabbix/6.4/ubuntu-arm64 jammy main
+    repo: deb https://repo.zabbix.com/zabbix/7.0/ubuntu-arm64 jammy main
     state: present
   when: ansible_architecture == "aarch64"
 
