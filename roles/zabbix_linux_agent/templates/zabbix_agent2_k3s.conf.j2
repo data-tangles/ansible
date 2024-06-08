@@ -1,7 +1,7 @@
 PidFile=/var/run/zabbix/zabbix_agent2.pid
 LogFile=/var/log/zabbix/zabbix_agent2.log
 LogFileSize=0
-Server={{ ZABBIX_SERVER }},{{ K3S_POD_RANGE }}
-ServerActive={{ ZABBIX_SERVER }}
+Server={{ zabbix_server }},{{ k3s_pod_range }}
+ServerActive={{ zabbix_server }}
 Hostname={{ ansible_hostname }}
 Include=./zabbix_agent2.d/plugins.d/*.conf
