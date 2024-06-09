@@ -19,7 +19,7 @@
 
 - name: Set installed Zabbix version fact
   ansible.builtin.set_fact:
-    installed_major_minor: "{{ zabbix_agent_check.stdout | from_json  }}"
+    installed_major_minor: "{{ zabbix_agent_check.stdout }}"
   when: "'not installed' not in zabbix_agent_check.stdout"
 
 - name: Compare Zabbix Agent versions
