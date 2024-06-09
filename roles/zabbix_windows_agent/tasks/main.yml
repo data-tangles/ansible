@@ -2,13 +2,13 @@
   ansible.windows.win_shell: |
     $ZabbixVersion = (Get-Package | Where-Object Name -match "Zabbix Agent 2").Version
     $Version = [version]$ZabbixVersion
-    $ShortVersion = "$($Version.Major).$($Version.Minor)"
+    $($Version.Major).$($Version.Minor)
   register: zabbix_agent_check 
 
 - name: Compare Zabbix Agent versions
   ansible.builtin.set_fact:
     upgrade_zabbix: true
-  when: zabbix_agent_check is < {{ zabbix_agent_version }}
+  when: zabbix_agent_check is < "{{ zabbix_agent_version }}"
 
 - name: Create staging location for Zabbix download
   ansible.builtin.win_file:
