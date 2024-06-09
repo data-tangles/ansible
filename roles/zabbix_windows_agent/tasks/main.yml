@@ -25,8 +25,8 @@
 
 - name: Download Zabbix Agent MSI
   ansible.windows.win_get_url:
-    url: https://cdn.zabbix.com/zabbix/binaries/stable/{{ desired_major_minor }}/{{ desired_major_minor }}.0/zabbix_agent-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
-    dest: C:\zabbix_temp\zabbix_agent-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
+    url: https://cdn.zabbix.com/zabbix/binaries/stable/{{ desired_major_minor }}/{{ desired_major_minor }}.0/zabbix_agent2-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
+    dest: C:\zabbix_temp\zabbix_agent2-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
   register: download_result
   when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] == null
 
