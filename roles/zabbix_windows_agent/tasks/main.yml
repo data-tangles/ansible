@@ -29,7 +29,7 @@
 - name: Compare Zabbix Agent versions
   ansible.builtin.set_fact:
     upgrade_zabbix: true
-  when: installed_major_minor is version(desired_major_minor, '<')
+  when: "installed_major_minor is version(desired_major_minor, '<') or 'not installed' not in zabbix_agent_check.output[0]"
 
 - name: Create staging location for Zabbix download
   ansible.builtin.win_file:
