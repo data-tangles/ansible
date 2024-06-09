@@ -13,6 +13,10 @@
       }
   register: zabbix_agent_check
 
+- name: Ensure check output is available
+  debug:
+    msg: "{{ zabbix_agent_check.stdout }}"
+
 - name: Define desired Zabbix version
   ansible.builtin.set_fact:
     desired_major_minor: '{{ zabbix_agent_version }}'
