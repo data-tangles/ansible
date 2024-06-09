@@ -49,3 +49,8 @@
     path: C:\zabbix_temp
     state: absent
   when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0 or force_install
+
+- name: Restart Zabbix Agent service
+  ansible.windows.win_service:
+    name: "Zabbix Agent 2"
+    state: restarted
