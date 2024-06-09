@@ -30,6 +30,13 @@
   register: download_result
   when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0 or force_install
 
+- name: Uninstall Previous Zabbix Agent
+  ansible.windows.win_powershell:
+    script: |
+      cd C:\zabbix_temp
+      msiexec /x "{{ download_result.dest.split('\\')[-1] }}" /qn
+  when: zabbix_agent_check.output[0] | int < desired_major_minor or force_install
+
 - name: Install Zabbix Agent
   ansible.windows.win_powershell:
     script: |
