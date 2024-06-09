@@ -30,17 +30,11 @@
   register: download_result
   when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] == null
 
-- name: Set Zabbix Agent MSI variable
-  ansible.builtin.set_fact:
-    zabbix_msi: "{{ 'download_result.dest.split('\\')[-1]' }}"
-  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] == null
-
-
 - name: Install Zabbix Agent
   ansible.windows.win_powershell:
     script: |
       cd C:\zabbix_temp
-      msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
+      msiexec /i "{{ download_result.dest.split('\\')[-1] }}" /qn SERVER="{{ zabbix_server }}"
   when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] == null
 
 - name: Remove staging location for Zabbix download
