@@ -1,21 +1,32 @@
-- name: Populate service facts
-  ansible.builtin.service_facts:
+- name: Check installed Zabbix Agent
+  ansible.builtin.shell: |
+    apt list --installed 2>/dev/null | grep zabbix-agent2 | cut -d' ' -f2 | cut -d':' -f2 | cut -d'-' -f1 | cut -d'.' -f1,2
+  register: zabbix_agent_check
+
+- name: Define desired Zabbix version
+  ansible.builtin.set_fact:
+    desired_major_minor: '{{ zabbix_agent_version }}'
 
 - name: Remove Existing Zabbix Installations
   ansible.builtin.apt:
     name: zabbix-agent2
     state: absent
-  when: ansible_facts.services['zabbix-agent2.service'] is defined
+  when: zabbix_agent_check.stdout | int < desired_major_minor and zabbix_agent_check.stdout | length > 0
+
+- name: Add Zabbix GPG Repository Key
+  ansible.builtin.get_url:
+    url: https://repo.zabbix.com/zabbix/{{ desired_major_minor }}/ubuntu/dists/{{ ansible_distribution_release }}/Release.gpg
+    dest: /etc/apt/keyrings/zabbix.asc
 
 - name: Download and Install Zabbix Agent Repo - x86
   ansible.builtin.apt_repository:
-    repo: deb https://repo.zabbix.com/zabbix/7.0/ubuntu jammy main
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/zabbix.asc] https://repo.zabbix.com/zabbix/{{ desired_major_minor }}/ubuntu {{ ansible_distribution_release }} main"
     state: present
   when: ansible_architecture == "x86_64"
 
 - name: Download and Install Zabbix Agent Repo - arm64
   ansible.builtin.apt_repository:
-    repo: deb https://repo.zabbix.com/zabbix/7.0/ubuntu-arm64 jammy main
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/zabbix.asc] https://repo.zabbix.com/zabbix/{{ desired_major_minor }}/ubuntu {{ ansible_distribution_release }} main"
     state: present
   when: ansible_architecture == "aarch64"
 
