@@ -13,6 +13,11 @@
     state: absent
   when: zabbix_agent_check.stdout | int < desired_major_minor and zabbix_agent_check.stdout | length > 0
 
+- name: Add Zabbix GPG Repository Key
+  ansible.builtin.get_url:
+    url: https://repo.zabbix.com/zabbix/{{ desired_major_minor }}/ubuntu/dists/{{ ansible_distribution_release }}/Release.gpg
+    dest: /usr/share/keyrings/zabbix.asc
+
 - name: Download and Install Zabbix Agent Repo - x86
   ansible.builtin.apt_repository:
     repo: deb https://repo.zabbix.com/zabbix/{{ desired_major_minor }}/ubuntu {{ ansible_distribution_release }} main
