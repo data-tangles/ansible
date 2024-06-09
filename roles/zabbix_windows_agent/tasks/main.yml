@@ -15,7 +15,7 @@
 
 - name: Ensure check output is available
   debug:
-    msg: "{{ zabbix_agent_check.stdout | from_json }}"
+    msg: "{{ zabbix_agent_check.output[0] }}"
 
 - name: Define desired Zabbix version
   ansible.builtin.set_fact:
@@ -23,8 +23,8 @@
 
 - name: Set installed Zabbix version fact
   ansible.builtin.set_fact:
-    installed_major_minor: "{{ zabbix_agent_check.stdout }}"
-  when: "'not installed' not in zabbix_agent_check.stdout"
+    installed_major_minor: "{{ zabbix_agent_check.output[0] }}"
+  when: "'not installed' not in zabbix_agent_check.output[0]"
 
 - name: Compare Zabbix Agent versions
   ansible.builtin.set_fact:
@@ -35,29 +35,29 @@
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: directory
-  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.stdout
+  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.output[0]
 
 - name: Download Zabbix Agent MSI
   ansible.windows.win_get_url:
     url: https://cdn.zabbix.com/zabbix/binaries/stable/{{ desired_major_minor }}/{{ desired_major_minor }}.0/zabbix_agent-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
     dest: C:\zabbix_temp\zabbix_agent-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
   register: download_result
-  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.stdout
+  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.output[0]
 
 - name: Set Zabbix Agent MSI variable
   ansible.builtin.set_fact:
     zabbix_msi: "{{ download_result.dest.split('\\')[-1] }}"
-  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.stdout
+  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.output[0]
 
 - name: Install Zabbix Agent
   ansible.windows.win_powershell:
     script: |
       cd C:\zabbix_temp
       msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
-  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.stdout
+  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.output[0]
 
 - name: Remove staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: absent
-  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.stdout
+  when: upgrade_zabbix or 'not installed' in zabbix_agent_check.output[0]
