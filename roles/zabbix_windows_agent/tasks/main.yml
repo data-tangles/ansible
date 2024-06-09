@@ -21,24 +21,24 @@
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: directory
-  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0
+  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0 or force_install
 
 - name: Download Zabbix Agent MSI
   ansible.windows.win_get_url:
     url: https://cdn.zabbix.com/zabbix/binaries/stable/{{ desired_major_minor }}/{{ desired_major_minor }}.0/zabbix_agent2-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
     dest: C:\zabbix_temp\zabbix_agent2-{{ desired_major_minor }}.0-windows-amd64-openssl.msi
   register: download_result
-  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0
+  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0 or force_install
 
 - name: Install Zabbix Agent
   ansible.windows.win_powershell:
     script: |
       cd C:\zabbix_temp
       msiexec /i "{{ download_result.dest.split('\\')[-1] }}" /qn SERVER="{{ zabbix_server }}"
-  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0
+  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0 or force_install
 
 - name: Remove staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: absent
-  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0
+  when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] | length > 0 or force_install
