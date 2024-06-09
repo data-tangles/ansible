@@ -11,7 +11,7 @@
   ansible.builtin.apt:
     name: zabbix-agent2
     state: absent
-  when: zabbix_agent_check.stdout | int < desired_major_minor and zabbix_agent_check.stdout == null
+  when: zabbix_agent_check.stdout | int < desired_major_minor and zabbix_agent_check.stdout | length > 0
 
 - name: Download and Install Zabbix Agent Repo - x86
   ansible.builtin.apt_repository:
