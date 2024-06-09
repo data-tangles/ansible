@@ -15,7 +15,7 @@
 
 - name: Ensure check output is available
   debug:
-    msg: "{{ zabbix_agent_check.stdout }}"
+    msg: "{{ zabbix_agent_check.stdout | from_json }}"
 
 - name: Define desired Zabbix version
   ansible.builtin.set_fact:
