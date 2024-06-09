@@ -1,5 +1,5 @@
 - name: Check installed Zabbix Agent
-  ansible.windows.win_shell: |
+  ansible.windows.win_powershell: |
     [CmdletBinding(SupportsShouldProcess)]
     param ()
     
@@ -45,7 +45,7 @@
   when: upgrade_zabbix or 'not installed' in zabbix_agent_check.stdout
 
 - name: Install Zabbix Agent
-  ansible.windows.win_shell: |
+  ansible.windows.win_powershell: |
     cd C:\zabbix_temp
     msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
   when: upgrade_zabbix or 'not installed' in zabbix_agent_check.stdout
