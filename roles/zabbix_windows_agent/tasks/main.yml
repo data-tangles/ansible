@@ -1,53 +1,41 @@
 - name: Check installed Zabbix Agent
   ansible.windows.win_shell: |
-    (Get-Package | Where-Object Name -match "Zabbix Agent 2").Version
+    $ZabbixVersion = (Get-Package | Where-Object Name -match "Zabbix Agent 2").Version
+    $Version = [version]$ZabbixVersion
+    $ShortVersion = "$($Version.Major).$($Version.Minor)"
   register: zabbix_agent_check 
-
-- name: Set installed Zabbix Agent version fact
-  ansible.builtin.set_fact:
-    installed_zabbix_version: "{{ zabbix_agent_check.stdout_lines[0] | default('0.0.0.0') }}"
-  when: zabbix_agent_check.stdout_lines
-
-- name: Extract major and minor version parts
-  ansible.builtin.set_fact:
-    installed_major_minor: "{{ installed_zabbix_version.split('.')[0] }}.{{ installed_zabbix_version.split('.')[1] }}"
-  when: zabbix_agent_check.stdout_lines
-
-- name: Define the desired Zabbix version
-  ansible.builtin.set_fact:
-    desired_major_minor: '7.0'
 
 - name: Compare Zabbix Agent versions
   ansible.builtin.set_fact:
     upgrade_zabbix: true
-  when: installed_major_minor is version(desired_major_minor, '<')
+  when: zabbix_agent_check is < {{ zabbix_agent_version }}
 
 - name: Create staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: directory
-  when: not zabbix_agent_check.stdout_lines or upgrade_zabbix
+  when: upgrade_zabbix or zabbix_agent_check == null
 
 - name: Download Zabbix Agent MSI
   ansible.windows.win_get_url:
-    url: https://cdn.zabbix.com/zabbix/binaries/stable/7.0/7.0.0/zabbix_agent-7.0.0-windows-amd64-openssl.msi
+    url: https://cdn.zabbix.com/zabbix/binaries/stable/{{ zabbix_agent_version }}/{{ zabbix_agent_version }}.0/zabbix_agent-{{ zabbix_agent_version }}.0-windows-amd64-openssl.msi
     dest: C:\zabbix_temp
   register: download_result
-  when: not zabbix_agent_check.stdout_lines or upgrade_zabbix
+  when: upgrade_zabbix or zabbix_agent_check == null
 
 - name: Set Zabbix Agent MSI variable
   ansible.builtin.set_fact:
     zabbix_msi: "{{ download_result.dest.split('/')[-1] }}"
-  when: not zabbix_agent_check.stdout_lines or upgrade_zabbix
+  when: upgrade_zabbix or zabbix_agent_check == null
 
 - name: Install Zabbix Agent
   ansible.windows.win_shell: |
     cd C:\zabbix_temp
     msiexec /i "{{ zabbix_msi }}" /qn SERVER="{{ zabbix_server }}"
-  when: not zabbix_agent_check.stdout_lines or upgrade_zabbix
+  when: upgrade_zabbix or zabbix_agent_check == null
 
 - name: Remove staging location for Zabbix download
   ansible.builtin.win_file:
     path: C:\zabbix_temp
     state: absent
-  when: not zabbix_agent_check.stdout_lines or upgrade_zabbix
+  when: upgrade_zabbix or zabbix_agent_check == null
