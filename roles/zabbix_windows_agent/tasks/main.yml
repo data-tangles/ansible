@@ -32,7 +32,7 @@
 
 - name: Set Zabbix Agent MSI variable
   ansible.builtin.set_fact:
-    zabbix_msi: "{{ download_result.dest.split('\\')[-1] }}"
+    zabbix_msi: "{{ 'download_result.dest.split('\\')[-1]' }}"
   when: zabbix_agent_check.output[0] | int < desired_major_minor or zabbix_agent_check.output[0] == null
 
 
