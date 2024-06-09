@@ -1,5 +1,8 @@
 - name: Check installed Zabbix Agent
   ansible.windows.win_shell: |
+    [CmdletBinding(SupportsShouldProcess)]
+    param ()
+    
     $ZabbixVersion = (Get-Package | Where-Object Name -match "Zabbix Agent 2").Version
     if ($ZabbixVersion) {
       $Version = [version]$ZabbixVersion
