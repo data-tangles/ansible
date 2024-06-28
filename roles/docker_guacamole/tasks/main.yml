@@ -12,7 +12,7 @@
 - name: deploy Postgresql Container
   community.docker.docker_container:
     name: "guacamole-postgresql"
-    image: "postgres:alpine"
+    image: "postgres:alpine@sha256:de3d7b6e4b5b3fe899e997579d6dfe95a99539d154abe03f0b6839133ed05065"
     restart_policy: always
     networks:
       - name: "proxy"
@@ -37,7 +37,7 @@
 - name: deploy Guacamole Container
   community.docker.docker_container:
     name: "guacamole"
-    image: "guacamole/guacamole"
+    image: "guacamole/guacamole@sha256:b59b2cbd43a7a0361fc3b395925994d32f7362f77d407464d70bdacb0b486eff"
     restart_policy: always
     networks:
       - name: "proxy"

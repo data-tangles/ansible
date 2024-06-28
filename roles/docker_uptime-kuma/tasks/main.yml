@@ -5,7 +5,7 @@
 - name: deploy Uptime Kuma Container
   docker_container:
     name: "uptime-kuma"
-    image: "louislam/uptime-kuma:1"
+    image: "louislam/uptime-kuma:1@sha256:96510915e6be539b76bcba2e6873591c67aca8a6075ff09f5b4723ae47f333fc"
     restart_policy: always
     networks:
       - name: "uptime-kuma"

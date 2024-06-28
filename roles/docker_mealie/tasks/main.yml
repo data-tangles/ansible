@@ -5,7 +5,7 @@
 - name: deploy Mealie Docker Container
   docker_container:
     name: "mealie"
-    image: "hkotel/mealie:latest"
+    image: "hkotel/mealie:latest@sha256:c43d5db470109478c3299c6229d6cde5403cbf9ada8b4fc735f91a259360fc32"
     restart_policy: always
     networks:
       - name: "mealie"

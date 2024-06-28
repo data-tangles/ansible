@@ -1,7 +1,7 @@
 - name: Deploy GitHub Actions Runner Container
   community.docker.docker_container:
     name: "gha-runner"
-    image: "ghcr.io/binary-braids/github-actions-runner:latest"
+    image: "ghcr.io/binary-braids/github-actions-runner:latest@sha256:bf4a437b3cfaae0c2ad64f5cdcee50195e846e20b5af93faf172b8c0c00ef989"
     restart_policy: always
     networks:
       - name: "proxy"
