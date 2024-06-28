@@ -5,7 +5,7 @@
 - name: deploy Teamspeak Docker Container
   docker_container:
     name: "teamspeak"
-    image: "teamspeak"
+    image: "teamspeak@sha256:10499180e88f24170812e12b34083332a7573ae35a4becba5d7a85d9761050e5"
     restart_policy: always
     networks:
       - name: "teamspeak"
@@ -28,7 +28,7 @@
 - name: deploy Teamspeak DB Container
   docker_container:
     name: "teamspeak-db"
-    image: "mariadb"
+    image: "mariadb@sha256:e59ba8783bf7bc02a4779f103bb0d8751ac0e10f9471089709608377eded7aa8"
     restart_policy: always
     networks:
       - name: "teamspeak"

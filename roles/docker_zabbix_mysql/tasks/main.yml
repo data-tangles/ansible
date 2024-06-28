@@ -5,7 +5,7 @@
 - name: deploy Zabbix Mysql Docker Container
   docker_container:
     name: "zabbix-db"
-    image: "mysql"
+    image: "mysql@sha256:dab7049abafe3a0e12cbe5e49050cf149881c0cd9665c289e5808b9dad39c9e0"
     restart_policy: always
     networks:
       - name: "zabbix"
@@ -20,7 +20,7 @@
 - name: deploy Zabbix Server Docker Container
   docker_container:
     name: "zabbix-server"
-    image: "zabbix/zabbix-server-mysql:alpine-6.2-latest"
+    image: "zabbix/zabbix-server-mysql:alpine-6.2-latest@sha256:854547f7b044c028aa7ff8ec9a96ad01e8b192ccc9b56f16c35eb13c57ca67f2"
     restart_policy: always
     networks:
       - name: "zabbix"
@@ -36,7 +36,7 @@
 - name: deploy Zabbix Web Server Docker Container
   docker_container:
     name: "zabbix-web-server"
-    image: "zabbix/zabbix-web-apache-mysql:alpine-6.2-latest"
+    image: "zabbix/zabbix-web-apache-mysql:alpine-6.2-latest@sha256:816ba9d3916933fd3a7dfeeae802fba55826574cb5917af1eec87032d8d8d877"
     restart_policy: always
     networks:
       - name: "zabbix"

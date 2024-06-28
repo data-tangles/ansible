@@ -5,7 +5,7 @@
 - name: deploy Nginx Proxy Manager Docker Container
   docker_container:
     name: "nginxproxymanager"
-    image: "jc21/nginx-proxy-manager:latest"
+    image: "jc21/nginx-proxy-manager:latest@sha256:67655389770f5f16aef10cf3dc822f95e34bb0bc1b7717c617f8adaffcce2f68"
     restart_policy: always
     networks:
       - name: "npm"
@@ -29,7 +29,7 @@
 - name: deploy Nginx Proxy Manager DB Container
   docker_container:
     name: "npm-db"
-    image: "jc21/mariadb-aria:latest"
+    image: "jc21/mariadb-aria:latest@sha256:3d9d71b984373b94ff7014da941794c0636b03fd04b20612290c5c3c57cb561b"
     restart_policy: always
     networks:
       - name: "npm"
