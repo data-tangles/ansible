@@ -1,7 +1,7 @@
 - name: deploy Minio Container
   docker_container:
     name: "minio"
-    image: "minio/minio:latest@sha256:5a118b4d2d4d619cab4979f57598d6a7aee8731186cb581c8249054e113337b5"
+    image: "minio/minio:latest@sha256:fce0a90a37bb2887c850b68b61a0ac8ac02ea218b58eaea96bb7ca69eb503e20"
     restart_policy: always
     networks:
       - name: "proxy"
