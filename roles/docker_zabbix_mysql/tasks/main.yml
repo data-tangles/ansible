@@ -5,7 +5,7 @@
 - name: deploy Zabbix Mysql Docker Container
   docker_container:
     name: "zabbix-db"
-    image: "mysql@sha256:72a37ddc9f839cfd84f1f6815fb31ba26f37f4c200b90e49607797480e3be446"
+    image: "mysql@sha256:76cfe72d2c51be8946bbd3085028e8989599bae0c6112748c1da35ad448fc00b"
     restart_policy: always
     networks:
       - name: "zabbix"
