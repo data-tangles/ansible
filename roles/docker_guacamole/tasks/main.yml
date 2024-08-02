@@ -37,7 +37,7 @@
 - name: deploy Guacamole Container
   community.docker.docker_container:
     name: "guacamole"
-    image: "guacamole/guacamole@sha256:d73afdb99f93814b92d1e7637c4e3fd69296c20fe4b1511bf6d9c4f245a92f20"
+    image: "guacamole/guacamole@sha256:b9497bf7fc9d0ca31d40e96a157a68802354c67a2dff4f20da1c29a5405bb38d"
     restart_policy: always
     networks:
       - name: "proxy"
