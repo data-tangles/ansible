@@ -20,7 +20,7 @@
 - name: deploy Monica Docker Container
   docker_container:
     name: "monica"
-    image: "monica:apache@sha256:1c2696e3edb6a209bdd0fec920e9dd6b74f8707d778c084bf28d4ce9df005ed7"
+    image: "monica:apache@sha256:30e7e850ff836fefc649e69cafa8f6c256803a29f748ab54db33c260fd3477ae"
     restart_policy: always
     networks:
       - name: "monica"
