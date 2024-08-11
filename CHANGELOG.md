@@ -1,9 +1,9 @@
-## 0.1.2 (2024-04-20)
+## 0.1.3 (2024-08-11)
 
 
 ### Bug Fixes
 
-* change GitHub Actions Runner Docker environment variable ([3eecdd2](https://github.com/data-tangles/ansible/commit/3eecdd2ba115ff8594f03988d9d088383eb93919))
+* Update Portainer version to fix UI Console Exec ([c213357](https://github.com/data-tangles/ansible/commit/c2133573333265de486ba7880fce6c7c47aa69b0))
 
 
 
