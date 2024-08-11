@@ -1,7 +1,7 @@
 - name: deploy Portainer Container
   docker_container:
     name: "portainer"
-    image: "portainer/portainer-ce:latest@sha256:4a1ceadd7f7898d9190ee0a6d22234c4323aefd80e796e84f5e57127f74370f1"
+    image: "portainer/portainer-ce:2.20.3"
     restart_policy: always
     networks:
       - name: "proxy"
