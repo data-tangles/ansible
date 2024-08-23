@@ -5,7 +5,7 @@
 - name: deploy Monica DB Docker Container
   docker_container:
     name: "monica-db"
-    image: "mysql:8.4@sha256:ad77a7c4e2031597e0c73a21993f780cdde6cef15d3dae734fe550c6142f8097"
+    image: "mysql:9.0@sha256:86cdfe832c81e39a89cfb63c3fde1683c41cc00ef91e67653c9c1df0ba80f454"
     restart_policy: always
     networks:
       - name: "monica"
