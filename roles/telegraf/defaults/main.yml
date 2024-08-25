@@ -9,7 +9,7 @@ telegraf_agent_package_file_deb: telegraf_{{ telegraf_agent_version }}-{{ telegr
 telegraf_agent_package_file_rpm: telegraf-{{ telegraf_agent_version }}-{{ telegraf_agent_version_patch }}.{{ ansible_architecture }}.rpm
 telegraf_edgeos_agent_version: 1.31.2
 telegraf_edgeos_agent_version_patch: 1
-telegraf_edgeos_agent_package_file_deb: telegraf_{{ telegraf_agent_version }}-{{ telegraf_agent_version_patch }}+influxdb_mipsel.deb
+telegraf_edgeos_agent_package_file_deb: telegraf_{{ telegraf_edgeos_agent_version }}-{{ telegraf_edgeos_agent_version_patch }}+influxdb_mipsel.deb
 telegraf_agent_package_path: /tmp
 telegraf_agent_package_method: repo
 telegraf_agent_package_state: present
