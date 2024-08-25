@@ -26,6 +26,18 @@ jobs:
       - name: Checkout 🔔
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
+      - name: Ansible Lint
+        uses: ansible/ansible-lint@main
+
+      - name: Ansible Sanity
+        uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@main
+
+      - name: Ansible Unit Galaxy
+        uses: ansible/ansible-content-actions/.github/workflows/unit.yaml@main
+
+      - name: Ansible Integration
+        uses: ansible/ansible-content-actions/.github/workflows/integration.yaml@main
+
       - name: Conventional Changelog Action 📋
         id: changelog
         uses: TriPSs/conventional-changelog-action@3a392e9aa44a72686b0fc13259a90d287dd0877c # v5
