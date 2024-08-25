@@ -45,11 +45,12 @@ telegraf_agent_omit_hostname: False
 telegraf_global_tags: []
 
 telegraf_agent_output:
-  - type: influxdb
+  - type: influxdb_v2
     config:
       - urls = ["{{ INFLUXDB_URL }}"]
-      - database = "telegraf"
-      - precision = "s"
+      - token = "{{ INFLUXDB_TOKEN }}"
+      - organization = "{{ INFLUXDB_ORGANIZATION }}"
+      - bucket = "{{ INFLUXDB_BUCKET }}"
 
 # defaults - /etc/telegraf/telegraf.conf
 telegraf_plugins_default:
