@@ -16,9 +16,9 @@ This repo contains all my Ansible playbooks which I use regularly within my home
 ├─🗒️ .gitattributes
 ├─🗒️ .gitignore
 ├─🗒️ LICENSE
-├─🗒️ README.md
 ├─🗒️ package.yaml
-└─🗒️ {playbook}.yml
+├─🗒️ README.md
+└─🗒️ renovate.json
 ```
 
 ## Table of Contents
