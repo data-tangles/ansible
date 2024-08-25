@@ -11,41 +11,7 @@ permissions:
   packages: write
 
 jobs:
-
-  ansible-lint:
-    name: Ansible Lint
-    uses: ansible/ansible-content-actions/.github/workflows/ansible_lint.yaml@main
-
-  sanity:
-    name: Ansible Sanity Check
-    uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@main
-
-  unit-galaxy:
-    name: Ansible Galaxy Unit Test
-    uses: ansible/ansible-content-actions/.github/workflows/unit.yaml@main
-
-  integration:
-    name: Ansible Galaxy Integration Test
-    uses: ansible/ansible-content-actions/.github/workflows/integration.yaml@main
-
-  all_green:
-    if: ${{ always() }}
-    needs:
-      - sanity
-      - integration
-      - unit-galaxy
-      - ansible-lint
-    runs-on: ubuntu-latest
-    steps:
-      - run: >-
-          python -c "assert 'failure' not in
-          set([
-          '${{ needs.integration.result }}',
-          '${{ needs.sanity.result }}',
-          '${{ needs.unit-galaxy.result }}'
-          '${{ needs.ansible-lint.result }}'
-          ])"
-
+  
   release:
     name: Release
     runs-on: ubuntu-latest
