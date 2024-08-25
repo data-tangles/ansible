@@ -1,6 +1,6 @@
 - hosts: "{{ nodes }}"
-  become: yes
-  become_method: sudo
   gather_facts: yes
+  
   roles:
     - ../roles/telegraf
+    become: "{{ true if ansible_system == 'Linux' else omit }}"
