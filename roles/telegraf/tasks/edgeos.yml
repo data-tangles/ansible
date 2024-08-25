@@ -6,7 +6,7 @@
   when:
     - telegraf_agent_package_state != "latest"
 
-- name: "edgeos | Download Telegraf package (online)"
+- name: "edgeos | Download Telegraf package"
   get_url:
     url: https://github.com/x70b1/telegraf-edgeos/releases/download/v{{ telegraf_edgeos_agent_version }}-{{ telegraf_edgeos_agent_version_patch }}/{{ telegraf_edgeos_agent_package_file_deb }}
     dest: "{{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
@@ -14,10 +14,8 @@
   environment:
     http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
-  when:
-    - telegraf_agent_package_method == "online"
 
-- name: "edgeos | Install Telegraf package (online)"
+- name: "edgeos | Install Telegraf package"
   apt:
     deb: "{{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
     state: "present"
@@ -26,6 +24,4 @@
   until: is_telegraf_package_installed is succeeded
   notify: "Restart Telegraf"
   become: true
-  when:
-    - telegraf_agent_package_method == "online" or telegraf_agent_package_method == "offline"
   ignore_errors: "{{ ansible_check_mode }}"
