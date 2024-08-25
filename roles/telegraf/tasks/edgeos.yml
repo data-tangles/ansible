@@ -16,9 +16,8 @@
     https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
 
 - name: "edgeos | Install Telegraf package"
-  apt:
-    deb: "{{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
-    install_recommends: false
+  ansible.builtin.command:
+    cmd: "dpkg -i {{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
   register: is_telegraf_package_installed
   until: is_telegraf_package_installed is succeeded
   notify: "Restart Telegraf"
