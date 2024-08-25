@@ -24,3 +24,10 @@
   notify: "Restart Telegraf"
   become: true
   ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Remove telegraf installation package
+  ansible.builtin.file:
+    path: "{{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
+    state: absent
+  when:
+    - is_telegraf_package_installed == succeeded
