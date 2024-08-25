@@ -35,6 +35,9 @@ telegraf_agent_docker_network_mode: bridge
 telegraf_agent_docker_restart_policy: unless-stopped
 telegraf_agent_docker_image_version: "{{ telegraf_agent_version }}"
 
+# EdgeOS specific settings
+telegraf_agent_edgeos: True
+
 # v0.13 settings (not sure if supported in older version):
 telegraf_agent_collection_jitter: 0
 telegraf_agent_metric_batch_size: 1000

@@ -9,7 +9,7 @@
 - name: "Install on Debian"
   include_tasks: "Debian.yml"
   when:
-    - ansible_os_family == "Debian" and not telegraf_agent_docker
+    - ansible_os_family == "Debian" and not telegraf_agent_docker and not telegraf_agent_edgeos
   tags:
     - telegraf
     - packages
@@ -36,7 +36,7 @@
 - name: "Install on EdgeOS"
   include_tasks: "edgeos.yml"
   when:
-    - ansible_network_os == "edgeos"
+    - telegraf_agent_edgeos
 
 - include_tasks: "docker.yml"
   when: telegraf_agent_docker

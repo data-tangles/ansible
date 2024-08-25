@@ -43,7 +43,7 @@
     mode: 0640
   become: true
   when:
-    - telegraf_agent_version is version('0.10.0', '>=')
+    - telegraf_agent_version is version('0.10.0', '>=') and not telegraf_agent_edgeos
   notify:
     - Restart Telegraf
     - Restart Telegraf container
@@ -57,7 +57,7 @@
     mode: 0640
   become: true
   when:
-    - ansible_network_os_family == "edgeos"
+    - telegraf_agent_edgeos
   notify:
     - Restart Telegraf
     - Restart Telegraf container
