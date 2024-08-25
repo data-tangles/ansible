@@ -3,4 +3,5 @@
   
   roles:
     - ../roles/telegraf
-    become: "{{ true if ansible_system == 'Linux' else omit }}"
+
+  become: "{{ true if ansible_system == 'Linux' else omit }}"
