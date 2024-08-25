@@ -82,7 +82,7 @@ telegraf_plugins_edgeos:
   - plugin: net
   - plugin: exec
     config:
-      - command = "sh /usr/lib/telegraf/edgeos.sh --interfaces --power"
+      - command = "sh /usr/lib/telegraf/edgeos.sh --interfaces"
       - data_format = "influx"
   - plugin: exec
     config:
