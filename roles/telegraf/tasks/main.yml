@@ -33,6 +33,11 @@
   when:
     - ansible_os_family == "Darwin" and not telegraf_agent_docker
 
+- name: "Install on EdgeOS"
+  include_tasks: "edgeos.yml"
+  when:
+    - ansible_network_os == "edgeos"
+
 - include_tasks: "docker.yml"
   when: telegraf_agent_docker
 

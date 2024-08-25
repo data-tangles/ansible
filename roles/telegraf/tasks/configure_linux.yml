@@ -48,6 +48,20 @@
     - Restart Telegraf
     - Restart Telegraf container
 
+- name: "Copy the template for for EdgeOS"
+  template:
+    src: telegraf.conf.edgeos.j2
+    dest: "{{ telegraf_agent_config_path }}/telegraf.conf"
+    owner: telegraf
+    group: telegraf
+    mode: 0640
+  become: true
+  when:
+    - ansible_network_os_family == "edgeos"
+  notify:
+    - Restart Telegraf
+    - Restart Telegraf container
+
 - name: "Check if extra plugins directory exists in case of exclusive"
   stat:
     path: "{{ telegraf_agent_config_path }}/telegraf.d"

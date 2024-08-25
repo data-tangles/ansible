@@ -7,6 +7,9 @@ telegraf_agent_version_patch: 1
 telegraf_agent_package: telegraf
 telegraf_agent_package_file_deb: telegraf_{{ telegraf_agent_version }}-{{ telegraf_agent_version_patch }}_{{ telegraf_agent_package_arch }}.deb
 telegraf_agent_package_file_rpm: telegraf-{{ telegraf_agent_version }}-{{ telegraf_agent_version_patch }}.{{ ansible_architecture }}.rpm
+telegraf_edgeos_agent_version: 1.31.2
+telegraf_edgeos_agent_version_patch: 1
+telegraf_edgeos_agent_package_file_deb: telegraf_{{ telegraf_agent_version }}-{{ telegraf_agent_version_patch }}+influxdb_mipsel.deb
 telegraf_agent_package_path: /tmp
 telegraf_agent_package_method: repo
 telegraf_agent_package_state: present
@@ -66,6 +69,23 @@ telegraf_plugins_default:
   - plugin: netstat
   - plugin: processes
   - plugin: kernel
+
+telegraf_plugins_edgeos:
+  - plugin: cpu
+    config:
+      - percpu = false
+      - report_active = true
+  - plugin: mem
+  - plugin: net
+  - plugin: exec
+    config:
+      - command = "sh /usr/lib/telegraf/edgeos.sh --interfaces --power"
+      - data_format = "influx"
+  - plugin: exec
+    config:
+      - command = "sh /usr/lib/telegraf/edgeos.sh --firmware"
+      - data_format = "influx"
+      - interval = "24h"    
 
 # extra configuration - /etc/telegraf/telegraf.d/*
 telegraf_plugins_extra: {}

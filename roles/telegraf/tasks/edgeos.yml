@@ -1,0 +1,31 @@
+---
+
+- name: "edgeos | Set name if state != latest"
+  set_fact:
+    telegraf_agent_package: telegraf={{ telegraf_edgeos_agent_version }}-{{ telegraf_edgeos_agent_version_patch }}
+  when:
+    - telegraf_agent_package_state != "latest"
+
+- name: "edgeos | Download Telegraf package (online)"
+  get_url:
+    url: https://github.com/x70b1/telegraf-edgeos/releases/download/v{{ telegraf_edgeos_agent_version }}-{{ telegraf_edgeos_agent_version_patch }}/{{ telegraf_edgeos_agent_package_file_deb }}
+    dest: "{{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
+    use_proxy: "{{ true if http_proxy is defined and http_proxy else false }}"
+  environment:
+    http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
+    https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
+  when:
+    - telegraf_agent_package_method == "online"
+
+- name: "edgeos | Install Telegraf package (online)"
+  apt:
+    deb: "{{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
+    state: "present"
+    allow_downgrade: true
+  register: is_telegraf_package_installed
+  until: is_telegraf_package_installed is succeeded
+  notify: "Restart Telegraf"
+  become: true
+  when:
+    - telegraf_agent_package_method == "online" or telegraf_agent_package_method == "offline"
+  ignore_errors: "{{ ansible_check_mode }}"
