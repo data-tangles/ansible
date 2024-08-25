@@ -15,6 +15,13 @@
     http_proxy: "{{ http_proxy | default(None) | default(omit) }}"
     https_proxy: "{{ https_proxy | default(None) | default(omit) }}"
 
+- name: Add Debian repositories
+  community.network.edgeos_config:
+    lines:
+     - set system package repository stretch components 'main contrib non-free'"
+     - set system package repository stretch distribution stretch
+     - set system package repository stretch url http://archive.debian.org/debian
+
 - name: "edgeos | Install Telegraf package"
   apt:
     deb: "{{ telegraf_agent_package_path }}/{{ telegraf_agent_package }}"
