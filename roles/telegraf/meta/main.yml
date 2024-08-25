@@ -1,0 +1,32 @@
+---
+galaxy_info:
+  author: Werner Dijkerman
+  description: Installing and configuring Telegraf
+  role_name: telegraf
+  company: myCompany.Dotcom
+  license: MIT
+  min_ansible_version: 2.4
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: opensuse
+      versions:
+        - all
+    - name: Windows
+      versions:
+        - all
+    - name: MacOS
+      versions:
+        - all
+
+  galaxy_tags:
+    - monitoring
+
+dependencies: []
