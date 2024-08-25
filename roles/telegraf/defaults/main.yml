@@ -20,6 +20,8 @@ telegraf_agent_aws_tags: False
 telegraf_agent_aws_tags_prefix: ""
 telegraf_agent_config_path: /etc/telegraf
 telegraf_win_logfile_rotation_max_archives: 3
+telegraf_win_logfile_rotation_interval: "7d"
+telegraf_win_logfile_rotation_max_size: "1024MB"
 
 # Docker specific settings
 telegraf_uid_docker: 998
