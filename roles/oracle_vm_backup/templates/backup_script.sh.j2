@@ -25,7 +25,7 @@ echo "Last backup id: $LAST_BACKUP_ID"
 echo "Boot volume id: $BOOT_VOLUME_ID"
 
 echo "Creating new backup..."
-NEW_BACKUP_ID=$(oci bv boot-volume-backup create --boot-volume-id ${BOOT_VOLUME_ID} --type FULL --display-name ${TMP_BACKUP_NAME} --wait-for-state AVAILABLE --query "data.id" --raw-output --profile ${PROFILE_NAME} --config-file ${CONFIG_FILE})
+NEW_BACKUP_ID=$(oci bv boot-volume-backup create --boot-volume-id ${BOOT_VOLUME_ID} --type FULL --display-name ${TMP_BACKUP_NAME} --wait-for-state AVAILABLE --wait-interval-seconds "180" --query "data.id" --raw-output --profile ${PROFILE_NAME} --config-file ${CONFIG_FILE})
 
 if [ -z "$NEW_BACKUP_ID" ]
 then
