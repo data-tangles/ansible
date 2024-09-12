@@ -1,0 +1,4 @@
+- hosts: "{{ nodes }}"
+  gather_facts: yes
+  roles:
+    - ../roles/prometheus_windows_node_exporter
