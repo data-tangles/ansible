@@ -1,0 +1,11 @@
+windows_exporter_version: 0.28.1
+windows_exporter_arch: 'amd64'
+windows_exporter_download_url: https://github.com/prometheus-community/windows_exporter/releases/download/v{{ windows_exporter_version }}/windows_exporter-{{ windows_exporter_version }}-{{ windows_exporter_arch }}.msi
+windows_exporter_options: []
+windows_exporter_bin_path: '"C:\Program Files\windows_exporter\windows_exporter.exe"'
+windows_exporter_state: started
+windows_exporter_start_mode: delayed
+windows_exporter_allow_from: 'any'
+windows_exporter_listen_address: '0.0.0.0'
+windows_exporter_listen_port: 9182
+windows_exporter_textfile_dir: null

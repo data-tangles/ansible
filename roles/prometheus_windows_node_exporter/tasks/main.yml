@@ -1,0 +1,89 @@
+---
+- name: Check that the service variable values are sane
+  assert:
+    that:
+      - windows_exporter_state == 'started' and windows_exporter_start_mode != 'disabled'
+    fail_msg: "You cannot manage the service with the windows_exporter_state and windows_exporter_start_mode settings"
+
+- name: Check current windows_exporter version.
+  win_command: "{{ windows_exporter_bin_path }} --version"
+  failed_when: false
+  changed_when: false
+  register: windows_exporter_version_check
+
+- name: Check if windows_exporter is already installed
+  win_stat: 
+    path: "{{ windows_exporter_bin_path }}"
+  register: windows_exporter_installed_check
+
+- name: Download windows_exporter
+  win_get_url:
+    url: "{{ windows_exporter_download_url }}"
+    dest: '%temp%\windows_exporter_install.msi'
+  when: >
+    windows_exporter_version_check.stderr is not defined
+    or windows_exporter_version not in windows_exporter_version_check.stderr
+    or not windows_exporter_installed_check.stat.exists
+  register: windows_exporter_download_check
+
+- name: create options string
+  tags:
+    test
+  block:
+    - name: list all options
+      set_fact:
+        windows_exporter_options: "{{ windows_exporter_options|default([]) + [item.key + '=' + item.value|string] if item.value is defined }}"
+      with_dict:
+        - LISTEN_ADDR: "{{ windows_exporter_listen_address }}"
+        - LISTEN_PORT: "{{ windows_exporter_listen_port }}"
+        - TEXTFILE_DIR: "{{ windows_exporter_textfile_dir }}"
+
+    - name: concatenate options to parameter string
+      set_fact:
+        windows_exporter_options_string: "{{ ' '.join(windows_exporter_options) }}"
+
+- name: install Windows exporter
+  win_package:
+    path: '{{ ansible_env.TEMP }}\windows_exporter_install.msi'
+    state: present
+    arguments: "{{ windows_exporter_options_string }}"
+  when: >
+    windows_exporter_version_check.stderr is not defined
+    or windows_exporter_version not in windows_exporter_version_check.stderr
+    or not windows_exporter_installed_check.stat.exists
+  register: windows_exporter_install_check
+  notify: restart windows_exporter
+
+- name: find firewall status
+  win_shell: Get-NetFirewallProfile | Where-Object {$_.Enabled -eq $true} | fl Enabled
+  changed_when: false
+  register: firewall_enabled
+
+- name: Firewall rule to allow Prometheus to scrape on port {{ windows_exporter_listen_port }} TCP
+  win_firewall_rule:
+    name: prometheus_exporter
+    localport: "{{ windows_exporter_listen_port }}"
+    action: allow
+    direction: in
+    protocol: tcp
+    remoteip: "{{ windows_exporter_allow_from | default(hostvars[inventory_hostname].ansible_host) }}"
+    state: present
+    enabled: true
+  when: firewall_enabled.stdout | length > 0
+
+- name: windows_exporter service settings
+  ansible.windows.win_service:
+    name: windows_exporter
+    start_mode: "{{ windows_exporter_start_mode }}"
+    state: "{{ windows_exporter_state }}"
+
+- name: Verify windows_exporter is responding to requests.
+  win_uri:
+    url: http://localhost:{{ windows_exporter_listen_port }}/
+    return_content: true
+  register: metrics_output
+  failed_when: "'Metrics' not in metrics_output.content"
+  when:
+    - windows_exporter_start_mode != 'disabled'
+    - windows_exporter_start_mode != 'manual'
+    - windows_exporter_state == 'started' or windows_exporter_state == 'restarted'

@@ -3,8 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - "main"
-  pull_request:
+      - main
 
 permissions:
   contents: write
@@ -34,7 +33,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-user-name: "github-actions[bot]"
           git-user-email: "github-actions[bot]@users.noreply.github.com"
-          skip-git-pull: "true"
           release-count: 10
           version-file: package.yaml
           create-summary: true
