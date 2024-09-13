@@ -1,0 +1,4 @@
+- hosts: "{{ nodes }}"
+  gather_facts: yes
+  roles:
+    - ../roles/prometheus_linux_node_exporter
