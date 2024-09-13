@@ -80,9 +80,8 @@
 - name: Verify windows_exporter is responding to requests.
   win_uri:
     url: http://localhost:{{ windows_exporter_listen_port }}/metrics
-    return_content: true
-  register: metrics_output
-  failed_when: "'Metrics' not in metrics_output.content"
+  register: result
+  failed_when: result.status_code != 200
   when:
     - windows_exporter_start_mode != 'disabled'
     - windows_exporter_start_mode != 'manual'
