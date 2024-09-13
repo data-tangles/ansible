@@ -79,7 +79,7 @@
 
 - name: Verify windows_exporter is responding to requests.
   win_uri:
-    url: http://localhost:{{ windows_exporter_listen_port }}/
+    url: http://localhost:{{ windows_exporter_listen_port }}/metrics
     return_content: true
   register: metrics_output
   failed_when: "'Metrics' not in metrics_output.content"
