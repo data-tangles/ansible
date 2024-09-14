@@ -1,0 +1,145 @@
+---
+- name: Check current node_exporter version.
+  command: "{{ node_exporter_bin_path }} --version"
+  failed_when: false
+  changed_when: false
+  register: node_exporter_version_check
+
+- name: Download and unarchive node_exporter into temporary location.
+  unarchive:
+    src: "{{ node_exporter_download_url }}"
+    dest: /tmp
+    remote_src: true
+  when: >
+    node_exporter_version_check.stdout is not defined
+    or node_exporter_version not in node_exporter_version_check.stdout
+  register: node_exporter_download_check
+
+- name: Install moreutils for sponge
+  package:
+    name: moreutils
+    state: present
+
+- name: Move node_exporter binary into place.
+  copy:
+    # yamllint disable-line rule:line-length
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_arch }}/node_exporter"
+    dest: "{{ node_exporter_bin_path }}"
+    mode: 0755
+    remote_src: true
+  notify: restart node_exporter
+  when: >
+    node_exporter_version_check.stdout is not defined
+    or node_exporter_version not in node_exporter_version_check.stdout
+
+- name: Create a collector directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ node_exporter_collector_path }}"
+    state: directory
+    mode: '0755'
+
+- name: remove node_exporter textfile cronjob
+  file:
+    path: /etc/cron.d/node_exporter_daily
+    state: absent
+
+- name: find node_exporter textfile modules
+  find:
+    paths: "{{ node_exporter_collector_path }}"
+    patterns: "*.sh"
+  register: node_exporter_modules_to_delete
+
+- name: remove node_exporter textfile modules
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ node_exporter_modules_to_delete.files }}"
+  when: node_exporter_modules_to_delete is changed
+
+- name: copy textfile modules for node_exporter
+  copy:
+    src: "{{ item }}"
+    dest: "{{ node_exporter_collector_path }}"
+    mode: 0755
+  notify: restart node_exporter
+  with_fileglob:
+    - "collector/*sh"
+
+- name: copy textfile modules for node_exporter ubuntu
+  copy:
+    src: "{{ item }}"
+    dest: "{{ node_exporter_collector_path }}"
+    mode: 0755
+  notify: restart node_exporter
+  with_fileglob:
+    - "collector/ubuntu/*sh"
+  when:
+    - ansible_distribution  == "Ubuntu" or ansible_distribution  == "Debian"
+
+- name: copy textfile modules for node_exporter centos
+  copy:
+    src: "{{ item }}"
+    dest: "{{ node_exporter_collector_path }}"
+    mode: 0755
+  notify: restart node_exporter
+  with_fileglob:
+    - "collector/centos/*sh"
+  when:
+    - ansible_distribution  == "CentOS"
+
+- name: find textfile modules
+  find:
+    paths: "{{ node_exporter_collector_path }}"
+    patterns: "*.sh"
+  register: node_exporter_collector_items
+
+- name: setup cronjobs for textfile modules every 2h
+  ansible.builtin.cron:
+    name: "node_exporter textfile module cronjob {{ item.path }}"
+    state: present
+    weekday: "*"
+    minute: "0"
+    hour: "*/2"
+    user: root
+    job: "{{ item.path }} | sponge {{ item.path }}.prom"
+    cron_file: node_exporter_cronjob
+  with_items:
+    - "{{ node_exporter_collector_items.files }}"
+
+- name: Create node_exporter user.
+  user:
+    name: node_exporter
+    shell: /sbin/nologin
+    state: present
+
+- name: Copy the node_exporter systemd unit file.
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+  register: node_exporter_service
+
+- name: Reload systemd daemon if unit file is changed.
+  systemd:
+    daemon_reload: true
+  notify: restart node_exporter
+  when: node_exporter_service is changed
+
+- name: delete tmp file
+  failed_when: false
+  file:
+    # yamllint disable-line rule:line-length
+    path: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ node_exporter_arch }}/node_exporter"
+    state: absent
+
+- name: Ensure node_exporter is running and enabled at boot.
+  service:
+    name: node_exporter
+    state: "{{ node_exporter_state }}"
+    enabled: "{{ node_exporter_enabled }}"
+
+- name: Verify node_exporter is responding to requests.
+  uri:
+    url: http://localhost:9100/metrics
+    return_content: true
+  register: result
+  failed_when: result.status != 200
