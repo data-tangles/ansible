@@ -1,9 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
-  roles:
-    - ../roles/docker_monica
-  
-  vars_files:
-    - /ansible/vars/docker/monica/monica_vars.yml
