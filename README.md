@@ -1,5 +1,4 @@
 [![CI](https://github.com/data-tangles/ansible/actions/workflows/main.yml/badge.svg)](https://github.com/data-tangles/ansible/actions/workflows/main.yml)
-[![HitCount](https://hits.dwyl.com/qman-being/ansible.svg?style=for-the-badge&show=unique)](http://hits.dwyl.com/qman-being/ansible)
 [![ansible](https://img.shields.io/badge/Ansible-red?style=for-the-badge&logo=ansible)](https://www.ansible.com/)
 [![renovate](https://img.shields.io/badge/renovate-enabled-brightgreen?style=for-the-badge&logo=renovatebot)](https://github.com/renovatebot/renovate)
 
