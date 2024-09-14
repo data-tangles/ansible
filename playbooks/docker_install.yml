@@ -3,4 +3,4 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - ../roles/docker-install
+    - ../roles/docker_install

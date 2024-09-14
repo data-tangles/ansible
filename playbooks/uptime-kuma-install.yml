@@ -1,9 +1,0 @@
-- hosts: "{{ HOSTS }}"
-  become: yes
-  become_method: sudo
-  gather_facts: yes
-  roles:
-    - ../roles/docker_uptime-kuma
-
-  vars_files:
-    - /ansible/vars/docker/uptime-kuma/uptime-kuma_vars.yml
