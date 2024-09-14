@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  pull_request:
+  push:
     branches:
       - "main"
 
@@ -23,19 +23,25 @@ jobs:
 
     steps:
 
+      - name: Generate GitHub App Token 🪙
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2
+        id: generate-token
+        with:
+          app_id: ${{ secrets.TANGLES_BOT_APP_ID }}
+          private_key: ${{ secrets.TANGLES_BOT_PRIVATE_KEY }}
+
       - name: Checkout 🔔
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Conventional Changelog Action 📋
         id: changelog
         uses: TriPSs/conventional-changelog-action@3a392e9aa44a72686b0fc13259a90d287dd0877c # v5
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          git-user-name: "github-actions[bot]"
-          git-user-email: "github-actions[bot]@users.noreply.github.com"
+          github-token: ${{ steps.generate-token.outputs.token }}
+          git-user-name: "tangles-bot[bot]"
+          git-user-email: "169585682+tangles-bot[bot]@users.noreply.github.com"
           release-count: 10
           version-file: package.yaml
           create-summary: true
