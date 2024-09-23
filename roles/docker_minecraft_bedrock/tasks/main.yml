@@ -5,7 +5,7 @@
 - name: deploy Minecraft Docker Container
   docker_container:
     name: "minecraft-bedrock"
-    image: "itzg/minecraft-bedrock-server@sha256:87a2827641a2c117669cc82873991a18de9a08e61b191cfc16d25a27f469ae37"
+    image: "itzg/minecraft-bedrock-server@sha256:9500d5c0e7ebaf449afea7f19654b51c573de28576c746123da2e4cccb8f2620"
     restart_policy: always
     networks:
       - name: "minecraft-bedrock"
