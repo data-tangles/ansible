@@ -1,0 +1,72 @@
+#!/bin/bash
+
+LOG_DIR="/var/log"
+LOG_FILE="$LOG_DIR/loadshedding.log"
+TOKEN="{{ API_TOKEN }}"
+URL="{{ AREA_URL }}"
+DISCORD_WEBHOOK_URL="{{ DISCORD_WEBHOOK }}"
+DISCORD_NOTIFICATION="\"embeds\": [{\"title\": \"Load Shedding Shutdown Notification\",\"description\": \"The server is shutting down due to load shedding within the next 10 minutes.\",\"color\": 16757384}]"
+
+LOG_RESULTS=false
+if [[ "$1" == "--log" ]]; then
+    LOG_RESULTS=true
+    mkdir -p "$LOG_DIR"
+    echo "Logging enabled. Logs will be stored in $LOG_FILE" > "$LOG_FILE"
+fi
+
+CURRENT_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+SHUTDOWN_TIME=""
+
+if $LOG_RESULTS; then echo "Connecting to EskomSePush API..." >> "$LOG_FILE"; fi
+
+RESPONSE=$(curl -s -H "token: $TOKEN" "$URL")
+
+if [ $? -ne 0 ] || [[ -z "$RESPONSE" ]]; then
+    echo "Failed to connect to EskomSePush API or received empty response" | tee -a "$LOG_FILE"
+    exit 1
+fi
+
+if ! echo "$RESPONSE" | jq empty 2>/dev/null; then
+    echo "Invalid JSON response from API" | tee -a "$LOG_FILE"
+    exit 1
+fi
+
+EVENT=$(echo "$RESPONSE" | jq -c '[.events[] | select(.note | test("Stage"))] | sort_by(.start) | first // empty')
+
+CRON_JOB="# loadshedding-shutdown"
+EXISTING_CRON=$(crontab -l 2>/dev/null | grep "$CRON_JOB" || true)
+
+if [[ -n "$EVENT" ]]; then
+    EVENT_START=$(echo "$EVENT" | jq -r '.start')
+    EVENT_NOTE=$(echo "$EVENT" | jq -r '.note')
+    EVENT_END=$(echo "$EVENT" | jq -r '.end')
+
+    if [[ "$EVENT_START" > "$CURRENT_TIME" ]]; then
+        if $LOG_RESULTS; then
+            echo "$EVENT_NOTE Load Shedding is scheduled" >> "$LOG_FILE"
+            echo "Start Time: $EVENT_START" >> "$LOG_FILE"
+            echo "End Time: $EVENT_END" >> "$LOG_FILE"
+        fi
+
+        SHUTDOWN_TIME=$(date -d "$EVENT_START - 10 minutes" "+%M %H")
+        echo "Scheduling system shutdown at $SHUTDOWN_TIME" | tee -a "$LOG_FILE"
+
+        if [[ -n "$EXISTING_CRON" ]]; then
+            # Update existing cron job
+            (crontab -l | grep -v "$CRON_JOB"; echo "$SHUTDOWN_TIME * * *  curl -H \"Content-Type: application/json\" -d '{$DISCORD_NOTIFICATION}' $DISCORD_WEBHOOK_URL && shutdown -h now $CRON_JOB") | crontab -
+        else
+            # Create new cron job
+            (crontab -l 2>/dev/null; echo "$SHUTDOWN_TIME * * * curl -H \"Content-Type: application/json\" -d '{$DISCORD_NOTIFICATION}' $DISCORD_WEBHOOK_URL && shutdown -h now $CRON_JOB") | crontab -
+        fi
+        
+        if $LOG_RESULTS; then echo "Shutdown cron job scheduled successfully." >> "$LOG_FILE"; fi
+    fi
+else
+    echo "No upcoming load shedding events found." | tee -a "$LOG_FILE"
+
+    if [[ -n "$EXISTING_CRON" ]]; then
+        echo "Removing existing shutdown cron job." | tee -a "$LOG_FILE"
+        (crontab -l | grep -v "$CRON_JOB") | crontab -
+        if $LOG_RESULTS; then echo "Shutdown cron job removed." >> "$LOG_FILE"; fi
+    fi
+fi
