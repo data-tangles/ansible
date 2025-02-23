@@ -5,7 +5,7 @@ LOG_FILE="$LOG_DIR/loadshedding.log"
 TOKEN="{{ API_TOKEN }}"
 URL="{{ AREA_URL }}"
 DISCORD_WEBHOOK_URL="{{ DISCORD_WEBHOOK }}"
-DISCORD_NOTIFICATION="\"embeds\": [{\"title\": \"Load Shedding Shutdown Notification\",\"description\": \"The server is shutting down due to load shedding within the next 10 minutes.\",\"color\": 16757384}]"
+DISCORD_NOTIFICATION="\"embeds\": [{\"title\": \"$HOSTNAME - Load Shedding Shutdown Notification\",\"description\": \"The server $HOSTNAME is shutting down due to load shedding within the next 10 minutes.\",\"color\": 16757384}]"
 
 LOG_RESULTS=false
 if [[ "$1" == "--log" ]]; then
