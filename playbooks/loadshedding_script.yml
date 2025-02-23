@@ -1,5 +1,4 @@
 - hosts: "{{ nodes }}"
-  become: yes
   gather_facts: yes
   roles:
     - ../roles/loadshedding_script
