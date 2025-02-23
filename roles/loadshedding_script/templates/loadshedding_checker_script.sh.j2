@@ -53,10 +53,10 @@ if [[ -n "$EVENT" ]]; then
 
         if [[ -n "$EXISTING_CRON" ]]; then
             # Update existing cron job
-            (crontab -l | grep -v "$CRON_JOB"; echo "$SHUTDOWN_TIME * * *  curl -H \"Content-Type: application/json\" -d '{$DISCORD_NOTIFICATION}' $DISCORD_WEBHOOK_URL && shutdown -h now $CRON_JOB") | crontab -
+            (crontab -l | grep -v "$CRON_JOB"; echo "$SHUTDOWN_TIME * * *  curl -H \"Content-Type: application/json\" -d '{$DISCORD_NOTIFICATION}' $DISCORD_WEBHOOK_URL && /usr/sbin/shutdown -h now $CRON_JOB") | crontab -
         else
             # Create new cron job
-            (crontab -l 2>/dev/null; echo "$SHUTDOWN_TIME * * * curl -H \"Content-Type: application/json\" -d '{$DISCORD_NOTIFICATION}' $DISCORD_WEBHOOK_URL && shutdown -h now $CRON_JOB") | crontab -
+            (crontab -l 2>/dev/null; echo "$SHUTDOWN_TIME * * * curl -H \"Content-Type: application/json\" -d '{$DISCORD_NOTIFICATION}' $DISCORD_WEBHOOK_URL && /usr/sbin/shutdown -h now $CRON_JOB") | crontab -
         fi
         
         if $LOG_RESULTS; then echo "Shutdown cron job scheduled successfully." >> "$LOG_FILE"; fi
