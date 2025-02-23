@@ -10,7 +10,7 @@
     dest: /opt/scripts/loadshedding_checker_script.sh
     owner: root
     group: root
-    mode: 0644
+    mode: a+x
     backup: yes
 
 - name: Install jq
