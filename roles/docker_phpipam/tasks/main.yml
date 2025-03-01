@@ -5,7 +5,7 @@
 - name: deploy phpipam DB Docker Container
   docker_container:
     name: "phpipam-db"
-    image: "mysql:9.0@sha256:c69299937e5e2fc9a2cb26f5cd7a7151e48d9d5a3b3679f62bfd1275de698c0c"
+    image: "mysql:9.0@sha256:92dc869678019f65d761155dacac660a904f6245bfe1b7997da0a73b2bfc68c9"
     restart_policy: always
     networks:
       - name: "phpipam"
