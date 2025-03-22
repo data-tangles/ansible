@@ -12,16 +12,23 @@
     update_cache: true
     
 - name: Add Docker GPG apt Key
-  apt_key:
+  get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
     state: present
+    mode: '0644'
+    force: true
+
+- name: Set architecture specific variables
+  set_fact:
+    arch: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
 
 - name: Add Docker Repository
   apt_repository:
-    repo: "deb https://download.docker.com/linux/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }} stable"
+    repo: "deb [arch={{arch}}] [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }} stable"
     state: present
 
-- name: Update apt and install docker-ce
+- name: Update apt and install Docker
   apt:
     pkg:
       - docker-ce
