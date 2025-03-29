@@ -20,7 +20,7 @@
 
 - name: Set architecture specific variables
   ansible.builtin.set_fact:
-    arch: "{{ 'armhf' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
+    arch: "{{ 'armhf' if ansible_facts.architecture == 'armv7l' else 'amd64' }}"
 
 - name: Add Docker Repository
   ansible.builtin.apt_repository:
