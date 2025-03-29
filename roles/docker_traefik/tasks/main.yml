@@ -35,7 +35,7 @@
 - name: deploy Traefik Container
   community.docker.docker_container:
     name: "traefik"
-    image: "traefik:latest@sha256:3f92eba47bd4bfda91d47b72d16fef2d7ae15db61a92b2057cf0cb389f8938f6"
+    image: "traefik:latest@sha256:cc11989f418e2cfe5e60fc40c92c1813be847f58eda15eced7d5ac890255ad9e"
     restart_policy: always
     networks:
       - name: "proxy"
