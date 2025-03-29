@@ -1,4 +1,4 @@
-- hosts: "{{ HOSTS }}"
+- hosts: "{{ nodes }}"
   gather_facts: yes
   roles:
     - ../roles/windows_template

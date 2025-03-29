@@ -1,4 +1,4 @@
-- hosts: "{{ HOSTS }}"
+- hosts: "{{ nodes }}"
   roles:
     - ../roles/windows_snmp
 
