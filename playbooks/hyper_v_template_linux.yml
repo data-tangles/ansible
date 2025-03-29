@@ -1,4 +1,4 @@
-- hosts: "{{ HOSTS }}"
+- hosts: "{{ nodes }}"
   roles:
     - ../roles/hyper_v_vm_linux
 

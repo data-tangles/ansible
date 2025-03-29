@@ -1,4 +1,4 @@
-- hosts: "{{ HOSTS }}"
+- hosts: "{{ nodes }}"
   become: yes
   become_method: sudo
   gather_facts: yes
