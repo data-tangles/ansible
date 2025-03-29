@@ -1,5 +1,5 @@
 - name: Install required system packages
-  apt:
+  ansible.builtin.apt:
     pkg:
       - apt-transport-https
       - ca-certificates
@@ -12,24 +12,24 @@
     update_cache: true
     
 - name: Add Docker GPG apt Key
-  get_url:
+  ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/keyrings/docker.asc
     mode: '0644'
     force: true
 
 - name: Set architecture specific variables
-  set_fact:
-    arch: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
+  ansible.builtin.set_fact:
+    arch: "{{ 'armhf' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
 
 - name: Add Docker Repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [arch={{arch}} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} stable"
     filename: docker
     state: present
 
 - name: Update apt and install Docker
-  apt:
+  ansible.builtin.apt:
     pkg:
       - docker-ce
       - docker-ce-cli
