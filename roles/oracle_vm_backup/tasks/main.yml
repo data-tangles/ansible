@@ -6,7 +6,6 @@
 - name: Install OCI CLI 
   ansible.builtin.shell: |
     bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" "" --accept-all-defaults
-  become: false
   when: not oci_check.stat.exists
 
 - name: Install jq
@@ -16,39 +15,34 @@
 
 - name: Create oci_config directory
   file:
-    path: "/home/{{ USER }}/oci/"
+    path: "/oracle/oci/"
     state: directory
-  become: false
 
 - name: Copy oci_config
   template: 
     src: oci_config.j2
-    dest: "/home/{{ USER }}/oci/oci_config"
+    dest: "/oracle/oci/oci_config"
     owner: "{{ USER }}"
     group: "{{ USER }}"
     mode: 0600
-  become: false
 
 - name: Copy over OCI Private Key
   ansible.builtin.copy:
     content: "{{ OCI_API_KEY }}"
-    dest: "/home/{{ USER }}/oci/oci_api_key.pem"
+    dest: "/oracle/oci/oci_api_key.pem"
     mode: 0600
-  become: false
 
 - name: Create backup script directory
   file:
-    path: "/home/{{ USER }}/oracle_vm_backup/"
+    path: "/oracle/oracle_vm_backup/"
     state: directory
-  become: false
 
 - name: Copy over backup script
   template: 
     src: backup_script.sh.j2
-    dest: "/home/{{ USER }}/oracle_vm_backup/{{ item }}-backup.sh"
+    dest: "/oracle/oracle_vm_backup/{{ item }}-backup.sh"
     mode: u+x
   loop: "{{ BACKUP_NAME }}"
-  become: false
 
 - name: Setup backup script cronjobs
   ansible.builtin.cron:
@@ -57,4 +51,3 @@
     hour: "{{ item.hour }}"
     job: "{{ item.job }}"
   loop: "{{ BACKUP_CRON_SETTINGS }}"
-  become: false
