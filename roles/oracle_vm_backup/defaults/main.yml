@@ -1,4 +1,10 @@
 ---
+BACKUP_NAME:
+  - "vm-prod-kube-uk-01"
+  - "vm-prod-kube-uk-02"
+  - "vm-prod-docker-uk-01"
+  - "vm-prod-mgmt-uk-01" 
+
 BACKUP_CRON_SETTINGS:
   - name: "vm-prod-kube-uk-01 Daily Backup"
     minute: "0"
@@ -15,4 +21,5 @@ BACKUP_CRON_SETTINGS:
   - name: "vm-prod-mgmt-uk-01 Daily Backup"
     minute: "0"
     hour: "5"
-    job: "/oracle/oracle_vm_backup/vm-prod-mgmt-uk-01-backup.sh 2>&1" 
+    job: "/oracle/oracle_vm_backup/vm-prod-mgmt-uk-01-backup.sh 2>&1"
+
