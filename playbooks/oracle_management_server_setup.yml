@@ -3,14 +3,4 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - ../roles/azure_devops_agent
-    - ../roles/postfix
     - ../roles/oracle_vm_backup
-    - ../roles/oracle_terraform_keys
-
-  vars_files:
-    - /ansible/vars/linux/azure_devops_agent_vars.yml
-    - /ansible/vars/linux/postfix_vars.yml
-    - /ansible/vars/linux/oracle_management_server_vars.yml
-    - /ansible/vars/linux/oracle_vm_backup_vars.yml
-    - /ansible/vars/linux/oracle_terraform_keys_vars.yml
