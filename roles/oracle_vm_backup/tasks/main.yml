@@ -35,7 +35,7 @@
 
 - name: Correct Private Key formatting
   ansible.builtin.shell: |
-    echo -ne $(cat /oracle/oci/oci_api_key.pem) > /oracle/oci/oci_api_key.pem
+    bash -c "echo -ne $(cat /oracle/oci/oci_api_key.pem) > /oracle/oci/oci_api_key.pem"
 
 - name: Create backup script directory
   file:
