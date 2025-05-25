@@ -29,7 +29,7 @@
 - name: Copy over OCI Private Key
   ansible.builtin.copy:
     content: |
-      "{{ OCI_API_KEY | indent(2) }}"
+      {{ OCI_API_KEY }}
     dest: "/oracle/oci/oci_api_key.pem"
     mode: 0600
 
