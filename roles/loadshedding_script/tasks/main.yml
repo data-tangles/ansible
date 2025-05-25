@@ -1,0 +1,25 @@
+- name: Create scripts directory
+  ansible.builtin.file:
+    path: /opt/scripts
+    state: directory
+    mode: 0644
+
+- name: Copy loadshedding_checker_script.sh.j2
+  ansible.builtin.template:
+    src: loadshedding_checker_script.sh.j2
+    dest: /opt/scripts/loadshedding_checker_script.sh
+    owner: root
+    group: root
+    mode: a+x
+    backup: yes
+
+- name: Install jq
+  ansible.builtin.package:
+    name: jq
+    state: present
+
+- name: Setup cron job to run script regularly
+  ansible.builtin.cron:
+    name: "# Ansible Managed - Loadshedding Check "
+    special_time: hourly
+    job: /opt/scripts/loadshedding_checker_script.sh --log

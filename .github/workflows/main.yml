@@ -42,6 +42,7 @@ jobs:
           github-token: ${{ steps.generate-token.outputs.token }}
           git-user-name: "tangles-bot[bot]"
           git-user-email: "169585682+tangles-bot[bot]@users.noreply.github.com"
+          skip-on-empty: "false"
           release-count: 10
           version-file: package.yaml
           create-summary: true

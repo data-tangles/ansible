@@ -3,7 +3,4 @@
   become_method: sudo
   gather_facts: yes
   roles:
-    - ../roles/linux_snmp
-
-  vars_files:
-    - /ansible/vars/linux/linux_snmpd_vars.yml
+    - ../roles/loadshedding_script
