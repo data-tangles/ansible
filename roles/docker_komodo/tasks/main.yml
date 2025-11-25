@@ -17,6 +17,7 @@
     restart_policy: always
     networks:
       - name: "komodo"
+    command: "--quiet --wiredTigerCacheSizeGB 0.25"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "komodo-db-data:/data/db"
