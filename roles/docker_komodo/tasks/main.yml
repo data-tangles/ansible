@@ -36,8 +36,6 @@
     name: "komodo-core"
     image: "ghcr.io/moghtech/komodo-core:latest"
     restart_policy: always
-    depends_on:
-      - "komodo-db"
     networks:
       - name: "komodo"
     volumes:
