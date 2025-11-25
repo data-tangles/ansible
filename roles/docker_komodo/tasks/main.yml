@@ -48,10 +48,8 @@
       KOMODO_DATABASE_PASSWORD: "{{ KOMODO_DB_PASSWORD }}" 
       KOMODO_PASSKEY: "{{ KOMODO_PASSKEY }}"    
       KOMODO_HOST: "{{ KOMODO_HOST }}"
-      KOMODO_LOCAL_AUTH: "true"
       KOMODO_INIT_ADMIN_USERNAME: "{{ KOMODO_INIT_ADMIN_USERNAME }}"
       KOMODO_INIT_ADMIN_PASSWORD: "{{ KOMODO_INIT_ADMIN_PASSWORD }}"
-      KOMODO_DISABLE_USER_REGISTRATION: "true"
     labels:
       komodo.skip:  
       traefik.enable: "true"
