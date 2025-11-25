@@ -38,6 +38,7 @@
     restart_policy: always
     networks:
       - name: "komodo"
+      - name: "proxy"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "komodo-core-data:/backups"
@@ -48,7 +49,18 @@
       KOMODO_PASSKEY: "{{ KOMODO_PASSKEY }}"    
       KOMODO_HOST: "{{ KOMODO_HOST }}"
     labels:
-      komodo.skip:     
+      komodo.skip:  
+      traefik.enable: "true"
+      traefik.http.routers.komodo.entrypoints: "http"
+      traefik.http.routers.komodo.rule: "Host(`{{ komodo_url }}`)"
+      traefik.http.middlewares.komodo-https-redirect.redirectscheme.scheme: "https"
+      traefik.http.routers.komodo.middlewares: "komodo-https-redirect"
+      traefik.http.routers.komodo-secure.entrypoints: "https"
+      traefik.http.routers.komodo-secure.rule: "Host(`{{ komodo_url }}`)"
+      traefik.http.routers.komodo-secure.tls: "true"
+      traefik.http.routers.komodo-secure.service: "komodo"
+      traefik.http.services.komodo.loadbalancer.server.port: "9120"
+      traefik.docker.network: "proxy"     
 
 - name: deploy Komodo Periphery Container
   docker_container:
@@ -64,16 +76,5 @@
     env:
       KOMODO_PASSKEY: "{{ KOMODO_PASSKEY }}" 
     labels:
-      komodo.skip:
-      traefik.enable: "true"
-      traefik.http.routers.komodo.entrypoints: "http"
-      traefik.http.routers.komodo.rule: "Host(`{{ komodo_url }}`)"
-      traefik.http.middlewares.komodo-https-redirect.redirectscheme.scheme: "https"
-      traefik.http.routers.komodo.middlewares: "komodo-https-redirect"
-      traefik.http.routers.komodo-secure.entrypoints: "https"
-      traefik.http.routers.komodo-secure.rule: "Host(`{{ komodo_url }}`)"
-      traefik.http.routers.komodo-secure.tls: "true"
-      traefik.http.routers.komodo-secure.service: "komodo"
-      traefik.http.services.komodo.loadbalancer.server.port: "9120"
-      traefik.docker.network: "proxy"   
+      komodo.skip: 
   
