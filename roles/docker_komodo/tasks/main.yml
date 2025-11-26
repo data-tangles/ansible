@@ -5,10 +5,12 @@
 - name: Create Komodo DB Data Volume
   community.docker.docker_volume:
     name: komodo-db-data
+  when: inventory_hostname in groups ["pi"]
 
 - name: Create Komodo DB Config Volume
   community.docker.docker_volume:
     name: komodo-db-config
+  when: inventory_hostname in groups ["pi"]
 
 - name: deploy Komodo DB Container
   docker_container:
@@ -27,15 +29,17 @@
       MONGO_INITDB_ROOT_PASSWORD: "{{ KOMODO_DB_PASSWORD }}"      
     labels:
       komodo.skip:
+  when: inventory_hostname in groups ["pi"]
 
 - name: Create Komodo Core Data Volume
   community.docker.docker_volume:
     name: komodo-core-data
+  when: inventory_hostname in groups ["pi"]
 
 - name: deploy Komodo Core Container
   docker_container:
     name: "komodo-core"
-    image: "ghcr.io/moghtech/komodo-core:latest"
+    image: "ghcr.io/moghtech/komodo-core:1.19.5"
     restart_policy: always
     networks:
       - name: "komodo"
@@ -53,6 +57,7 @@
       KOMODO_LOCAL_AUTH: "true"
       KOMODO_INIT_ADMIN_USERNAME: "{{ KOMODO_INIT_ADMIN_USERNAME }}"
       KOMODO_INIT_ADMIN_PASSWORD: "{{ KOMODO_INIT_ADMIN_PASSWORD }}"
+      KOMODO_FIRST_SERVER_NAME: "{{ inventory_hostname_short }}"
     labels:
       komodo.skip:  
       traefik.enable: "true"
@@ -65,15 +70,17 @@
       traefik.http.routers.komodo-secure.tls: "true"
       traefik.http.routers.komodo-secure.service: "komodo"
       traefik.http.services.komodo.loadbalancer.server.port: "9120"
-      traefik.docker.network: "proxy"     
+      traefik.docker.network: "proxy"  
+  when: inventory_hostname in groups ["pi"]   
 
 - name: deploy Komodo Periphery Container
   docker_container:
     name: "komodo-periphery"
-    image: "ghcr.io/moghtech/komodo-periphery:latest"
+    image: "ghcr.io/moghtech/komodo-periphery:1.19.5"
     restart_policy: always
     networks:
       - name: "komodo"
+    ports: "{{ ['8120:8120'] inventory_hostname in groups ['pi'] else omit }}"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/var/run/docker.sock:/var/run/docker.sock"
