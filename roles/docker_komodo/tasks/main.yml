@@ -80,7 +80,7 @@
     restart_policy: always
     networks:
       - name: "komodo"
-    ports: "{{ ['8120:8120'] inventory_hostname in groups ['pi'] else omit }}"
+    ports: "{{ ['8120:8120'] if 'pi' not in groups else omit }}"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/var/run/docker.sock:/var/run/docker.sock"
