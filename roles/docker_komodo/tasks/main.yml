@@ -1,6 +1,7 @@
 - name: deploy Komodo Container Network 
   docker_network:
     name: "komodo"
+  when: inventory_hostname in groups ["pi"]
 
 - name: Create Komodo DB Postgres Data Volume
   community.docker.docker_volume:
@@ -89,7 +90,7 @@
     name: "komodo-periphery"
     image: "ghcr.io/moghtech/komodo-periphery:1.19.5"
     restart_policy: always
-    networks: "{{ ['name: 'komodo''] if 'pi' in groups else omit }}"
+    networks: "{{ ['name: komodo'] if 'pi' in groups else omit }}"
     ports: "{{ ['8120:8120'] if 'pi' not in groups else omit }}"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
