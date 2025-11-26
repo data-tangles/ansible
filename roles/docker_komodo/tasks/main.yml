@@ -2,31 +2,46 @@
   docker_network:
     name: "komodo"
 
-- name: Create Komodo DB Data Volume
+- name: Create Komodo DB Postgres Data Volume
   community.docker.docker_volume:
-    name: komodo-db-data
+    name: komodo-db-postgres-data
   when: inventory_hostname in groups ["pi"]
 
-- name: Create Komodo DB Config Volume
-  community.docker.docker_volume:
-    name: komodo-db-config
-  when: inventory_hostname in groups ["pi"]
-
-- name: deploy Komodo DB Container
+- name: deploy Komodo DB Postgres Container
   docker_container:
-    name: "komodo-db"
-    image: "mongo"
+    name: "komodo-db-postgres"
+    image: "ghcr.io/ferretdb/postgres-documentdb:17-0.107.0-ferretdb-2.7.0"
     restart_policy: always
     networks:
       - name: "komodo"
-    command: "--quiet --wiredTigerCacheSizeGB 0.25"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
-      - "komodo-db-data:/data/db"
-      - "komodo-db-config:/data/configdb"
-    env:
-      MONGO_INITDB_ROOT_USERNAME: "{{ KOMODO_DB_USERNAME }}"
-      MONGO_INITDB_ROOT_PASSWORD: "{{ KOMODO_DB_PASSWORD }}"      
+      - "komodo-db-postgres-data:/var/lib/postgresql/data"
+    env:  
+      POSTGRES_USER: "{{ KOMODO_DB_USERNAME }}"
+      POSTGRES_PASSWORD: "{{ KOMODO_DB_PASSWORD }}"
+      POSTGRES_DB: postgres     
+    labels:
+      komodo.skip:
+  when: inventory_hostname in groups ["pi"]
+
+- name: Create Komodo DB FerretDB Data Volume
+  community.docker.docker_volume:
+    name: komodo-db-ferretdb-data
+  when: inventory_hostname in groups ["pi"]
+
+- name: deploy Komodo DB FerretDB Container
+  docker_container:
+    name: "komodo-db-ferretdb"
+    image: "ghcr.io/ferretdb/ferretdb:2.7.0"
+    restart_policy: always
+    networks:
+      - name: "komodo"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "komodo-db-ferretdb-data:/state"
+    env:  
+      FERRETDB_POSTGRESQL_URL: postgres://{{ KOMODO_DB_USERNAME }}:{{ KOMODO_DB_PASSWORD }}@postgres:5432/postgres    
     labels:
       komodo.skip:
   when: inventory_hostname in groups ["pi"]
