@@ -63,7 +63,7 @@
       traefik.enable: "true"
       traefik.http.routers.komodo.entrypoints: "websecure"
       traefik.http.routers.komodo.rule: "Host(`{{ komodo_url }}`)"
-      traefik.http.routers.home-assistant.tls: "true"
+      traefik.http.routers.komodo.tls: "true"
       traefik.http.routers.komodo.service: "komodo"
       traefik.http.services.komodo.loadbalancer.server.port: "9120"
       traefik.docker.network: "proxy"  
