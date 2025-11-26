@@ -90,7 +90,7 @@
     name: "komodo-periphery"
     image: "ghcr.io/moghtech/komodo-periphery:1.19.5"
     restart_policy: always
-    networks: "{{ ['name: komodo'] if 'pi' in groups else omit }}"
+    networks: "{{ [{ 'name': 'komodo' }] if 'pi' in groups else omit }}"
     ports: "{{ ['8120:8120'] if 'pi' not in groups else omit }}"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
