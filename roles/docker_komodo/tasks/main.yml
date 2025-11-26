@@ -61,14 +61,10 @@
     labels:
       komodo.skip:  
       traefik.enable: "true"
-      traefik.http.routers.komodo.entrypoints: "http"
+      traefik.http.routers.komodo.entrypoints: "websecure"
       traefik.http.routers.komodo.rule: "Host(`{{ komodo_url }}`)"
-      traefik.http.middlewares.komodo-https-redirect.redirectscheme.scheme: "https"
-      traefik.http.routers.komodo.middlewares: "komodo-https-redirect"
-      traefik.http.routers.komodo-secure.entrypoints: "https"
-      traefik.http.routers.komodo-secure.rule: "Host(`{{ komodo_url }}`)"
-      traefik.http.routers.komodo-secure.tls: "true"
-      traefik.http.routers.komodo-secure.service: "komodo"
+      traefik.http.routers.home-assistant.tls: true
+      traefik.http.routers.komodo.service: "komodo"
       traefik.http.services.komodo.loadbalancer.server.port: "9120"
       traefik.docker.network: "proxy"  
   when: inventory_hostname in groups ["pi"]   
