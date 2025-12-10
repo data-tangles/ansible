@@ -44,6 +44,7 @@
     networks:
       - name: "proxy"
     env:
+      TZ: "Africa/Johannesburg"
       CF_API_EMAIL: "{{ cloudflare_email_address }}"
       CF_DNS_API_TOKEN: "{{ cloudflare_api_token }}"
     published_ports:
