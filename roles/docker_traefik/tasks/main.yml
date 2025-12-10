@@ -53,9 +53,9 @@
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/etc/localtime:/etc/localtime:ro"
-      - "traefik-data/traefik.yml:/etc/traefik/traefik.yml:ro"
-      - "traefik-data/acme.json:/etc/traefik/acme/acme.json"
-      - "traefik-data/config.yml:/etc/traefik/config.yml:ro"
+      - "{{ traefik_config_files_destination }}/traefik.yml:/etc/traefik/traefik.yml:ro"
+      - "{{ traefik_config_files_destination }}/acme.json:/etc/traefik/acme/acme.json"
+      - "{{ traefik_config_files_destination }}/config.yml:/etc/traefik/config.yml:ro"
       - "traefik-data:/var/log/traefik"
     labels:
       traefik.enable: "true"
