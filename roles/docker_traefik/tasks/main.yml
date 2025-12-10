@@ -53,7 +53,7 @@
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/etc/localtime:/etc/localtime:ro"
-      - "traefik-data:/etc/traefik/"
+      - "traefik-data:/etc/traefik"
       - "traefik-data:/var/log/traefik"
     labels:
       traefik.enable: "true"
