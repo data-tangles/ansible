@@ -5,7 +5,7 @@
 - name: Copy acme.json
   ansible.builtin.template:
     src: acme.json.j2
-    dest: /var/lib/docker/volumes/traefik-data/_data/acme.json
+    dest: "{{ traefik_config_files_destination }}/acme.json"
     owner: root
     group: root
     mode: 0600
@@ -15,7 +15,7 @@
 - name: Copy config.yml
   ansible.builtin.template:
     src: config.yml.j2
-    dest: /var/lib/docker/volumes/traefik-data/_data/config.yml
+    dest: "{{ traefik_config_files_destination }}/config.yml"
     owner: root
     group: root
     mode: 0644
@@ -25,7 +25,7 @@
 - name: Copy traefik.yml
   ansible.builtin.template:
     src: traefik.yml.j2
-    dest: /var/lib/docker/volumes/traefik-data/_data/traefik.yml
+    dest: "{{ traefik_config_files_destination }}/traefik.yml"
     owner: root
     group: root
     mode: 0644
