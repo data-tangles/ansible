@@ -19,6 +19,7 @@
       - "/etc/localtime:/etc/localtime:ro"
       - "komodo-db-postgres-data:/var/lib/postgresql/data"
     env:  
+      TZ: "Africa/Johannesburg"
       POSTGRES_USER: "{{ KOMODO_DB_USERNAME }}"
       POSTGRES_PASSWORD: "{{ KOMODO_DB_PASSWORD }}"
       POSTGRES_DB: postgres     
@@ -41,7 +42,8 @@
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "komodo-db-ferretdb-data:/state"
-    env:  
+    env:
+      TZ: "Africa/Johannesburg"  
       FERRETDB_POSTGRESQL_URL: postgres://{{ KOMODO_DB_USERNAME }}:{{ KOMODO_DB_PASSWORD }}@komodo-db-postgres:5432/postgres    
     labels:
       komodo.skip:
@@ -98,6 +100,7 @@
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/proc:/proc"
     env:
+      TZ: "Africa/Johannesburg"
       KOMODO_PASSKEY: "{{ KOMODO_PASSKEY }}" 
     labels:
       komodo.skip: 
