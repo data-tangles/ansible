@@ -2,6 +2,12 @@
   community.docker.docker_volume:
     name: traefik-data
 
+- name: Create Crowdsec Data Volume
+  community.docker.docker_volume:
+    name: crowdsec-data
+  when:
+    - DEPLOY_CROWDSEC
+
 - name: Copy acme.json
   ansible.builtin.template:
     src: acme.json.j2
@@ -35,6 +41,27 @@
 - name: deploy Traefik Proxy Network
   docker_network:
     name: "proxy"
+
+- name: deploy Crowdsec Container
+  community.docker.docker_container:
+    name: "crowdsec"
+    image: "crowdsecurity/crowdsec"
+    restart_policy: always
+    networks:
+      - name: "proxy"
+    env:
+      TZ: "Africa/Johannesburg"
+      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/http-dos"
+      CUSTOM_HOSTNAME: crowdsec
+      BOUNCER_KEY_PLUGIN: "{{CROWDSEC_LAPI_KEY}}"
+    volumes:
+      - "crowdsec-data:/var/log/traefik:ro"
+      - "crowdsec-data:/etc/crowdsec/"
+      - "crowdsec-data:/var/lib/crowdsec/data/"
+    labels:
+      traefik.enable: "false"
+  when:
+    - DEPLOY_CROWDSEC
 
 - name: deploy Traefik Container
   community.docker.docker_container:
