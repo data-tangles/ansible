@@ -5,7 +5,7 @@
 - name: deploy Adguard Home Docker Container
   docker_container:
     name: "adguard-home"
-    image: "adguard/adguardhome:latest@sha256:d16cc7517ab96f843e7f8bf8826402dba98f5e6b175858920296243332391589"
+    image: "adguard/adguardhome:latest@sha256:92929135ced2554aaf94706f766a98ad348f211df61b0704e2db7e8498cc00b7"
     restart_policy: unless-stopped
     networks:
       - name: "adguard-home"
