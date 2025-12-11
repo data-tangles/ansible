@@ -22,7 +22,7 @@
 - name: Copy appsec.yml
   ansible.builtin.template:
     src: appsec.yml.j2
-    dest: "{{ crowdsec_volume.volume.mountpoint }}/appsec.yml"
+    dest: "{{ crowdsec_volume.volumes[0].Mountpoint }}/appsec.yml"
     owner: root
     group: root
     mode: 0644
@@ -34,7 +34,7 @@
 - name: Copy acme.json
   ansible.builtin.template:
     src: acme.json.j2
-    dest: "{{ traefik_volume.volume.mountpoint }}/acme.json"
+    dest: "{{ traefik_volume.volumes[0].Mountpoint }}/acme.json"
     owner: root
     group: root
     mode: 0600
@@ -44,7 +44,7 @@
 - name: Copy config.yml
   ansible.builtin.template:
     src: config.yml.j2
-    dest: "{{ traefik_volume.volume.mountpoint }}/config.yml"
+    dest: "{{ traefik_volume.volumes[0].Mountpoint }}/config.yml"
     owner: root
     group: root
     mode: 0644
@@ -56,7 +56,7 @@
 - name: Copy traefik.yml
   ansible.builtin.template:
     src: traefik.yml.j2
-    dest: "{{ traefik_volume.volume.mountpoint }}/traefik.yml"
+    dest: "{{ traefik_volume.volumes[0].Mountpoint }}/traefik.yml"
     owner: root
     group: root
     mode: 0644
@@ -86,7 +86,7 @@
       CUSTOM_HOSTNAME: crowdsec
       BOUNCER_KEY_PLUGIN: "{{ crowdsec_lapi_key }}"
     volumes:
-      - "{{ crowdsec_volume.volume.mountpoint }}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
+      - "{{ crowdsec_volume.volumes[0].Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
       - "crowdsec-data:/var/log/traefik:ro"
       - "crowdsec-data:/etc/crowdsec/"
       - "crowdsec-data:/var/lib/crowdsec/data/"
@@ -112,9 +112,9 @@
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/etc/localtime:/etc/localtime:ro"
-      - "{{ traefik_volume.volume.mountpoint }}/traefik.yml:/etc/traefik/traefik.yml:ro"
-      - "{{ traefik_volume.volume.mountpoint }}/acme.json:/etc/traefik/acme/acme.json"
-      - "{{ [{ '{{ traefik_volume.volume.mountpoint }}/config.yml:/config.yml:ro' }] if 'DEPLOY_CROWDSEC' is 'true' else omit }}"
+      - "{{ traefik_volume.volumes[0].Mountpoint }}/traefik.yml:/etc/traefik/traefik.yml:ro"
+      - "{{ traefik_volume.volumes[0].Mountpoint }}/acme.json:/etc/traefik/acme/acme.json"
+      - "{{ [{ '{{ traefik_volume.volumes[0].Mountpoint }}/config.yml:/config.yml:ro' }] if 'DEPLOY_CROWDSEC' is 'true' else omit }}"
       - "traefik-data:/var/log/traefik"
     labels:
       traefik.enable: "true"
