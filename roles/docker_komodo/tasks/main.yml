@@ -64,6 +64,7 @@
       - "/etc/localtime:/etc/localtime:ro"
       - "komodo-core-data:/backups"
     env:
+      TZ: "Africa/Johannesburg"
       KOMODO_DATABASE_ADDRESS: komodo-db-ferretdb:27017
       KOMODO_FIRST_SERVER: https://komodo-periphery:8120
       KOMODO_DATABASE_USERNAME: "{{ KOMODO_DB_USERNAME }}"
