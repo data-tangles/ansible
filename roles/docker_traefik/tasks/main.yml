@@ -1,14 +1,23 @@
 - name: Create Traefik Data Volume
   community.docker.docker_volume:
     name: traefik-data
+
+- name: Retrieve Traefik Volume Info
+  community.docker.docker_volume_info:
+    name: traefik-data
   register: traefik_volume
 
 - name: Create Crowdsec Data Volume
   community.docker.docker_volume:
     name: crowdsec-data
-  register: crowdsec_volume
   when:
     - DEPLOY_CROWDSEC
+
+- name: Retrieve Crowdsec Volume Info
+  community.docker.docker_volume_info:
+    name: crowdsec-data
+  register: crowdsec_volume
+  when: DEPLOY_CROWDSEC
 
 - name: Copy appsec.yml
   ansible.builtin.template:
