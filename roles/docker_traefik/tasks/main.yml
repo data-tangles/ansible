@@ -8,6 +8,18 @@
   when:
     - DEPLOY_CROWDSEC
 
+- name: Copy appsec.yml
+  ansible.builtin.template:
+    src: appsec.yml.j2
+    dest: "{{ crowdsec_config_files_destination }}/appsec.yml"
+    owner: root
+    group: root
+    mode: 0644
+    force: false
+    backup: yes
+  when:
+    - DEPLOY_CROWDSEC
+
 - name: Copy acme.json
   ansible.builtin.template:
     src: acme.json.j2
@@ -27,6 +39,8 @@
     mode: 0644
     force: false
     backup: yes
+  when:
+    - DEPLOY_CROWDSEC
 
 - name: Copy traefik.yml
   ansible.builtin.template:
@@ -37,6 +51,12 @@
     mode: 0644
     force: false
     backup: yes
+
+- name: deploy Crowdsec Network
+  docker_network:
+    name: "crowdsec"
+  when:
+    - DEPLOY_CROWDSEC
 
 - name: deploy Traefik Proxy Network
   docker_network:
@@ -51,10 +71,11 @@
       - name: "proxy"
     env:
       TZ: "Africa/Johannesburg"
-      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/http-dos"
+      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios crowdsecurity/appsec-generic-rules crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs"
       CUSTOM_HOSTNAME: crowdsec
-      BOUNCER_KEY_PLUGIN: "{{CROWDSEC_LAPI_KEY}}"
+      BOUNCER_KEY_PLUGIN: "{{ CROWDSEC_LAPI_KEY }}"
     volumes:
+      - "{{ crowdsec_config_files_destination }}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
       - "crowdsec-data:/var/log/traefik:ro"
       - "crowdsec-data:/etc/crowdsec/"
       - "crowdsec-data:/var/lib/crowdsec/data/"
@@ -82,7 +103,7 @@
       - "/etc/localtime:/etc/localtime:ro"
       - "{{ traefik_config_files_destination }}/traefik.yml:/etc/traefik/traefik.yml:ro"
       - "{{ traefik_config_files_destination }}/acme.json:/etc/traefik/acme/acme.json"
-      - "{{ traefik_config_files_destination }}/config.yml:/config.yml:ro"
+      - "{{ [{ '{{ traefik_config_files_destination }}/config.yml:/config.yml:ro' }] if 'DEPLOY_CROWDSEC' is 'true' else omit }}"
       - "traefik-data:/var/log/traefik"
     labels:
       traefik.enable: "true"
@@ -97,4 +118,3 @@
       traefik.http.routers.traefik-secure.tls.certresolver: "cloudflare"
       traefik.http.routers.traefik-secure.tls.domains[0].sans: "*.{{ domain_name }}"
       traefik.http.routers.traefik-secure.service: "api@internal"
-    
