@@ -5,7 +5,7 @@
 - name: deploy TFTP Container
   docker_container:
     name: "tftpd-hpa"
-    image: "3x3cut0r/tftpd-hpa:latest@sha256:8de02517bdcda9aa5f2c498a1c1305fb402e882d77dda4d2556be90b94a41504"
+    image: "3x3cut0r/tftpd-hpa:latest@sha256:0693ca58cd59bae8a4f044a68f172d63a48efaae885bcc59e102d2b1c3beebab"
     restart_policy: always
     networks:
       - name: "tftpd-hpa"
