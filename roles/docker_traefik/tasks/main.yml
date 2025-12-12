@@ -47,7 +47,7 @@
 - name: Copy traefik.yml
   ansible.builtin.template:
     src: traefik.yml.j2
-    dest: "{{ traefik_volume.volumes.Mountpoint }}/traefik.yml"
+    dest: "{{ traefik_volume.volume.Mountpoint }}/traefik.yml"
     owner: root
     group: root
     mode: 0644
