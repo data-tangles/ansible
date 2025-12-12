@@ -1,23 +1,14 @@
 - name: Create Traefik Data Volume
   community.docker.docker_volume:
     name: traefik-data
-
-- name: Retrieve Traefik Volume Info
-  community.docker.docker_volume_info:
-    name: traefik-data
   register: traefik_volume
 
 - name: Create Crowdsec Data Volume
   community.docker.docker_volume:
     name: crowdsec-data
+  register: crowdsec_volume
   when:
     - DEPLOY_CROWDSEC | bool
-
-- name: Retrieve Crowdsec Volume Info
-  community.docker.docker_volume_info:
-    name: crowdsec-data
-  register: crowdsec_volume
-  when: DEPLOY_CROWDSEC | bool
 
 - name: Copy appsec.yml
   ansible.builtin.template:
@@ -86,7 +77,7 @@
       CUSTOM_HOSTNAME: crowdsec
       BOUNCER_KEY_PLUGIN: "{{ crowdsec_lapi_key }}"
     volumes:
-      - "{{ crowdsec_volume.volumes.Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
+      - "{{ crowdsec_volume.volume.Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
       - "crowdsec-data:/var/log/traefik:ro"
       - "crowdsec-data:/etc/crowdsec/"
       - "crowdsec-data:/var/lib/crowdsec/data/"
@@ -114,11 +105,11 @@
         [
           "/var/run/docker.sock:/var/run/docker.sock",
           "/etc/localtime:/etc/localtime:ro",
-          traefik_volume.volumes.Mountpoint + "/traefik.yml:/etc/traefik/traefik.yml:ro",
-          traefik_volume.volumes.Mountpoint + "/acme.json:/etc/traefik/acme/acme.json",
+          traefik_volume.volume.Mountpoint + "/traefik.yml:/etc/traefik/traefik.yml:ro",
+          traefik_volume.volume.Mountpoint + "/acme.json:/etc/traefik/acme/acme.json",
           "traefik-data:/var/log/traefik"
         ] + 
-        ([traefik_volume.volumes.Mountpoint + "/config.yml:/config.yml:ro"] if DEPLOY_CROWDSEC | bool else [])
+        ([traefik_volume.volume.Mountpoint + "/config.yml:/config.yml:ro"] if DEPLOY_CROWDSEC | bool else [])
       }}
     labels:
       traefik.enable: "true"
