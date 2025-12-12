@@ -11,13 +11,13 @@
   community.docker.docker_volume:
     name: crowdsec-data
   when:
-    - DEPLOY_CROWDSEC
+    - DEPLOY_CROWDSEC | bool
 
 - name: Retrieve Crowdsec Volume Info
   community.docker.docker_volume_info:
     name: crowdsec-data
   register: crowdsec_volume
-  when: DEPLOY_CROWDSEC
+  when: DEPLOY_CROWDSEC | bool
 
 - name: Copy appsec.yml
   ansible.builtin.template:
@@ -29,7 +29,7 @@
     force: false
     backup: yes
   when:
-    - DEPLOY_CROWDSEC
+    - DEPLOY_CROWDSEC | bool
 
 - name: Copy acme.json
   ansible.builtin.template:
@@ -51,7 +51,7 @@
     force: false
     backup: yes
   when:
-    - DEPLOY_CROWDSEC
+    - DEPLOY_CROWDSEC | bool
 
 - name: Copy traefik.yml
   ansible.builtin.template:
@@ -67,7 +67,7 @@
   docker_network:
     name: "crowdsec"
   when:
-    - DEPLOY_CROWDSEC
+    - DEPLOY_CROWDSEC | bool
 
 - name: deploy Traefik Proxy Network
   docker_network:
@@ -93,7 +93,7 @@
     labels:
       traefik.enable: "false"
   when:
-    - DEPLOY_CROWDSEC
+    - DEPLOY_CROWDSEC | bool
 
 - name: deploy Traefik Container
   community.docker.docker_container:
@@ -118,7 +118,7 @@
           traefik_volume.volumes[0].Mountpoint + "/acme.json:/etc/traefik/acme/acme.json",
           "traefik-data:/var/log/traefik"
         ] + 
-        ([traefik_volume.volumes[0].Mountpoint + "/config.yml:/config.yml:ro"] if DEPLOY_CROWDSEC else [])
+        ([traefik_volume.volumes[0].Mountpoint + "/config.yml:/config.yml:ro"] if DEPLOY_CROWDSEC | bool else [])
       }}
     labels:
       traefik.enable: "true"
