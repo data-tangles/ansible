@@ -109,13 +109,17 @@
     published_ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/etc/localtime:/etc/localtime:ro"
-      - "{{ traefik_volume.volumes[0].Mountpoint }}/traefik.yml:/etc/traefik/traefik.yml:ro"
-      - "{{ traefik_volume.volumes[0].Mountpoint }}/acme.json:/etc/traefik/acme/acme.json"
-      - "{{ [{ '{{ traefik_volume.volumes[0].Mountpoint }}/config.yml:/config.yml:ro' }] if 'DEPLOY_CROWDSEC' is 'true' else omit }}"
-      - "traefik-data:/var/log/traefik"
+    volumes: >-
+      {{
+        [
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "/etc/localtime:/etc/localtime:ro",
+          traefik_volume.volumes[0].Mountpoint + "/traefik.yml:/etc/traefik/traefik.yml:ro",
+          traefik_volume.volumes[0].Mountpoint + "/acme.json:/etc/traefik/acme/acme.json",
+          "traefik-data:/var/log/traefik"
+        ] + 
+        ([traefik_volume.volumes[0].Mountpoint + "/config.yml:/config.yml:ro"] if DEPLOY_CROWDSEC else [])
+      }}
     labels:
       traefik.enable: "true"
       traefik.http.routers.traefik.entrypoints: "http"
