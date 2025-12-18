@@ -108,7 +108,7 @@
           "/var/run/docker.sock:/var/run/docker.sock",
           traefik_volume.volume.Mountpoint + "/traefik.yml:/etc/traefik/traefik.yml:ro",
           traefik_volume.volume.Mountpoint + "/acme.json:/etc/traefik/acme/acme.json",
-          "traefik-data/var/log/traefik:/var/log/traefik"
+          traefik_volume.volume.Mountpoint + "/var/log/traefik:/var/log/traefik"
         ] + 
         ([traefik_volume.volume.Mountpoint + "/config.yml:/config.yml:ro"] if DEPLOY_CROWDSEC | bool else [])
       }}
