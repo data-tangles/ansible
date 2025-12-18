@@ -1,6 +1,10 @@
 global:
   sendAnonymousUsage: false
 
+log:
+  level: INFO
+  filePath: "/var/log/traefik/traefik.log"
+  format: json
 {% if DEPLOY_CROWDSEC %}
 accessLog:
   filePath: "/var/log/traefik/access.log"
@@ -59,11 +63,6 @@ entryPoints:
     address: ":443"
     forwardedHeaders:
       trustedIPs: *trustedIps
-    {% if DEPLOY_CROWDSEC %}
-    http:
-      middlewares:
-        - crowdsec@file
-    {% endif %}
 
 providers:
   docker:
