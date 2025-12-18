@@ -1,5 +1,13 @@
-appsec_config: crowdsecurity/appsec-default
+filenames:
+  - /var/log/auth.log
+  - /var/log/syslog
+  - /var/log/kern.log
+  - /var/log/ufw.log
+  - /var/log/mail.log
 labels:
-  type: appsec
-listen_addr: 0.0.0.0:7422
-source: appsec
+  type: syslog
+---
+filenames:
+  - /logs/web/traefik/*.log
+labels:
+  type: traefik
