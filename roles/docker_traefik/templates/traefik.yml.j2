@@ -3,7 +3,7 @@ global:
 
 {% if DEPLOY_CROWDSEC %}
 accessLog:
-  filePath: "/logs/traefik.log"
+  filePath: "/var/log/traefik/access.log"
   format: json
   filters:
     statusCodes:

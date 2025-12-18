@@ -78,7 +78,7 @@
       BOUNCER_KEY_TRAEFIK: "{{ crowdsec_lapi_key }}"
     volumes:
       - "{{ crowdsec_volume.volume.Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
-      - "traefik-data:/var/log/traefik:ro"
+      - "{{ traefik_volume.volume.Mountpoint }}/var/log/traefik:/var/log/traefik:ro"
       - "crowdsec-data:/etc/crowdsec/"
       - "/var/log:/var/log:ro"
       - "crowdsec-data:/var/lib/crowdsec/data/"
