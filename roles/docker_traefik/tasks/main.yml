@@ -80,7 +80,8 @@
       - "{{ crowdsec_volume.volume.Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
       - "{{ traefik_volume.volume.Mountpoint }}/var/log/traefik:/var/log/traefik:ro"
       - "crowdsec-data:/etc/crowdsec/"
-      - "/var/log:/var/log:ro"
+      - "/var/log/auth.log:/var/log/auth.log:ro"
+      - "/var/log/syslog:/var/log/syslog:ro"
       - "crowdsec-data:/var/lib/crowdsec/data/"
     labels:
       traefik.enable: "false"

@@ -1,13 +1,10 @@
 filenames:
   - /var/log/auth.log
   - /var/log/syslog
-  - /var/log/kern.log
-  - /var/log/ufw.log
-  - /var/log/mail.log
 labels:
   type: syslog
 ---
 filenames:
-  - /logs/web/traefik/*.log
+  - /var/log/traefik/access.log
 labels:
   type: traefik
