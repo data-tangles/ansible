@@ -54,12 +54,6 @@
     force: false
     backup: yes
 
-- name: deploy Crowdsec Network
-  docker_network:
-    name: "crowdsec"
-  when:
-    - DEPLOY_CROWDSEC | bool
-
 - name: deploy Traefik Proxy Network
   docker_network:
     name: "proxy"
@@ -77,7 +71,7 @@
       CUSTOM_HOSTNAME: crowdsec
       BOUNCER_KEY_TRAEFIK: "{{ crowdsec_lapi_key }}"
     volumes:
-      - "{{ crowdsec_volume.volume.Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
+      - "{{ crowdsec_volume.volume.Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml:ro"
       - "{{ traefik_volume.volume.Mountpoint }}/var/log/traefik:/var/log/traefik:ro"
       - "crowdsec-data:/etc/crowdsec/"
       - "/var/log/auth.log:/var/log/auth.log:ro"
