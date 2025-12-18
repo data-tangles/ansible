@@ -75,10 +75,12 @@
       TZ: "Africa/Johannesburg"
       COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/base-http-scenarios crowdsecurity/appsec-generic-rules crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs"
       CUSTOM_HOSTNAME: crowdsec
+      BOUNCER_KEY_TRAEFIK: "{{ crowdsec_lapi_key }}"
     volumes:
       - "{{ crowdsec_volume.volume.Mountpoint}}/appsec.yml:/etc/crowdsec/acquis.d/appsec.yaml"
       - "crowdsec-data:/var/log/traefik:ro"
       - "crowdsec-data:/etc/crowdsec/"
+      - "/var/log:/var/log:ro"
       - "crowdsec-data:/var/lib/crowdsec/data/"
     labels:
       traefik.enable: "false"
