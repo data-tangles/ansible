@@ -80,7 +80,7 @@
     labels:
       komodo.skip:  
       traefik.enable: "true"
-      traefik.http.routers.komodo.entrypoints: "websecure"
+      traefik.http.routers.komodo.entrypoints: "https"
       traefik.http.routers.komodo.rule: "Host(`{{ komodo_url }}`)"
       traefik.http.routers.komodo.tls: "true"
       traefik.http.routers.komodo.service: "komodo"
