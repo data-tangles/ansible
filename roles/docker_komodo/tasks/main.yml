@@ -1,12 +1,12 @@
 - name: deploy Komodo Container Network 
   docker_network:
     name: "komodo"
-  when: "'pi' in group_names"  
+  when: "'primary-pi' in group_names"  
 
 - name: Create Komodo DB Postgres Data Volume
   community.docker.docker_volume:
     name: komodo-db-postgres-data
-  when: "'pi' in group_names"  
+  when: "'primary-pi' in group_names"  
 
 - name: deploy Komodo DB Postgres Container
   docker_container:
@@ -25,12 +25,12 @@
       POSTGRES_DB: postgres     
     labels:
       komodo.skip:
-  when: "'pi' in group_names"
+  when: "'primary-pi' in group_names"
 
 - name: Create Komodo DB FerretDB Data Volume
   community.docker.docker_volume:
     name: komodo-db-ferretdb-data
-  when: "'pi' in group_names"
+  when: "'primary-pi' in group_names"
 
 - name: deploy Komodo DB FerretDB Container
   docker_container:
@@ -47,12 +47,12 @@
       FERRETDB_POSTGRESQL_URL: postgres://{{ KOMODO_DB_USERNAME }}:{{ KOMODO_DB_PASSWORD }}@komodo-db-postgres:5432/postgres    
     labels:
       komodo.skip:
-  when: "'pi' in group_names"
+  when: "'primary-pi' in group_names"
 
 - name: Create Komodo Core Data Volume
   community.docker.docker_volume:
     name: komodo-core-data
-  when: "'pi' in group_names"
+  when: "'primary-pi' in group_names"
 
 - name: deploy Komodo Core Container
   docker_container:
@@ -86,15 +86,15 @@
       traefik.http.routers.komodo.service: "komodo"
       traefik.http.services.komodo.loadbalancer.server.port: "9120"
       traefik.docker.network: "proxy"  
-  when: "'pi' in group_names"  
+  when: "'primary-pi' in group_names"  
 
 - name: deploy Komodo Periphery Container
   docker_container:
     name: "komodo-periphery"
     image: "ghcr.io/moghtech/komodo-periphery:1.19.5"
     restart_policy: always
-    networks: "{{ [{ 'name': 'komodo' }] if 'pi' in group_names else omit }}"
-    ports: "{{ ['8120:8120'] if 'pi' not in group_names else omit }}"
+    networks: "{{ [{ 'name': 'komodo' }] if 'primary-pi' in group_names else omit }}"
+    ports: "{{ ['8120:8120'] if 'primary-pi' not in group_names else omit }}"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/var/run/docker.sock:/var/run/docker.sock"
