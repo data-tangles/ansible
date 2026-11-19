@@ -5,7 +5,7 @@
 - name: deploy Nginx Proxy Manager Docker Container
   docker_container:
     name: "nginxproxymanager"
-    image: "jc21/nginx-proxy-manager:latest@sha256:5bd2aae54ac0b6f4ef6777143ab736baf5366807894a4c7fca7bfa2fbaf1489c"
+    image: "jc21/nginx-proxy-manager:latest@sha256:04a9d0835560b9719ab577275f84fe1f713298a1c1e2bdefa034b87f10e062e1"
     restart_policy: always
     networks:
       - name: "npm"
